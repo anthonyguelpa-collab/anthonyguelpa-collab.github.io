@@ -1,0 +1,185 @@
+L'affectation du travail reposait sur un tri manuel : un responsable déplaçait les courriels entrants dans des dossiers nominatifs d'une boîte partagée, un dossier par personne. Le système fonctionnait pour répartir, mais pas pour suivre — une demande déplacée dans un dossier et oubliée y restait invisible indéfiniment.
+
+La demande de la direction comportait une contrainte forte : **ne pas changer les habitudes de tri**. Le tri manuel devait être conservé, c'est le suivi qui devait être automatisé.
+
+## Conception — pourquoi deux flux séparés
+
+La première décision d'architecture a été de séparer la création de tâche et la relance en deux flux distincts, au lieu d'un flux unique.
+
+La raison est d'ordre logique : le premier réagit à un **événement** — un courriel vient d'arriver dans un dossier. Le second surveille un **état dans le temps** — une tâche est toujours ouverte. Les combiner rendait la gestion du « déjà relancé » impossible à écrire proprement, et compliquait la duplication vers les autres périmètres.
+
+<Capture
+  src="/captures/power-automate-1/p03.webp"
+  alt="Schéma des deux flux : création de tâche depuis un courriel, et relance à 24 heures"
+  legende="Architecture retenue — deux flux indépendants, l'un déclenché par un événement, l'autre surveillant un état."
+  large
+/>
+
+## Flux 1 — Du courriel à la tâche
+
+### Les six étapes
+
+1. **Déclencheur planifié toutes les quinze minutes.** Un déclencheur « à l'arrivée du message » aurait été plus élégant, mais il rate les courriels déplacés manuellement après coup — ce qui est précisément le mode de fonctionnement conservé.
+2. **Récupération des courriels du dossier**, avec un filtre sur le dossier nominatif.
+3. **Boucle sur chaque courriel** trouvé lors du passage.
+4. **Création de la tâche**, avec l'objet du message comme titre et la personne comme assignée, puis remplissage de la description.
+5. **Déplacement du courriel traité** vers un sous-dossier « Traité ».
+6. **Notification explicite** de la personne assignée.
+
+<Capture
+  src="/captures/power-automate-1/p04.webp"
+  alt="Détail des six étapes du premier flux"
+  legende="Flux 1 — les six étapes, avec la justification du déclencheur planifié plutôt qu'événementiel."
+  large
+/>
+
+### Le mécanisme anti-doublon
+
+C'est l'étape 5 qui empêche les doublons, et le choix mérite d'être expliqué. L'approche naturelle aurait été de marquer les messages traités par un drapeau. Elle s'est révélée impraticable : **le connecteur de messagerie n'expose pas le statut du drapeau**, ni à la récupération d'une liste de messages, ni à la lecture d'un message unitaire. Le filtre ne renvoie donc jamais rien.
+
+La solution retenue repose sur un principe plus robuste : un message déplacé vers un sous-dossier sort du périmètre de recherche du passage suivant. Il ne peut plus être retrouvé, donc plus être traité deux fois.
+
+### Deux paramètres de configuration non évidents
+
+**Messages non lus uniquement : non.** Les courriels triés manuellement ont souvent déjà été lus par le responsable au moment du tri. Filtrer sur les non-lus les aurait tous ignorés.
+
+**Description de la tâche : utiliser l'aperçu du corps.** Le champ contenant le corps du message renvoie du HTML brut, illisible une fois inséré dans la tâche. L'aperçu du corps fournit un texte propre, tronqué mais lisible. J'ai d'abord cherché une fonction de nettoyage HTML avant de constater qu'elle n'existe pas dans l'environnement.
+
+<Capture
+  src="/captures/power-automate-1/p05.webp"
+  alt="Paramètres clés de configuration et contournement du sélecteur de dossier en boîte partagée"
+  legende="Configuration — paramètres non évidents et contournement du sélecteur de dossier en boîte partagée."
+  large
+/>
+
+<Note type="alerte" titre="Contournement d'une limite du connecteur">
+En boîte partagée, le sélecteur de dossier de l'action de récupération n'affiche que les dossiers personnels, jamais ceux de la boîte partagée. Le contournement trouvé : ajouter temporairement une action de déplacement de message, y sélectionner la boîte partagée et le bon dossier, inspecter le code généré pour en extraire le chemin du dossier, coller cette valeur en saisie personnalisée dans le champ de l'action de récupération, puis supprimer l'action temporaire.
+</Note>
+
+## Flux 2 — La relance à 24 heures
+
+### Pourquoi un simple minuteur ne suffit pas
+
+La logique naïve consistait à vérifier chaque heure si la tâche a été créée il y a plus de 24 heures. Elle ne fonctionne pas : **une fois le seuil franchi, le test reste vrai indéfiniment**. La tâche est donc relancée à chaque passage horaire, soit une dizaine de rappels par jour tant qu'elle n'est pas cochée.
+
+<Capture
+  src="/captures/power-automate-1/p10.webp"
+  alt="Illustration du problème : le test reste vrai et génère des rappels en boucle"
+  legende="Le problème — comparer à la date de création produit un rappel à chaque passage une fois le seuil franchi."
+  large
+/>
+
+Ce qui manque est une **mémoire externe** : il faut retenir quand la dernière relance a eu lieu, pour comparer à ce moment plutôt qu'à la date de création. L'outil de gestion de tâches n'offrant aucun champ libre pour stocker cette information, une source de données externe était nécessaire.
+
+### La solution retenue
+
+Un tableau dans un classeur, stocké dans un espace privé, avec deux colonnes : l'identifiant de la tâche et la date du dernier rappel.
+
+La logique devient alors :
+
+1. La tâche est-elle encore ouverte ?
+2. Existe-t-il une ligne pour cet identifiant dans le tableau ?
+   - **Non** — jamais relancée : comparer à la date de création. Si plus de 24 heures, envoyer le rappel et **ajouter** une ligne.
+   - **Oui** — déjà relancée : comparer à la date du dernier rappel stocké. Si plus de 24 heures, envoyer le rappel et **mettre à jour** la ligne.
+
+<Capture
+  src="/captures/power-automate-1/p11.webp"
+  alt="Logique de la mémoire anti-doublon avec les deux branches de la condition"
+  legende="La mémoire externe — deux branches selon qu'une relance a déjà eu lieu ou non."
+  large
+/>
+
+### Référence technique
+
+Les expressions utilisées sont consignées dans la documentation pour pouvoir être réemployées.
+
+| Condition | Expression |
+|---|---|
+| Tâche non terminée | Pourcentage d'avancement différent de 100 |
+| Jamais relancée | Longueur de la liste des lignes retournées égale à 0 |
+| Créée depuis plus de 24 h | Date de création en unités de temps + 864 000 000 000, comparé à l'instant présent |
+| Dernier rappel il y a plus de 24 h | Date du dernier rappel stocké + 864 000 000 000 |
+| Écrire l'heure actuelle | Fonction d'horodatage universel |
+
+<Note type="info" titre="L'unité de temps">
+864 000 000 000 correspond à 24 heures exprimées dans l'unité de temps interne. Changer la fréquence de relance ne demande aucune restructuration : il suffit de modifier cette valeur — 3 jours valent 2 592 000 000 000, 5 jours valent 4 320 000 000 000 — **en prenant soin de la modifier aux deux endroits où elle apparaît**.
+</Note>
+
+<Capture
+  src="/captures/power-automate-1/p12.webp"
+  alt="Tableau des expressions clés à réutiliser dans les conditions du flux"
+  legende="Référence technique — les expressions exactes, consignées pour être réemployées lors de la duplication."
+  large
+/>
+
+## Retour d'expérience — trois erreurs à ne pas reproduire
+
+Cette partie de la documentation est celle que je considère comme la plus utile, parce qu'elle consigne des erreurs réellement commises.
+
+1. **Action résiduelle hors condition.** Un envoi de courriel laissé par inadvertance en dehors des branches de la condition s'exécutait à chaque itération, doublant les rappels. Après toute restructuration, vérifier qu'aucune action ne traîne hors des blocs.
+2. **Doublons dans la mémoire.** Un test lancé avant la correction du point précédent a créé des lignes en double, faussant les comparaisons suivantes. Vider le tableau de test avant de relancer une série après une correction structurelle.
+3. **Seuil de test oublié en production.** Le seuil avait été réduit à une minute pour tester sans attendre 24 heures — et il est resté actif. Résultat : un rappel à chaque passage horaire. Revalider **les deux occurrences** du seuil avant toute mise en production.
+
+<Capture
+  src="/captures/power-automate-1/p19.webp"
+  alt="Les trois erreurs de construction rencontrées et les règles retenues"
+  legende="Retour d'expérience — trois erreurs commises pendant la construction, consignées avec leur règle de prévention."
+  large
+/>
+
+## Extension — trois flux complémentaires
+
+Une fois les deux premiers flux validés, trois briques indépendantes ont été ajoutées, chacune activable séparément pour la démonstration à la direction.
+
+### Escalade vers le responsable à 48 heures
+
+Si une tâche reste ouverte plus de 48 heures, le responsable est prévenu **une seule fois** — en complément du rappel répété à la personne assignée. Le mécanisme de mémoire externe est réutilisé pour garantir l'unicité de l'escalade.
+
+<Capture
+  src="/captures/power-automate-2/p03.webp"
+  alt="Architecture du flux d'escalade vers le responsable au bout de 48 heures"
+  legende="Flux d'escalade — déclenchement unique vers le responsable, distinct du rappel répété à l'agent."
+  large
+/>
+
+### Récapitulatif hebdomadaire
+
+Chaque vendredi matin, un courriel récapitule les tâches en cours. Deux architectures ont été construites et comparées : un flux par personne, ou un flux unique couvrant tout le monde.
+
+### Repérage visuel
+
+Les tâches relancées passent en jaune, les tâches escaladées en rouge — directement visible sur le tableau, sans avoir à ouvrir les courriels. C'est l'ajout le plus simple techniquement et le plus apprécié à l'usage.
+
+<Capture
+  src="/captures/power-automate-2/p02.webp"
+  alt="Présentation des trois briques complémentaires ajoutées au dispositif"
+  legende="Les trois briques complémentaires — escalade, récapitulatif hebdomadaire et repérage visuel."
+  large
+/>
+
+## Préparation de la duplication
+
+Chaque flux est conçu par personne, ce qui le rend plus simple à lire et permet de le désactiver individuellement. La duplication se fait par copie des flux validés, avec seulement quelques points à ajuster.
+
+**Flux 1, par personne** — le dossier source, le sous-dossier « Traité » à créer, la personne assignée, le destinataire de la notification.
+
+**Flux 2, par personne** — l'identifiant du plan, un classeur dédié par personne, le destinataire du rappel, et la vérification que les deux seuils sont bien à leur valeur de production.
+
+<Note type="alerte" titre="Un classeur par périmètre, jamais partagé">
+Partager le même classeur de suivi entre plusieurs plans fait collisionner les identifiants de tâches et corrompt la logique de relance. Chaque périmètre doit disposer de son propre fichier. C'est consigné en gras dans la procédure de duplication.
+</Note>
+
+<Capture
+  src="/captures/power-automate-1/p20.webp"
+  alt="Procédure de duplication vers les autres périmètres avec les points à ajuster"
+  legende="Procédure de duplication — les points à ajuster flux par flux, et les pièges à éviter."
+  large
+/>
+
+## Pistes non implémentées
+
+Deux extensions ont été étudiées et documentées sans être mises en œuvre, pour que le travail d'analyse ne soit pas perdu.
+
+**Transfert des pièces jointes vers la tâche.** L'outil de gestion de tâches n'accepte pas de fichier joint brut : seule une référence par lien peut être associée. Le fichier devrait d'abord être hébergé dans un espace de stockage, puis son lien ajouté à la tâche — en gérant les cas de zéro, une ou plusieurs pièces jointes.
+
+**Fréquence de relance ajustable.** Techniquement immédiat, puisqu'il s'agit d'un simple nombre dans deux expressions. La question est fonctionnelle, pas technique : à quel rythme relancer sans que le rappel devienne du bruit ?

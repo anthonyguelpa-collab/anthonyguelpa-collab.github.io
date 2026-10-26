@@ -1,0 +1,40 @@
+Ce thème de veille découle directement de la cartographie de l'infrastructure : **toute la production de l'entreprise repose sur un hyperviseur unique**, installé sur un serveur physique unique. Les deux machines virtuelles — celle du logiciel métier et celle portant l'annuaire, la résolution de noms et les partages — en dépendent entièrement.
+
+Cette concentration n'est pas un défaut de conception : elle est cohérente avec la taille de la structure. Mais elle impose de suivre l'évolution du domaine, parce qu'un changement de modèle de licence ou d'orientation produit chez l'éditeur aurait un impact direct et non négociable.
+
+## Objectifs de la veille
+
+1. Suivre les évolutions des **modèles de licence**, dans un marché qui a connu des recompositions importantes.
+2. Identifier les **alternatives crédibles** pour une structure de cette taille, en incluant les solutions libres.
+3. Anticiper les **conditions de migration** : ce qu'il faudrait prévoir, et à quel coût, si un changement devenait nécessaire.
+4. Suivre les **évolutions fonctionnelles** susceptibles de bénéficier à la configuration en place — sauvegarde, réplication, haute disponibilité.
+
+## Ce que la veille suit concrètement
+
+| Point de surveillance | Pourquoi |
+|---|---|
+| Modèles de licence et tarification | Un changement tarifaire peut rendre la reconduction impossible pour une PME |
+| Alternatives libres et commerciales | Pour disposer d'un plan B documenté, pas improvisé |
+| Outils de migration | La difficulté de migration est le vrai coût d'un changement |
+| Fonctions de réplication | Une réplication vers un second hôte réduirait fortement le délai de reprise |
+| Fin de support des versions | Une version non supportée est une version non corrigée |
+
+## L'articulation avec le plan de reprise d'activité
+
+Cette veille n'est pas purement prospective : elle alimente une réflexion identifiée dans le plan de reprise.
+
+L'objectif de reprise après panne du serveur repose entièrement sur la restauration de machines virtuelles depuis une sauvegarde, avec une durée de plusieurs heures. Une fonction de **réplication vers un second hôte** transformerait cette reprise : au lieu de restaurer, on démarrerait la copie. La veille suit donc ce que les différentes solutions proposent dans ce domaine, et à quelles conditions.
+
+<Note type="info" titre="La question réelle n'est pas technique">
+Toutes les solutions du marché savent répliquer. La question est celle du second serveur : la réplication suppose un hôte supplémentaire, c'est-à-dire un investissement matériel. La veille sert donc à documenter le rapport entre le coût de ce second hôte et le gain de délai de reprise, pour que la direction puisse arbitrer sur des éléments concrets le jour où la question se posera.
+</Note>
+
+## Pourquoi aucun changement n'est engagé
+
+L'hyperviseur en place répond au besoin, il est intégré à l'environnement serveur existant, et le personnel du prestataire le maîtrise. Migrer représenterait un risque sans bénéfice immédiat — déplacer la production d'une entreprise de 26 postes pour gagner en théorie.
+
+C'est l'un des enseignements que je retiens de la méthode de veille : **toute information collectée ne débouche pas sur une décision**. Le filtrage consiste aussi à classer une information comme « intéressante mais sans objet aujourd'hui », à condition de l'avoir examinée.
+
+## Le moment où cette veille servira
+
+Le déclencheur est identifié à l'avance : le **renouvellement du serveur physique**. C'est à ce moment que le choix de l'hyperviseur se repose réellement, puisqu'il faut de toute façon réinstaller. Disposer à cette échéance d'un comparatif à jour, plutôt que de devoir l'établir en urgence, est précisément l'objet de cette veille passive.

@@ -1,0 +1,152 @@
+Un plan de reprise d'activité ne sert à rien s'il n'est lisible que par celui qui l'a écrit. La contrainte posée dès le départ était donc celle-ci : le document doit permettre à un tiers — le prestataire, un remplaçant, un membre de la direction — de savoir quoi faire dans l'ordre, sans connaissance préalable de l'infrastructure.
+
+Le plan s'appuie entièrement sur les deux travaux précédents : la cartographie fournit l'inventaire, la stratégie de sauvegarde fournit les sources de restauration.
+
+## 1 — Définir le cadre et les responsabilités
+
+La première question à trancher n'est pas technique : **qui décide de déclencher le plan ?** J'ai proposé un critère objectif plutôt qu'une appréciation au cas par cas.
+
+<Note type="info" titre="Critère de déclenchement retenu">
+Interruption de plus d'une heure d'un système critique, **OU** perte de données avérée, **OU** sinistre physique. En dessous, c'est un incident traité normalement par le service informatique ; au-dessus, le plan s'applique.
+</Note>
+
+Quatre rôles sont définis, avec un périmètre explicite pour chacun : le service informatique coordonne la reprise, la direction valide le déclenchement et communique vers l'extérieur, le prestataire intervient en niveau 2 et 3, et les collaborateurs signalent sans tenter de réparer eux-mêmes.
+
+<Capture
+  src="/captures/pra/p02.webp"
+  alt="Contexte, périmètre couvert, responsabilités et critère de déclenchement du plan de reprise"
+  legende="Cadre du plan — périmètre couvert, gouvernance et critère objectif de déclenchement."
+  large
+/>
+
+## 2 — Inventorier les actifs et les classer par criticité
+
+Reprendre tout en même temps est impossible. Il faut un ordre, et cet ordre se déduit de l'impact de chaque actif sur l'activité.
+
+J'ai classé chaque actif sur trois niveaux, en formulant l'impact en termes métier plutôt qu'en termes techniques — c'est ce qui permet à la direction de valider le classement.
+
+| Niveau | Signification | Exemples |
+|---|---|---|
+| **Critique** | Arrêt immédiat de l'activité | Hôte de virtualisation, VM métier, VM de production, disque d'exploitation |
+| **Haute** | Dégradation significative | Disque de données, passerelle de messagerie, lien Internet principal |
+| **Moyenne** | Contournable temporairement | Disque de scan, lien de secours satellite |
+
+<Capture
+  src="/captures/pra/p03.webp"
+  alt="Tableau d'inventaire des actifs critiques avec leur rôle, leur criticité et leur impact"
+  legende="Inventaire des actifs — chaque ligne associe un composant technique à son impact métier réel."
+  large
+/>
+
+## 3 — Poser l'analyse d'impact : RTO et RPO
+
+Deux indicateurs structurent toute la suite :
+
+- le **RTO** (*Recovery Time Objective*) — la durée maximale d'interruption acceptable ;
+- le **RPO** (*Recovery Point Objective*) — le volume de données qu'on accepte de perdre.
+
+Pour chaque système, j'ai identifié la source de reprise et la procédure associée.
+
+<Note type="alerte" titre="Point resté ouvert — et c'est volontaire">
+Les valeurs chiffrées de RTO et de RPO ne sont pas renseignées dans le document. Ce n'est pas un oubli : ces valeurs engagent un budget. Diviser le RTO par deux suppose un second serveur ; réduire le RPO suppose des sauvegardes plus fréquentes. Elles doivent être arbitrées par la direction, avec le prestataire. J'ai préparé le tableau et proposé un objectif de référence — reprise de l'activité critique en moins de 4 heures, perte maximale de 24 heures — en laissant la décision ouverte.
+</Note>
+
+<Capture
+  src="/captures/pra/p04.webp"
+  alt="Chronologie d'un sinistre et tableau d'analyse d'impact par système"
+  legende="Analyse d'impact — positionnement du RTO et du RPO sur la chronologie d'un sinistre, et sources de reprise par système."
+  large
+/>
+
+## 4 — Rédiger les procédures de reprise
+
+Trois familles de sinistres couvrent les cas réalistes. Chacune donne lieu à une procédure séquencée avec des fenêtres de temps indicatives.
+
+### Scénario 1 — Panne du serveur
+
+C'est le cas le plus probable. La procédure se déroule en quatre phases.
+
+1. **Détection (0–30 min)** — constater l'arrêt, vérifier l'alimentation, les branchements et les voyants disques, tenter un redémarrage simple.
+2. **Escalade (30 min – 1 h)** — informer la direction, contacter le prestataire, évaluer s'il s'agit d'une panne matérielle ou logicielle.
+3. **Restauration (1 h – 4 h)** — préparer un serveur de remplacement ou réparer, installer l'hyperviseur, puis restaurer les machines virtuelles **dans le bon ordre**.
+4. **Vérification (4 h – 6 h)** — tester l'annuaire, la résolution de noms et l'attribution d'adresses, les accès aux partages depuis un poste, l'ouverture du logiciel métier, l'envoi et la réception de courriels, puis informer les collaborateurs.
+
+<Note type="info" titre="L'ordre de restauration n'est pas interchangeable">
+La **VM de production en premier** : elle porte l'annuaire et la résolution de noms, qui sont des prérequis réseau. La **VM métier en second** : elle en dépend. Inverser l'ordre fait échouer la restauration de la seconde machine, et c'est exactement le genre d'erreur qu'on commet sous pression.
+</Note>
+
+<Capture
+  src="/captures/pra/p06.webp"
+  alt="Procédure détaillée de reprise après panne serveur, avec points d'attention et chronologie"
+  legende="Scénario 1 — procédure pas à pas, points d'attention et chronologie de reprise en cinq phases."
+  large
+/>
+
+### Scénario 2 — Sinistre physique
+
+Quatre cas traités séparément car les procédures divergent : incendie ou inondation du local serveur, sinistre total, cyberattaque par rançongiciel, et vol de matériel.
+
+Le cas du rançongiciel est celui qui demande le plus de discipline, parce que les deux premiers réflexes naturels sont mauvais :
+
+1. **Déconnecter** le serveur du réseau immédiatement.
+2. **Ne pas l'éteindre** — la mémoire vive contient des éléments utiles à l'analyse.
+3. Contacter le prestataire, et les autorités compétentes si nécessaire.
+4. Restaurer depuis le disque hors site, non connecté donc non compromis.
+5. Changer **tous** les mots de passe.
+6. Évaluer l'exposition de données personnelles — avec obligation de notification en cas de risque.
+
+<Capture
+  src="/captures/pra/p07.webp"
+  alt="Procédures pour sinistre physique, sinistre total, cyberattaque et vol de matériel"
+  legende="Scénario 2 — quatre cas de sinistre physique, avec impact, protection disponible et procédure propre à chacun."
+  large
+/>
+
+### Scénario 3 — Panne réseau
+
+Trois sous-cas : perte de l'accès Internet, panne du commutateur, panne du pare-feu. Le premier est entièrement automatisé par la redondance d'accès mise en place par ailleurs — aucune action immédiate n'est requise.
+
+<Capture
+  src="/captures/pra/p08.webp"
+  alt="Procédures en cas de panne Internet, de panne du commutateur ou du pare-feu"
+  legende="Scénario 3 — pannes réseau, avec la bascule automatique de l'accès Internet en reprise sans intervention."
+  large
+/>
+
+## 5 — Prévoir le mode dégradé et la communication
+
+Un point souvent négligé : pendant la reprise, l'entreprise doit continuer à fonctionner. J'ai distingué explicitement ce qui reste accessible de ce qui ne l'est pas.
+
+- **Accessible** — les applications en ligne et les téléphones mobiles, qui ne dépendent pas du serveur.
+- **Indisponible** — le logiciel métier, la comptabilité, les partages de fichiers et la messagerie interne.
+- **Consignes** — noter les interventions sur papier, reporter les devis et factures à la reprise, et ne surtout rien réinstaller soi-même.
+
+La communication de crise est également cadrée : information immédiate des collaborateurs par téléphone ou SMS — pas par courriel, puisque la messagerie est précisément en panne — et point d'avancement régulier.
+
+<Capture
+  src="/captures/pra/p09.webp"
+  alt="Arbre de décision, communication de crise, mode dégradé et checklist de reprise en quatre phases"
+  legende="Procédures transverses — arbre de décision, communication, mode dégradé et checklist à cocher par le technicien."
+  large
+/>
+
+## 6 — Maintenir le plan vivant
+
+Un plan de reprise jamais testé est une fiction. J'ai proposé un calendrier à trois échelles :
+
+- **Trimestriel** — restauration test d'un fichier depuis le NAS, lecture d'un fichier sur disque externe, test de bascule de l'accès Internet.
+- **Semestriel** — restauration complète d'une machine virtuelle en environnement de test, simulation de panne avec le prestataire, revue des contacts d'urgence.
+- **Annuel** — exercice de sinistre complet, restauration depuis le cloud de bout en bout, revue budgétaire du matériel.
+
+Le plan précise également où il est stocké — version numérique et version papier, car un plan de reprise accessible uniquement sur le serveur en panne ne sert à rien.
+
+<Capture
+  src="/captures/pra/p10.webp"
+  alt="Annuaire de crise, calendrier de tests et règles de maintenance du plan"
+  legende="Contacts d'urgence, calendrier de tests à trois échelles et règles de mise à jour du plan."
+  large
+/>
+
+<Note type="caviardage">
+L'annuaire de crise réel, les numéros de contrat, les références client auprès des opérateurs et les coordonnées du prestataire ne sont pas publiés. La capture affiche le modèle de fiche, volontairement laissé vierge dans la version diffusée.
+</Note>

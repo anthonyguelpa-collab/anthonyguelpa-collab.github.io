@@ -1,0 +1,138 @@
+Deuxième banc d'essai, mené une semaine après le premier et sur la même grille de critères, pour que les deux bilans soient directement comparables. Cette solution avait été identifiée dans le panorama au titre de la souveraineté numérique — éditeur français, hébergement national.
+
+L'offre testée est l'offre intermédiaire, jugée suffisante pour le besoin de l'entreprise.
+
+## Organisation des accès par catégories
+
+La structure proposée repose sur des **catégories**, c'est-à-dire des ensembles de mots de passe.
+
+<Note type="info" titre="Le bénéfice qui m'a convaincu">
+Les catégories permettent de constituer l'ensemble des accès à attribuer à un profil d'utilisateur. Lors du départ d'un collaborateur, il suffit de **supprimer sa catégorie pour lui retirer tous ses accès en une seule action** — au lieu de passer en revue chaque service un par un. C'est précisément le problème identifié dans le plan de sécurisation, où le départ d'une personne connaissant les mots de passe partagés aurait imposé de tout changer.
+</Note>
+
+La centralisation produit un effet de sécurité indirect mais important : les utilisateurs n'ont plus besoin de **connaître** les mots de passe de la société. Ils y accèdent sans les mémoriser, donc sans pouvoir les emporter.
+
+<Capture
+  src="/captures/veille-lockpass/p02.webp"
+  alt="Présentation de l'organisation par catégories et de la gestion centralisée"
+  legende="Organisation par catégories — constitution des ensembles d'accès et bénéfice lors d'un départ."
+  large
+/>
+
+## Cloisonnement entre espace personnel et espace partagé
+
+Différence structurelle avec la solution testée précédemment, et point de comparaison le plus net entre les deux.
+
+Un sélecteur permet de basculer entre l'espace personnel de l'utilisateur et l'espace partagé de l'entreprise. **L'espace personnel est indépendant et inaccessible à l'administrateur.**
+
+Sur la solution testée la semaine précédente, l'administrateur disposait d'une possibilité d'accès aux éléments des utilisateurs. Ici, non.
+
+<Note type="info" titre="Pourquoi ce point compte dans une petite structure">
+Dans une PME, l'administrateur est souvent une personne unique, connue de tous. Un espace personnel réellement cloisonné lève une gêne concrète : le collaborateur sait que ses accès personnels ne sont lisibles par personne. Cela favorise l'adoption — et l'adoption est le premier critère de la grille.
+</Note>
+
+<Capture
+  src="/captures/veille-lockpass/p03.webp"
+  alt="Sélecteur entre espace personnel et espace partagé, et cloisonnement vis-à-vis de l'administrateur"
+  legende="Cloisonnement — l'espace personnel reste inaccessible à l'administrateur, contrairement à la solution comparée."
+  large
+/>
+
+## Fonctions dépassant la gestion de mots de passe
+
+La solution intègre deux fonctions de partage de fichiers qui ne faisaient pas partie de la grille initiale, mais qui répondent à des besoins réels de l'entreprise.
+
+### Les transferts
+
+Envoi de fichiers, à l'initiative de l'émetteur, vers un ou plusieurs destinataires internes ou externes. Chaque transfert est chiffré, avec droits d'accès, durée de validité et limite de téléchargements paramétrables.
+
+Deux modes : courriel standard, ou courriel sécurisé protégé par mot de passe. Dans les deux cas, une date d'expiration est configurable.
+
+**Cas d'usage identifié** — alternative maîtrisée aux services grand public de transfert de fichiers, pour envoyer un document confidentiel volumineux.
+
+<Capture
+  src="/captures/veille-lockpass/p05.webp"
+  alt="Les deux modes de transfert de fichiers et leurs paramètres de sécurité"
+  legende="Transferts — deux modes d'envoi, avec expiration et limite de téléchargements paramétrables."
+  large
+/>
+
+### Les boîtes de dépôt
+
+Fonction bidirectionnelle : l'entreprise dépose des documents — un formulaire à remplir, par exemple — et le destinataire dépose en retour ses pièces complétées. Le destinataire externe participe sans créer de compte, via un simple lien reçu par courriel.
+
+**Le point fort est le cloisonnement** : si le même lien est envoyé à plusieurs destinataires externes, chacun ne voit que ses propres dépôts. Utile pour un appel d'offres ou la collecte de pièces auprès de plusieurs interlocuteurs.
+
+<Note type="alerte" titre="Une limite relevée pendant le test">
+Le cloisonnement ne s'applique pas en interne : une boîte de dépôt est visible dans l'espace partagé par toute personne invitée à la voir. Le cloisonnement protège donc les externes entre eux, pas les internes entre eux.
+</Note>
+
+<Capture
+  src="/captures/veille-lockpass/p07.webp"
+  alt="Fonctionnement des boîtes de dépôt en création, en réception externe et en réception interne"
+  legende="Boîtes de dépôt — création, parcours du destinataire externe, et limite du cloisonnement en interne."
+  large
+/>
+
+## Durées de conservation et traçabilité
+
+Point examiné en détail, parce qu'il touche directement à la conformité.
+
+### Comportement par défaut
+
+Sans configuration, **rien n'expire automatiquement** : la date d'expiration d'un transfert ou d'une boîte de dépôt est facultative à la création. En l'absence de date, l'élément reste actif indéfiniment.
+
+### Ce que l'administrateur peut imposer
+
+Un réglage global encadre le comportement de tous les utilisateurs, avec trois niveaux de rigueur :
+
+| Niveau | Effet |
+|---|---|
+| Au choix | Aucune expiration par défaut, chaque utilisateur décide |
+| Appliquée par défaut | Une expiration est proposée, modifiable ou supprimable par l'utilisateur |
+| Forcée | L'expiration s'impose, sans possibilité de la retirer |
+
+<Note type="info" titre="L'enseignement de ce point">
+Une solution conforme par défaut n'existe pas : c'est le paramétrage qui rend conforme. Laisser le réglage « au choix » revient à conserver indéfiniment des fichiers contenant potentiellement des données personnelles — ce qui contrevient au principe de limitation des durées. Ce constat a été reporté dans le registre des traitements.
+</Note>
+
+### Traçabilité
+
+L'archive est accessible au créateur du transfert, pas aux destinataires, qui perdent tout accès à l'expiration. L'administrateur dispose en complément d'une vue transversale des journaux d'activité — connexions, création de transferts, dépôts — avec possibilité d'export vers un outil externe d'analyse.
+
+La durée de conservation des éléments archivés se règle de un à dix ans.
+
+<Capture
+  src="/captures/veille-lockpass/p12.webp"
+  alt="Accès aux archives, vue administrateur des journaux et durées de conservation"
+  legende="Traçabilité — archives côté créateur, journaux côté administrateur, et durées de conservation paramétrables."
+  large
+/>
+
+## Intégration navigateur
+
+L'extension a été testée sur un service métier utilisé quotidiennement : une fois l'accès enregistré, un bouton dédié apparaît dans le formulaire de connexion et permet de sélectionner la combinaison identifiant / mot de passe.
+
+<Capture
+  src="/captures/veille-lockpass/p14.webp"
+  alt="Bouton de l'extension dans un formulaire de connexion et sélection de la combinaison enregistrée"
+  legende="Extension navigateur — sélection de la combinaison enregistrée depuis le formulaire de connexion."
+  large
+/>
+
+## Point resté ouvert
+
+Aucun quota de stockage public n'est indiqué par l'éditeur, ce qui est cohérent avec un modèle de facturation au volume réel sur devis. Un chiffre contractuel devra être demandé au commercial avant toute décision — c'est le seul élément du dossier qui ne peut pas être tranché par la veille seule.
+
+## Comparaison avec le banc d'essai précédent
+
+| Critère | Solution précédente | Cette solution |
+|---|---|---|
+| Cloisonnement administrateur | Accès administrateur possible | Espace personnel indépendant |
+| Révocation d'un départ | Par élément et collection | **Suppression d'une catégorie** |
+| Partage de fichiers | Lien chiffré à durée limitée | Transferts et boîtes de dépôt bidirectionnelles |
+| Hébergement | Option européenne à sélectionner | Éditeur et hébergement nationaux |
+| Expiration par défaut | — | À forcer par paramétrage global |
+| Quota de stockage | Annoncé | À obtenir sur devis |
+
+Les deux solutions restent en évaluation. La décision finale appartient à la direction, et dépendra autant du coût rapporté à l'effectif que de la préférence pour une souveraineté de l'hébergement.

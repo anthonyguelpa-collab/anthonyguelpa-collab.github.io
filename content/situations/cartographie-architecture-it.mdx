@@ -1,0 +1,114 @@
+Le point de départ était simple à formuler et long à traiter : personne ne pouvait dire avec certitude ce que contenait le serveur, quelles machines virtuelles tournaient dessus, ni par où transitaient les données. L'infrastructure fonctionnait, mais sa connaissance reposait sur la mémoire de l'équipe et du prestataire.
+
+J'ai mené le recensement en trois passes successives, chacune donnant lieu à un document distinct : d'abord le périmètre général, puis la cartographie détaillée du serveur et du stockage, enfin les flux de données.
+
+## Passe 1 — Délimiter le périmètre du système d'information
+
+Avant d'entrer dans la technique, il fallait savoir ce qui entre dans le périmètre. J'ai recensé catégorie par catégorie : le réseau local, la connectivité, la téléphonie, la mobilité, la bureautique et les logiciels de gestion.
+
+| Catégorie | Périmètre recensé |
+|---|---|
+| Parc utilisateur | 26 postes de travail Windows |
+| Réseau local | LAN filaire commuté |
+| Connectivité | Accès Internet opérateur, point d'entrée unique |
+| Téléphonie | VoIP interne et externe, postes IP et softphones |
+| Mobilité | Flotte mobile professionnelle, gestion par MDM |
+| Bureautique | Suite cloud — messagerie, stockage, collaboration |
+| Gestion métier | Logiciel de gestion bâtiment, suite comptable |
+
+<Capture
+  src="/captures/architecture-technique/p03.webp"
+  alt="Tableau d'identité de l'entreprise et périmètre du système d'information"
+  legende="Identité de l'entreprise et périmètre du SI — première page de synthèse du dossier d'architecture technique."
+/>
+
+### Infrastructure réseau
+
+Le réseau local est entièrement filaire et commuté. Le point important relevé lors du recensement est l'existence d'un **point d'entrée unique** : tout le trafic entrant et sortant transite par le routeur et le pare-feu. C'est à la fois une force — un seul point à sécuriser — et une faiblesse, identifiée plus tard comme un point de défaillance unique.
+
+<Capture
+  src="/captures/architecture-technique/p04.webp"
+  alt="Schéma de l'infrastructure réseau : accès Internet, commutation LAN et équipements utilisateurs"
+  legende="Infrastructure réseau — accès Internet, filtrage périmétrique, commutation et équipements utilisateurs."
+/>
+
+## Passe 2 — Cartographier l'hôte de virtualisation
+
+C'est la partie la plus longue du recensement. Toute la production repose sur un serveur physique unique portant le rôle Hyper-V, qui héberge deux machines virtuelles aux rôles bien distincts.
+
+### Les deux machines virtuelles
+
+1. **VM applicative métier** — héberge le logiciel de gestion bâtiment et ses bases de données locales. C'est elle qui porte les devis, les chantiers et la facturation.
+2. **VM de production** — porte l'ensemble des rôles d'infrastructure et quatre disques virtuels aux usages séparés.
+
+<Capture
+  src="/captures/architecture-infrastructure/p02.webp"
+  alt="Schéma de l'hôte Hyper-V et des deux machines virtuelles hébergées"
+  legende="L'hôte de virtualisation et les deux machines virtuelles de production."
+/>
+
+### Les rôles portés par le disque système
+
+Le recensement du disque système de la VM de production a révélé une concentration de rôles qu'il était important de documenter : annuaire, attribution d'adresses, résolution de noms, filtrage, gestion du stockage réseau et passerelle de messagerie cohabitent sur la même partition.
+
+<Capture
+  src="/captures/architecture-infrastructure/p03.webp"
+  alt="Détail des rôles et services hébergés sur la partition système de la VM de production"
+  legende="Rôles et services portés par la partition système — annuaire, DHCP, DNS, filtrage, stockage réseau et messagerie."
+/>
+
+### Les disques partagés et leur rôle
+
+Trois disques partagés structurent toute l'exploitation quotidienne :
+
+- **Disque Société** — le centre d'exploitation. Tous les fichiers métier, les devis, les documents de chantier et les courriers y transitent. C'est le disque dont l'indisponibilité arrête l'entreprise.
+- **Disque Scan** — point de dépôt automatique des documents numérisés par les multifonctions réseau.
+- **Disque Données** — stockage centralisé : bases de données comptables, sauvegardes applicatives, données de messagerie, pilotes et documentation technique. Il contient également les miroirs des deux disques précédents.
+
+<Note type="info" titre="Le constat le plus utile du recensement">
+Les dossiers « Société » et « Scan » du disque de données sont les miroirs respectifs des deux partages. Les données existent donc en double : sur le partage visible par les utilisateurs et dans le stockage centralisé. Cette redondance interne n'était documentée nulle part, et elle change complètement l'ordre de restauration en cas d'incident.
+</Note>
+
+<Capture
+  src="/captures/architecture-infrastructure/p05.webp"
+  alt="Arborescence du disque de données centralisé"
+  legende="Structure du stockage centralisé — bases de données, sauvegardes, miroirs des partages et dossier technique."
+/>
+
+## Passe 3 — Recenser les flux de données
+
+Un inventaire de composants ne suffit pas : il fallait savoir qui parle à qui. J'ai identifié trois portes d'accès vers l'extérieur, et une seule : tout trafic entrant ou sortant passe obligatoirement par l'une d'elles.
+
+1. **Le pare-feu** — navigation web, flux applicatifs en ligne, téléphonie, mises à jour.
+2. **La passerelle de messagerie** — courriels entrants et sortants entre les boîtes internes et les correspondants externes.
+3. **L'accès distant chiffré** — connexions des collaborateurs en déplacement et remontée des alertes de sécurité.
+
+<Capture
+  src="/captures/schema-flux/p02.webp"
+  alt="Vue globale des flux : portes d'accès vers l'extérieur, réseau interne, serveurs et sauvegardes"
+  legende="Vue globale — les trois portes d'accès vers l'extérieur et leur articulation avec le réseau interne."
+  large
+/>
+
+### Récapitulatif des flux
+
+J'ai terminé par un tableau de synthèse associant chaque flux à son type de données, son protocole et son utilité. C'est devenu la page la plus consultée du dossier.
+
+<Capture
+  src="/captures/schema-flux/p07.webp"
+  alt="Tableau récapitulatif de tous les flux de données avec protocoles et utilité"
+  legende="Récapitulatif des flux — type de données, protocole et utilité pour chaque échange recensé."
+  large
+/>
+
+## Ce que la cartographie a rendu possible
+
+Le recensement n'était pas une fin en soi. Il a directement permis :
+
+- d'identifier les actifs critiques et de les classer par niveau de criticité, ce qui est le premier chapitre du plan de reprise d'activité ;
+- de repérer que les sauvegardes et le serveur partageaient le même local technique, point de départ du plan de sécurisation ;
+- de déterminer l'**ordre de restauration** correct après sinistre : la VM de production d'abord, car l'annuaire et la résolution de noms sont des prérequis réseau, la VM métier ensuite.
+
+<Note type="caviardage">
+Les noms d'hôtes, le plan d'adressage, le modèle des équipements de sécurité et le nom du prestataire ont été remplacés par des équivalents génériques dans les captures publiées. La structure technique et la démarche de recensement sont conservées intégralement.
+</Note>

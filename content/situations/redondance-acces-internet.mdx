@@ -1,0 +1,72 @@
+L'entreprise dépend de services hébergés à l'extérieur pour fonctionner : planification des interventions terrain, comptabilité, messagerie, suite bureautique et téléphonie sur IP. Une coupure du lien fibre ne dégradait pas le service, elle l'arrêtait.
+
+## Analyse de l'existant
+
+Le point d'entrée du système d'information était unique : une box opérateur en fibre, raccordée au pare-feu, lui-même raccordé au commutateur cœur de réseau. Aucun lien de secours.
+
+J'ai commencé par recenser ce qui tombe réellement lors d'une coupure, en distinguant ce qui est hébergé à l'extérieur de ce qui reste disponible en local.
+
+| Service | Hébergement | Impact d'une coupure WAN |
+|---|---|---|
+| Planification terrain | SaaS | Totalement inaccessible |
+| Comptabilité | SaaS | Totalement inaccessible |
+| Suite bureautique et messagerie | Cloud | Totalement inaccessible |
+| Téléphonie sur IP | Cloud | Plus d'appels entrants ni sortants |
+| Logiciel de gestion métier | Serveur local | Reste accessible |
+| Partages de fichiers | Serveur local | Reste accessible |
+
+<Note type="info" titre="Ce que l'analyse a révélé">
+Le logiciel métier et les partages restent accessibles en local : une coupure Internet ne bloque donc pas l'exploitation interne. Ce qui s'arrête, c'est la relation avec l'extérieur — les interventions, la facturation et le téléphone. C'est cette distinction qui a orienté la solution vers la continuité d'accès plutôt que vers la redondance du serveur.
+</Note>
+
+## Conception de la solution
+
+Le pare-feu en place supporte plusieurs interfaces WAN avec bascule automatique. J'ai donc conçu une architecture à trois niveaux, hiérarchisés par coût et par performance plutôt que par technologie.
+
+### Hiérarchie des liens
+
+1. **Lien principal — fibre opérateur.** Actif par défaut, raccordé au port WAN 1. Supporte l'intégralité du trafic en fonctionnement normal : navigation, flux applicatifs, téléphonie, messagerie.
+2. **Secours de niveau 1 — accès satellite.** En veille sur le port WAN 2. Prend le relais automatiquement si le lien principal tombe. Débit suffisant pour maintenir l'ensemble des services, y compris la voix.
+3. **Dernier recours — accès mobile 4G.** En veille sur le port WAN 3. Intervient si les deux liens précédents sont indisponibles. Débit volontairement considéré comme dégradé : il maintient la messagerie et les applications métier, pas le confort.
+
+### Logique de bascule
+
+La bascule est gérée par le pare-feu, sans intervention humaine et sans action côté poste de travail. Les utilisateurs ne changent rien à leurs habitudes.
+
+```
+État normal     WAN 1 (fibre)      → tout le trafic
+Bascule 1       WAN 1 tombe        → WAN 2 (satellite) prend le relais
+Bascule 2       WAN 2 tombe aussi  → WAN 3 (4G) en dernier recours
+Retour          WAN 1 revient      → retour automatique sur le lien principal
+```
+
+Le délai de bascule observé est inférieur à cinq minutes, qui correspond au temps de détection de la perte du lien par le pare-feu et de réétablissement des sessions sortantes.
+
+<Note type="alerte" titre="Limite assumée de la solution">
+La bascule interrompt brièvement les sessions en cours : un appel en cours est coupé, un transfert de fichier doit être relancé. Cette solution assure la continuité du service, pas la transparence totale. Une continuité sans coupure aurait exigé un équipement de répartition de charge d'un tout autre budget, hors de proportion avec le besoin.
+</Note>
+
+## Tests et validation
+
+La procédure de test retenue est volontairement simple, pour pouvoir être rejouée sans expertise particulière :
+
+1. Noter l'heure et vérifier que le trafic sort bien par le lien principal.
+2. Débrancher physiquement le lien principal au niveau du port WAN 1.
+3. Chronométrer le rétablissement de l'accès Internet depuis un poste de travail.
+4. Vérifier qu'un appel sortant aboutit et que les applications en ligne répondent.
+5. Rebrancher le lien principal et vérifier le retour automatique.
+
+Cette procédure a été intégrée au calendrier de tests trimestriels du plan de reprise d'activité, afin qu'elle soit rejouée régulièrement et non une seule fois à l'installation.
+
+<Capture
+  src="/captures/firewall/p02.webp"
+  alt="Schéma de la redondance d'accès Internet avec les trois liens et la logique de bascule"
+  legende="Architecture de redondance — trois liens hiérarchisés et logique de bascule automatique du pare-feu."
+  large
+/>
+
+<CaptureManquante etape="Interface de configuration multi-WAN du pare-feu" />
+
+<Note type="caviardage">
+La configuration du pare-feu, son modèle et les références des liens opérateurs ne sont pas publiés. Le schéma de principe et la logique de bascule suffisent à décrire la solution sans exposer la configuration réelle.
+</Note>

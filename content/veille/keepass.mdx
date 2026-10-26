@@ -1,0 +1,42 @@
+Cette fiche documente un choix que j'ai fait, puis remis en question. Elle figure dans le portfolio précisément pour cette raison : la veille ne sert pas seulement à découvrir des solutions, elle sert aussi à corriger ses propres préconisations.
+
+## Pourquoi cette solution avait été retenue au départ
+
+Au moment de rédiger le plan de sécurisation, le gestionnaire de mots de passe retenu l'avait été sur quatre arguments solides :
+
+- **Certification par l'agence nationale de sécurité** — argument décisif face à une direction, parce qu'il ne se discute pas.
+- **Coût nul** — solution libre, sans licence, dans une entreprise sans budget cybersécurité.
+- **Aucun stockage chez un tiers** — la base de mots de passe est un fichier chiffré local, incluse dans la sauvegarde quotidienne. Pas de dépendance à un service externe, pas de question d'hébergement.
+- **Chiffrement fort et code auditable**.
+
+Le plan de déploiement était construit : installation par stratégie de groupe, une base par collaborateur, migration des accès existants, formation individuelle de trente minutes.
+
+<Note type="info" titre="Un usage conservé : la base d'administration">
+Pour le service informatique, cette solution reste pertinente. Une base dédiée contient les accès d'administration — serveurs, annuaire, pare-feu, stockage — avec une protection renforcée par fichier clé stocké sur un support séparé. Une copie scellée en coffre couvre l'absence du technicien. Sur ce périmètre restreint et technique, la contrainte de configuration manuelle n'en est pas une.
+</Note>
+
+## Ce que la veille a remonté
+
+Les comparatifs destinés aux PME suivis en veille hebdomadaire ont fait ressortir un point que je n'avais pas pondéré correctement : **la charge de prise en main pour un utilisateur non technicien**.
+
+Les éléments convergents :
+
+- la configuration de l'auto-remplissage dans le navigateur demande une intervention manuelle, contrairement aux solutions proposant une extension prête à l'emploi ;
+- la gestion des bases et des fichiers clés suppose de comprendre la notion de fichier chiffré local — ce qui n'est pas intuitif pour quelqu'un qui n'a jamais utilisé de gestionnaire ;
+- l'absence de tableau de bord d'administration centralisé oblige le service informatique à intervenir poste par poste.
+
+## La confrontation au terrain
+
+Le point déterminant n'est pas technique mais comportemental, et il rejoint le premier critère de la grille de veille : **un outil jugé contraignant sera contourné**. Un collaborateur qui trouve le gestionnaire trop lourd reviendra au papier ou au navigateur, et l'entreprise se retrouvera dans la situation de départ — avec en plus l'illusion d'avoir réglé le problème.
+
+Déployer une solution techniquement excellente qui n'est pas adoptée est pire que ne rien déployer, parce que le risque reste identique alors que la direction considère le sujet comme traité.
+
+## La décision
+
+Solution **écartée pour le déploiement généralisé**, et **conservée pour la base d'administration du service informatique**.
+
+Cette conclusion a directement ouvert la suite de la veille : évaluer des solutions offrant une gestion centralisée et une extension navigateur prête à l'emploi, en conservant les exigences de conformité. Deux bancs d'essai ont suivi, menés sur la même grille de critères pour être comparables.
+
+<Note type="alerte" titre="La cohérence avec le plan de sécurisation">
+Le plan de sécurisation, rédigé avant cette veille, préconise encore cette solution. Je n'ai pas réécrit le document a posteriori : il reflète l'état de l'analyse au moment de sa rédaction. La correction figure ici, dans la veille, qui est l'endroit prévu pour cela. C'est aussi ce qui rend le cheminement lisible plutôt que de donner l'illusion d'avoir eu raison du premier coup.
+</Note>

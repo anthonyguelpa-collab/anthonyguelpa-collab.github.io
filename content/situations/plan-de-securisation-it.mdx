@@ -1,0 +1,137 @@
+La demande initiale de la direction tenait en une phrase : « est-ce qu'on est bien protégés ? ». La réponse honnête était non, mais pas pour les raisons qu'on imagine. L'entreprise disposait déjà d'un antivirus centralisé et d'un filtrage de messagerie. Les failles étaient ailleurs : dans l'organisation, pas dans les outils.
+
+J'ai structuré le plan en quatre parties, en m'imposant une contrainte : **chaque mesure doit être chiffrée et réalisable sans budget exceptionnel**. Une recommandation qu'on ne peut pas financer n'est pas une recommandation.
+
+## Partie 1 — Sécurité physique des sauvegardes
+
+### Le constat
+
+Le NAS et le serveur se trouvaient dans le même local technique. En cas de sinistre, les deux disparaissent ensemble : la perte des données sur site est totale.
+
+### La recommandation
+
+Déplacer le NAS dans un bâtiment différent — bureau administratif ou local technique secondaire — en le maintenant sur le même réseau local pour que les sauvegardes automatiques continuent de fonctionner sans changement.
+
+<Capture
+  src="/captures/plan-securite/p02.webp"
+  alt="Schéma de séparation physique entre le local serveur, le local NAS et le stockage hors site"
+  legende="Séparation physique — un sinistre sur un bâtiment laisse l'autre intact, et la sauvegarde reste accessible."
+  large
+/>
+
+Cette mesure, complétée par la rotation de disques externes chiffrés décrite dans la situation consacrée aux sauvegardes, constitue le premier axe. Coût : un câble réseau, et environ 350 € pour le second disque.
+
+### Une mesure annexe utile
+
+La suite comptable occupait un espace significatif sur le serveur et sur le cloud, alors que ses archives anciennes ne sont jamais modifiées. J'ai proposé un disque dédié à l'archivage, pour environ 150 €, avec un triple bénéfice : libérer de l'espace serveur, libérer de l'espace cloud, et réduire la durée de la sauvegarde quotidienne.
+
+## Partie 2 — Sécurité de la messagerie
+
+Le filtrage était déjà en place. Le travail a donc porté sur ce qu'aucun outil ne couvre : **le comportement humain**.
+
+### Les mots-clés à bannir
+
+Une règle contre-intuitive mais déterminante, issue de l'analyse des fraudes documentées : les robots scrutent les courriels à la recherche de mots-clés financiers. Un message contenant le mot « RIB » accompagné d'une pièce jointe PDF devient une cible prioritaire.
+
+La règle diffusée est donc double :
+
+- ne jamais écrire de termes bancaires dans l'objet ou le corps d'un message ;
+- ne jamais nommer une pièce jointe avec un terme bancaire ou un type de pièce d'identité — préférer un nom neutre comme `Document_compta_mars.pdf`.
+
+### La procédure de confirmation téléphonique
+
+Toute transmission de coordonnées bancaires doit être confirmée **par téléphone**, et aucune demande de modification de coordonnées reçue par courriel ne doit être traitée sans appel préalable.
+
+<Note type="alerte" titre="Le scénario de fraude qui justifie la procédure">
+Un attaquant intercepte un échange avec un fournisseur et modifie les coordonnées bancaires sur une facture. Sans vérification téléphonique, le paiement part chez l'attaquant. Ce type de fraude, documenté par les organismes de prévention, coûte en moyenne plusieurs dizaines de milliers d'euros par incident. La parade tient en un appel de deux minutes.
+</Note>
+
+<Capture
+  src="/captures/plan-securite/p05.webp"
+  alt="Règles sur les mots-clés à éviter, procédure de confirmation et bonnes habitudes quotidiennes"
+  legende="Règles de messagerie — mots-clés à bannir, procédure de confirmation téléphonique et réflexes quotidiens."
+  large
+/>
+
+### Les dix réflexes
+
+J'ai condensé l'ensemble en une fiche de dix réflexes, pensée pour être affichée au poste de travail plutôt que lue une fois. Le dixième est le plus important : **en cas de doute, ne rien faire et appeler le service informatique**.
+
+<Capture
+  src="/captures/plan-securite/p06.webp"
+  alt="Mode d'emploi du filtrage de messagerie et fiche des dix bons réflexes"
+  legende="Fiche pratique — conduite à tenir face à un message en quarantaine, et les dix réflexes à retenir."
+  large
+/>
+
+## Partie 3 — Gestion des mots de passe
+
+### Le constat
+
+Mots de passe notés sur papier, stockés dans un tableur, ou enregistrés dans le navigateur. Aucune politique de complexité, et des mots de passe identiques réutilisés sur plusieurs services.
+
+### La solution initialement proposée
+
+Un gestionnaire de mots de passe open source, certifié par l'agence nationale de sécurité, avec chiffrement fort et stockage local — pas de dépôt chez un tiers. Le déploiement était prévu en trois phases sur quatre semaines : installation par stratégie de groupe, migration des accès existants, puis formation individuelle de trente minutes par collaborateur.
+
+Une base distincte était prévue pour le service informatique, contenant les accès d'administration, avec une copie de secours scellée en coffre pour couvrir l'absence du technicien.
+
+<Capture
+  src="/captures/plan-securite/p07.webp"
+  alt="Présentation de la solution de gestion de mots de passe, son déploiement et sa gestion centralisée"
+  legende="Solution de gestion des mots de passe — principe, phases de déploiement et organisation des bases."
+  large
+/>
+
+<Note type="info" titre="Ce choix a été réexaminé par la veille">
+La solution retenue ici l'a été sur des critères de coût et de certification. La veille technologique menée en parallèle a nuancé ce choix : la configuration manuelle s'est avérée trop exigeante pour des utilisateurs non techniciens. Deux solutions alternatives ont ensuite été testées en conditions réelles. Le cheminement complet est documenté dans la rubrique veille — c'est précisément le rôle de la veille que de corriger une préconisation initiale.
+</Note>
+
+## Partie 4 — Accès personnalisés aux postes
+
+### Le constat
+
+Plusieurs collaborateurs partageaient le même identifiant de session. Trois conséquences :
+
+- **aucune traçabilité** — impossible de savoir qui a fait quoi en cas d'incident ;
+- **départ ingérable** — un partant connaît les mots de passe de tout le monde, il faudrait tout changer ;
+- **responsabilité diluée** — personne ne se sent comptable de ce qui se passe sur « le » poste.
+
+### La solution
+
+Un compte d'annuaire nominatif par collaborateur, selon le principe « une personne, un compte ». Les bénéfices sont immédiats :
+
+- les actions sont enregistrées au nom de chaque utilisateur — connexions, modifications de fichiers, impressions ;
+- le départ d'un collaborateur se traite en désactivant un seul compte, ce qui coupe tous ses accès instantanément ;
+- les accès distants reposent sur le même identifiant, via un tunnel chiffré puis une session de bureau à distance.
+
+<Capture
+  src="/captures/plan-securite/p08.webp"
+  alt="Comparaison entre la situation à risque des comptes partagés et la solution par comptes nominatifs"
+  legende="Comptes nominatifs — traçabilité, gestion des départs et articulation avec les accès distants."
+  large
+/>
+
+## Synthèse chiffrée
+
+Le plan se termine par un tableau de décision à destination de la direction : une ligne par mesure, avec sa description, son coût estimé et les ressources nécessaires.
+
+| Mesure | Coût estimé |
+|---|---|
+| Séparation physique du NAS | Faible — câblage |
+| Rotation de disques externes chiffrés | ≈ 350 € |
+| Disque dédié à l'archivage comptable | ≈ 150 € |
+| Sensibilisation à la messagerie | 0 € — réunion et fiche pratique |
+| Déploiement d'un gestionnaire de mots de passe | 0 € de licence — 4 semaines de temps interne |
+| Comptes nominatifs | 0 € — configuration |
+
+<Capture
+  src="/captures/plan-securite/p09.webp"
+  alt="Tableau de synthèse des mesures proposées avec coûts et ressources"
+  legende="Synthèse — six mesures, environ 500 € de matériel, le reste en temps de configuration."
+  large
+/>
+
+<Note type="info" titre="Ce qui a emporté la décision">
+Quatre des six mesures ne coûtent rien d'autre que du temps de configuration. Présenter le plan ainsi a permis d'engager immédiatement ces quatre mesures, sans attendre l'arbitrage budgétaire des deux autres. C'est la leçon que je retiens de ce travail : une recommandation de sécurité est d'abord un argumentaire économique.
+</Note>

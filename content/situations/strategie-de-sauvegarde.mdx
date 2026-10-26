@@ -1,0 +1,104 @@
+Des sauvegardes tournaient tous les soirs. Personne ne savait exactement ce qu'elles contenaient, ni combien de temps elles étaient conservées, ni ce qu'on pouvait réellement restaurer avec. Ma mission a consisté d'abord à décrire l'existant, ensuite à en corriger la faiblesse principale.
+
+## Étape 1 — Décrire les flux de sauvegarde existants
+
+J'ai suivi chaque flux depuis sa source jusqu'à sa destination, en notant pour chacun son contenu, sa fréquence et sa rétention.
+
+| Destination | Fréquence | Contenu | Rétention |
+|---|---|---|---|
+| NAS (sur site) | Quotidienne | Machines virtuelles, architecture, données | J et J-1 |
+| NAS (sur site) | Mensuelle | Machines virtuelles, architecture, données | M et M-1 |
+| Disque externe (sur site) | Quotidienne | Machines virtuelles, architecture, données | J et J-1 |
+| Cloud (hors site) | Quotidienne | Données métier uniquement | — |
+
+<Note type="alerte" titre="La limite de la sauvegarde cloud">
+La sauvegarde cloud ne contient **que les données** : ni les machines virtuelles, ni l'architecture, ni l'annuaire. En cas de sinistre total, elle permet de récupérer les fichiers et les bases, mais impose de reconstruire entièrement les serveurs avant de pouvoir les réimporter. C'est une protection de dernier recours, pas une solution de reprise rapide.
+</Note>
+
+<Capture
+  src="/captures/sauvegardes/p02.webp"
+  alt="Schéma de la stratégie de sauvegarde : flux, fréquences, contenus et destinations"
+  legende="Configuration existante — les trois destinations de sauvegarde, leurs contenus et leurs rétentions."
+  large
+/>
+
+## Étape 2 — Identifier le point faible
+
+En croisant le schéma de sauvegarde avec la cartographie physique, le problème est apparu nettement : **le NAS et le disque externe se trouvaient dans le même local que le serveur**. Un incendie, un dégât des eaux ou un vol détruisait simultanément la production et ses deux sauvegardes locales. Il ne restait que la sauvegarde cloud, c'est-à-dire les données seules, sans aucun moyen de redémarrer rapidement.
+
+La question posée à la direction a été formulée simplement : *combien de temps l'entreprise peut-elle fonctionner sans devis, sans facturation et sans accès aux dossiers de chantier ?* La réponse a justifié la mesure suivante.
+
+## Étape 3 — Mettre en place la rotation de supports
+
+La solution retenue est volontairement simple, parce qu'elle doit être exécutée par un humain toutes les semaines sans se tromper.
+
+### Principe
+
+Deux disques externes identiques, appelés A et B. À tout instant, l'un est branché sur le serveur et reçoit la sauvegarde quotidienne, l'autre est conservé hors site. Chaque lundi, on les échange.
+
+### Procédure hebdomadaire
+
+1. Récupérer le disque conservé hors site.
+2. Le brancher sur le serveur, à la place du disque en cours.
+3. Vérifier que la sauvegarde du soir s'écrit bien sur le disque nouvellement branché.
+4. Emporter le disque retiré et le conserver hors site, en lieu sûr.
+
+### Résultat obtenu
+
+- Une copie **sur site**, active, contenant la sauvegarde du jour.
+- Une copie **hors site**, contenant au maximum la sauvegarde de la semaine précédente.
+
+<Capture
+  src="/captures/sauvegardes/p03.webp"
+  alt="Schéma de la rotation hebdomadaire des deux disques externes et de ses avantages"
+  legende="Rotation hebdomadaire — un disque actif sur site, un disque de la semaine précédente conservé hors site."
+  large
+/>
+
+### Chiffrement des supports
+
+Un disque de sauvegarde qui circule est un disque qui peut se perdre. Les deux disques sont chiffrés intégralement : sans le mot de passe, le contenu est illisible même en cas de vol.
+
+Deux précautions complètent le chiffrement :
+
+- **Étiquetage discret.** Aucune mention du nom de l'entreprise ni du mot « sauvegarde » sur le boîtier — une identification interne neutre, disque A et disque B.
+- **Procédure de perte.** Signaler immédiatement au service informatique, changer le mot de passe de chiffrement, remplacer le disque.
+
+<Capture
+  src="/captures/plan-securite/p03.webp"
+  alt="Détail de la rotation des disques externes et des mesures de confidentialité associées"
+  legende="Rotation, chiffrement et procédure de perte — extrait du plan de sécurisation."
+  large
+/>
+
+## Étape 4 — Traiter la contrainte applicative
+
+Un détail d'exploitation, découvert lors du recensement, conditionne le bon déroulement des sauvegardes : le service de messagerie interne **se coupe tous les soirs** pour libérer ses fichiers de base de données et permettre leur sauvegarde, puis redémarre automatiquement.
+
+Deux cas nécessitent une intervention manuelle, et je les ai documentés car ils provoquaient des incidents matinaux sans cause apparente :
+
+- après le redémarrage hebdomadaire du serveur, le service est à relancer le lundi matin ;
+- après toute coupure inopinée du serveur, le service est à relancer.
+
+<Capture
+  src="/captures/sauvegardes/p04.webp"
+  alt="Schéma du cycle d'arrêt et de relance du service de messagerie autour de la sauvegarde"
+  legende="Cycle d'arrêt et de relance du service de messagerie — et les deux cas nécessitant une relance manuelle."
+  large
+/>
+
+## Matrice de couverture
+
+Pour vérifier que la stratégie répondait bien à chaque scénario, j'ai construit une matrice croisant les types de sinistre et les supports disponibles. Elle sert aujourd'hui de référence dans le plan de reprise d'activité.
+
+| Scénario | NAS | Disque sur site | Disque hors site | Cloud |
+|---|---|---|---|---|
+| Panne serveur simple | OK | OK | OK | OK |
+| Panne serveur et NAS | Perdu | OK | OK | OK |
+| Sinistre du local serveur | Perdu | Perdu | **OK** | OK |
+| Sinistre total du site | Perdu | Perdu | **OK** | OK |
+| Rançongiciel | À vérifier | À vérifier | **Sain (hors ligne)** | Sain |
+
+<Note type="info" titre="Pourquoi le disque hors site change tout">
+C'est la seule colonne qui reste valide sur toutes les lignes. Un disque déconnecté et rangé ailleurs est le seul support qu'un rançongiciel ne peut pas atteindre et qu'un sinistre local ne peut pas détruire. Son coût est d'environ 350 € et cinq minutes par semaine.
+</Note>

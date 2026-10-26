@@ -1,0 +1,217 @@
+Le parking accueille des véhicules d'intervention et des engins, en périphérie urbaine, avec un accès libre — pas de barrière, les livreurs entrent. Il subissait des vols de carburant et d'outillage, des dégradations et des occupations illicites. La direction souhaitait un dispositif de vidéosurveillance.
+
+La mission comportait trois volets : étudier les solutions techniques, les chiffrer, et surtout **vérifier ce que la loi autorise** — car la réponse à cette dernière question conditionne le calendrier du projet bien plus que la technique.
+
+## Étape préalable — Le cadre juridique
+
+### La qualification du lieu détermine tout
+
+J'ai commencé par là, et c'est le choix méthodologique le plus important du dossier. Le parking étant en accès libre, il constitue un **lieu ouvert au public** au sens du code de la sécurité intérieure. Cette qualification change entièrement les obligations.
+
+<Note type="alerte" titre="Le chemin critique du projet n'est pas technique">
+Un lieu ouvert au public impose une **autorisation préfectorale préalable à toute installation**. Le dossier comporte le formulaire réglementaire, le plan d'implantation des caméras, les finalités poursuivies, le modèle des panneaux d'information et la liste nominative des personnes habilitées. L'instruction peut aller jusqu'à quatre mois. C'est donc la première chose à lancer, avant tout devis et toute commande — poser les caméras d'abord et déclarer ensuite rendrait le dispositif illégal et les enregistrements inexploitables.
+</Note>
+
+### Les autres obligations recensées
+
+| Obligation | Portée |
+|---|---|
+| Autorisation préfectorale | Préalable à la mise en service, valable 5 ans, renouvelable |
+| Registre des traitements | Inscription du traitement vidéosurveillance |
+| Consultation du CSE | Obligatoire avant installation, même sans surveillance du travail |
+| Information des visiteurs | Panneaux visibles à chaque entrée, avant le champ des caméras |
+| Information individuelle des salariés | Écrite, préalable à la mise en service |
+| Durée de conservation | 30 jours maximum |
+| Accès restreint | Liste nominative de personnes habilitées, consultations tracées |
+
+<Note type="info" titre="Une distinction que je n'avais pas anticipée">
+Le salarié bénéficie d'une protection plus forte que le visiteur. Un panneau à l'entrée suffit à informer un visiteur ; un salarié doit recevoir une **information individuelle écrite** avant la mise en service. Deux régimes coexistent donc sur le même parking, et les oublier expose à ce que les enregistrements soient écartés en cas de litige.
+</Note>
+
+## Deux architectures étudiées
+
+Plutôt que de proposer une seule solution, j'ai construit deux dossiers complets reposant sur des choix opposés, pour que la direction arbitre sur des éléments comparables.
+
+<Comparatif>
+<Option titre="Solution A — Caméras IP filaires" sousTitre="PoE · VLAN dédié · enregistreur open source">
+Infrastructure maîtrisée en interne, intégrée à l'environnement de virtualisation existant. Aucune dépendance à un service externe. Câblage à tirer.
+</Option>
+<Option titre="Solution B — Caméras sans fil sur service cloud" sousTitre="Batterie et solaire · abonnement">
+Aucun câblage, déploiement en une à deux journées, caméras repositionnables. Dépendance à un service externe et à un abonnement.
+</Option>
+</Comparatif>
+
+## Solution A — Architecture IP filaire
+
+### Principe
+
+Des caméras IP alimentées par le câble réseau, raccordées à un commutateur dédié placé en coffret étanche, lui-même relié au local technique. Les flux vidéo sont enregistrés par une machine virtuelle dédiée hébergée sur l'hyperviseur existant, avec stockage sur le NAS.
+
+<Capture
+  src="/captures/video-ip/p02.webp"
+  alt="Vue d'ensemble de l'architecture IP, de la zone parking au local technique"
+  legende="Architecture IP — caméras alimentées par le réseau, commutateur en coffret étanche, enregistreur virtualisé et stockage NAS."
+  large
+/>
+
+### L'alimentation par le câble réseau
+
+L'intérêt principal de cette architecture : **un seul câble par caméra**, transportant à la fois les données et l'alimentation. Aucune arrivée électrique à créer en extérieur.
+
+Les contraintes de câblage sont précisées : câble blindé, longueur maximale de 100 mètres par tronçon, gaine extérieure, chemin de câble dédié et séparé du courant fort. Les protections associées — parafoudre sur la liaison réseau, mise à la terre — ne sont pas optionnelles sur une installation extérieure.
+
+<Capture
+  src="/captures/video-ip/p03.webp"
+  alt="Schéma de l'alimentation et du câblage par le réseau, avec les contraintes et protections"
+  legende="Alimentation par le câble réseau — contraintes de câblage, budget de puissance et protections obligatoires."
+  large
+/>
+
+### La segmentation réseau
+
+C'est le point qui m'a le plus intéressé techniquement. Des caméras IP sont des équipements connectés, rarement mis à jour, et constituent une porte d'entrée classique vers un réseau d'entreprise.
+
+La conception place donc les caméras dans un **réseau virtuel isolé**, avec des règles de filtrage explicites :
+
+- le réseau caméras **n'a aucun accès** au réseau de l'entreprise ;
+- le réseau caméras **n'a aucun accès** à Internet ;
+- seul l'enregistreur est autorisé à atteindre les caméras, sur le protocole de flux vidéo uniquement ;
+- l'enregistreur écrit sur le stockage réseau.
+
+<Capture
+  src="/captures/video-ip/p04.webp"
+  alt="Schéma de la segmentation réseau par VLAN et des règles de filtrage appliquées"
+  legende="Segmentation — un réseau virtuel dédié aux caméras, sans accès au réseau d'entreprise ni à Internet."
+  large
+/>
+
+### L'enregistreur
+
+Une machine virtuelle sous système libre, hébergée sur l'hyperviseur existant, exécutant un logiciel d'enregistrement open source en conteneur. Les spécifications sont dimensionnées plutôt que reprises d'une fiche produit.
+
+| Ressource | Dimensionnement |
+|---|---|
+| Processeur | 4 cœurs minimum |
+| Mémoire | 8 Go, 16 Go recommandés |
+| Réseau | Interface dédiée sur le réseau caméras |
+| Stockage système | 60 Go |
+| Stockage vidéo | 4 à 8 To sur le NAS, en redondance |
+
+Le calcul de volumétrie est explicite : 4 caméras × 10 Go par jour × 30 jours ≈ 1,2 To, ce qui laisse de la marge. Le débit requis vers le stockage reste compatible avec un réseau gigabit.
+
+<Capture
+  src="/captures/video-ip/p05.webp"
+  alt="Spécifications de la machine virtuelle d'enregistrement et du stockage"
+  legende="Dimensionnement de l'enregistreur — ressources, volumétrie calculée et modalités de consultation."
+  large
+/>
+
+### Conformité intégrée à la conception
+
+Les contraintes réglementaires sont traduites en paramètres techniques, pas renvoyées à plus tard : rotation automatique à 30 jours configurée dans le logiciel, comptes nominatifs, journalisation des accès, et orientation des caméras excluant la voie publique.
+
+<Capture
+  src="/captures/video-ip/p06.webp"
+  alt="Traduction des contraintes légales et RGPD en paramètres de configuration"
+  legende="Conformité — chaque obligation réglementaire traduite en paramètre technique vérifiable."
+  large
+/>
+
+### Plan de déploiement
+
+Quatre étapes séquencées : étude et validation, commande du matériel, travaux et câblage, configuration réseau — cette dernière nécessitant l'intervention du prestataire pour la création du réseau virtuel sur le pare-feu.
+
+<Capture
+  src="/captures/video-ip/p08.webp"
+  alt="Plan de déploiement en quatre étapes avec les tâches détaillées"
+  legende="Plan de déploiement — quatre étapes, de l'étude à la configuration réseau."
+  large
+/>
+
+## Solution B — Caméras sans fil sur service cloud
+
+### Principe
+
+Des caméras autonomes sur batterie, maintenues en charge par panneau solaire, dialoguant en radio propriétaire avec un relais raccordé au réseau filaire. Aucun câblage vidéo ni électrique à tirer.
+
+<Capture
+  src="/captures/video-cloud/p03.webp"
+  alt="Configuration matérielle proposée pour la solution sans fil"
+  legende="Solution sans fil — configuration matérielle, avec caméras haute résolution sur les points de passage."
+  large
+/>
+
+### Le point technique déterminant
+
+L'architecture réseau de cette solution est volontairement minimale et c'est son principal argument de sécurité : **seul le relais est présent sur le réseau de l'entreprise**. Les caméras dialoguent avec lui en radio propriétaire et n'apparaissent jamais sur le réseau.
+
+La règle de pare-feu correspondante est simple : le relais initie lui-même ses connexions sortantes vers le service, **aucune ouverture de port entrant n'est nécessaire**.
+
+<Capture
+  src="/captures/video-cloud/p06.webp"
+  alt="Architecture réseau de la solution cloud : caméras, relais et règles de pare-feu sortantes"
+  legende="Architecture réseau — un seul équipement sur le LAN, en sortant uniquement, sans ouverture entrante."
+  large
+/>
+
+### Le filet de sécurité local
+
+Un point relevé en lisant la documentation du constructeur et qui a pesé dans la comparaison : une carte mémoire insérée dans le relais enregistre une copie locale de chaque déclenchement, en parallèle du service en ligne. Coupure Internet, panne du service ou box sabotée par un intrus : les preuves restent sur site.
+
+Nuance importante, également relevée : **seuls les enregistrements déclenchés par détection sont copiés localement**, les enregistrements lancés manuellement ne partent que vers le service en ligne. Pour le cas d'usage visé — une intrusion détectée — la copie locale couvre bien le besoin.
+
+<Capture
+  src="/captures/video-cloud/p07.webp"
+  alt="Les trois fonctions du relais : portée radio, stockage local et continuité"
+  legende="Le relais — relais radio longue portée, stockage local de secours et continuité en cas de coupure."
+  large
+/>
+
+### Exploitation
+
+Consultation en direct depuis mobile ou navigateur, alertes filtrées par analyse d'image — personne ou véhicule, en ignorant les animaux et la végétation —, zones d'activité définissables par caméra, et modes armé ou désarmé programmables.
+
+<Capture
+  src="/captures/video-cloud/p08.webp"
+  alt="Fonctions d'exploitation quotidienne de la solution cloud"
+  legende="Exploitation quotidienne — direct, alertes filtrées et programmation des modes de surveillance."
+  large
+/>
+
+## Comparaison et chiffrage
+
+| Critère | Solution A — IP filaire | Solution B — Sans fil cloud |
+|---|---|---|
+| Câblage | Tranchées et gaines extérieures | Aucun |
+| Durée de pose | Plusieurs jours de travaux | 1 à 2 jours |
+| Dépendance externe | Aucune | Service en ligne + abonnement |
+| Maîtrise des données | Totale, stockage interne | Partagée avec l'hébergeur |
+| Coût récurrent | Aucun | Abonnement annuel |
+| Évolutivité | Nouvelle caméra = nouveau câblage | Caméra ajoutée et repositionnable |
+| Dépendance Internet | Aucune pour l'enregistrement | Forte |
+
+Le coût total de la solution sans fil a été estimé sur trois ans, matériel et abonnement compris, afin d'être comparable à un investissement filaire amorti.
+
+<Capture
+  src="/captures/video-cloud/p10.webp"
+  alt="Budget prévisionnel de la solution sans fil sur trois ans"
+  legende="Chiffrage — coût lissé sur trois ans, matériel et abonnement, pour comparaison avec l'investissement filaire."
+  large
+/>
+
+## Synthèse et prochaines étapes
+
+Le dossier se conclut par quatre étapes, dans un ordre imposé par le délai réglementaire et non par la technique.
+
+1. **Déposer la demande préfectorale** — c'est le chemin critique, à lancer immédiatement.
+2. **Préparer pendant l'instruction** — repérage sur site, inscription au registre des traitements, information du CSE et des salariés, commande des panneaux, préparation de la règle de pare-feu.
+3. **Commander et déployer** — seulement après réception de l'autorisation.
+4. **Exploiter et réviser** — habilitations nominatives, registre des extractions, vérification annuelle des angles, renouvellement à cinq ans.
+
+<Note type="info" titre="Ce que ce dossier m'a appris">
+J'ai commencé l'étude par la technique, comme un réflexe. C'est en rédigeant la partie réglementaire que j'ai compris que l'ordre était inverse : le délai d'instruction de quatre mois conditionne tout le calendrier, et certaines contraintes — l'orientation des caméras, la durée de conservation, la liste des habilités — sont des paramètres de configuration qu'il vaut mieux connaître avant de concevoir qu'après avoir installé.
+</Note>
+
+<Note type="caviardage">
+L'adresse du site, le plan d'implantation réel des caméras, le modèle du pare-feu et le plan d'adressage ont été retirés ou remplacés par des équivalents génériques. Le plan d'implantation n'est pas publié du tout : indiquer publiquement où sont les caméras et où sont les angles morts reviendrait à documenter la façon d'entrer sans être vu.
+</Note>

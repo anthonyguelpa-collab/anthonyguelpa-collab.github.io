@@ -1,0 +1,33 @@
+{
+  "name": "portfolio-bts-sio-sisr",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Portfolio professionnel BTS SIO option SISR — Anthony Guelpa",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "verifier": "node scripts/verifier.mjs",
+    "export:page-unique": "node scripts/exporter-page-unique.mjs http://127.0.0.1:3000",
+    "build:statique": "EXPORT_STATIQUE=1 next build"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "lucide-react": "^0.544.0",
+    "next": "^15.5.4",
+    "next-mdx-remote": "^5.0.0",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "remark-gfm": "^4.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
+    "@types/node": "^22.18.1",
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.13",
+    "typescript": "^5.9.2"
+  }
+}

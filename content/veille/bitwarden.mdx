@@ -1,0 +1,112 @@
+Après le panorama et l'abandon de la piste initiale, cette solution a été retenue pour un banc d'essai réel — pas une lecture de fiche produit, mais une organisation créée, des membres invités et des permissions testées.
+
+## Configuration mise en place pendant le test
+
+### Organisation et plan
+
+Une organisation a été créée sur le plan gratuit pour la durée du test, limité à deux utilisateurs et deux collections. Point vérifié avant de commencer : **la montée vers un plan payant se fait sans perte des données déjà en place**, ce qui permet de tester sans refaire le travail ensuite.
+
+### Collections à deux niveaux
+
+La structure retenue est le point de conception le plus important du test :
+
+- **Collection globale** — comptes partagés par service, par exemple l'accès à un outil métier commun à plusieurs personnes.
+- **Collection nominative** — comptes individuels, créée au cas par cas seulement, et non systématiquement.
+
+### Invitation des membres
+
+Le processus d'invitation se déroule en deux temps : invitation par courriel, puis **confirmation par vérification d'une empreinte cryptographique**. Cette seconde étape, qui pourrait passer pour une lourdeur, garantit que le compte confirmé est bien celui de la personne attendue.
+
+<Capture
+  src="/captures/veille-bitwarden/p03.webp"
+  alt="Configuration mise en place pendant le test : organisation, collections, membres et permissions"
+  legende="Configuration du test — organisation, structure de collections à deux niveaux et processus d'invitation en deux étapes."
+  large
+/>
+
+### La permission clé testée
+
+C'est l'élément qui m'intéressait le plus : la permission « afficher les éléments, mots de passe masqués ». Elle permet à un utilisateur de **se connecter à un service sans jamais voir le mot de passe** — l'auto-remplissage fonctionne, mais la valeur reste masquée dans l'interface.
+
+Cette permission répond directement au besoin identifié dans le plan de sécurisation : un collaborateur qui quitte l'entreprise ne connaît pas les mots de passe de la société, donc il n'y a rien à changer à son départ.
+
+## Utilisation au quotidien
+
+L'usage se répartit entre deux interfaces : l'interface web pour l'administration, l'extension navigateur pour l'usage courant.
+
+### Ce qui fonctionne
+
+- **Auto-remplissage sur le web** — un clic dans le champ suffit une fois l'extension connectée. Testé et validé.
+- **Partage ponctuel** — envoi d'un lien chiffré à durée de vie limitée, accessible sans compte côté destinataire. Utile pour transmettre un identifiant à un prestataire.
+- **Synchronisation** — automatique en tâche de fond, avec possibilité de forcer une synchronisation immédiate.
+
+### La limite constatée
+
+**Aucun auto-remplissage natif sur les logiciels installés.** Pour le logiciel de gestion métier, le mot de passe doit être copié-collé manuellement depuis le coffre.
+
+<Note type="info" titre="Une limite du marché, pas de la solution">
+Ce point a été vérifié sur les solutions concurrentes : aucun gestionnaire cloud ne fait mieux sur les applications de bureau. Ce n'est donc pas un critère discriminant entre solutions — c'est une contrainte à accepter et à expliquer aux utilisateurs lors du déploiement, pour qu'ils ne la perçoivent pas comme un dysfonctionnement.
+</Note>
+
+<Capture
+  src="/captures/veille-bitwarden/p04.webp"
+  alt="Fonctionnement au quotidien : auto-remplissage web, limite sur les logiciels installés, partage et synchronisation"
+  legende="Usage quotidien — ce qui fonctionne, et la limite constatée sur les applications de bureau."
+  large
+/>
+
+## Conformité RGPD
+
+Le volet conformité a été vérifié point par point, car il conditionne l'acceptabilité de la solution pour une entreprise qui stocke des accès à des traitements de données personnelles.
+
+| Point vérifié | Constat |
+|---|---|
+| Encadrement des transferts | Clauses contractuelles types de l'Union européenne |
+| Certifications | Normes de management de la sécurité et audit de contrôles |
+| Hébergement européen | Option disponible — les données ne quittent pas l'Union |
+| Chiffrement | De bout en bout, l'éditeur ne peut pas lire les coffres |
+
+<Note type="alerte" titre="Un point de configuration facile à manquer">
+L'hébergement européen se choisit **au moment de la création du compte** — et doit également être sélectionné lors de la configuration de l'extension navigateur. Deux endroits, deux réglages distincts. Oublier le second place l'utilisateur sur l'hébergement par défaut, ce qui annule le bénéfice recherché.
+</Note>
+
+<Capture
+  src="/captures/veille-bitwarden/p06.webp"
+  alt="Points de conformité RGPD vérifiés : clauses contractuelles, certifications, hébergement et chiffrement"
+  legende="Conformité — les quatre points vérifiés, dont le choix d'hébergement à effectuer en deux endroits."
+  large
+/>
+
+## Coût
+
+Le chiffrage a été rapporté à l'effectif réel de l'entreprise, en convertissant les tarifs affichés et en signalant la sensibilité au taux de change — l'éditeur facturant dans une devise étrangère.
+
+<Capture
+  src="/captures/veille-bitwarden/p07.webp"
+  alt="Chiffrage du coût par utilisateur et par an selon les plans"
+  legende="Chiffrage — coût par utilisateur rapporté à l'effectif, avec réserve sur le taux de change."
+  large
+/>
+
+## Synthèse du banc d'essai
+
+### Points forts
+
+- Auto-remplissage web fiable et permissions granulaires, avec la permission de masquage qui répond au besoin métier.
+- Coût maîtrisé rapporté à l'utilisateur.
+- Conformité solide, avec hébergement européen disponible.
+
+### Points de vigilance
+
+- Pas d'auto-remplissage natif sur les logiciels installés.
+- L'authentification unique nécessiterait un accès d'administration à l'annuaire cloud, à obtenir en interne.
+- Les rapports de sécurité sont réservés aux plans payants.
+
+<Capture
+  src="/captures/veille-bitwarden/p08.webp"
+  alt="Synthèse du test avec points forts, points de vigilance et prochaine étape"
+  legende="Synthèse du banc d'essai — points forts, points de vigilance et étape suivante planifiée."
+  large
+/>
+
+La conclusion du bilan fixait explicitement l'étape suivante : comparer avec d'autres solutions **sur la même grille de test**. C'est ce qui a été fait la semaine suivante.

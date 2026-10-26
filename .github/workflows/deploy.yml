@@ -1,0 +1,74 @@
+# Déploiement automatique du portfolio sur GitHub Pages.
+#
+# Se déclenche à chaque envoi sur la branche principale : le site est
+# reconstruit et republié sans intervention. Peut aussi être lancé à la
+# main depuis l'onglet Actions du dépôt.
+
+name: Déploiement GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Une seule publication à la fois ; on ne coupe pas un déploiement en cours.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    name: Construire le site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      - name: Préparer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Configurer GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      - name: Contrôle de validation
+        run: npm run verifier
+
+      - name: Construire l'export statique
+        env:
+          # Le site est servi dans un sous-répertoire sur un dépôt de projet.
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+        run: npm run build:statique
+
+      - name: Désactiver Jekyll
+        # Sans ce fichier, GitHub ignore les dossiers commençant par un
+        # tiret bas — dont _next, qui contient tous les styles et scripts.
+        run: touch out/.nojekyll
+
+      - name: Téléverser l'artefact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deployer:
+    name: Publier
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Déployer sur GitHub Pages
+        id: deploiement
+        uses: actions/deploy-pages@v4

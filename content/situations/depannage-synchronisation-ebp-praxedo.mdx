@@ -1,0 +1,117 @@
+Le logiciel de gestion et l'outil de planification terrain échangent en permanence : les demandes d'intervention descendent vers les équipes sur le terrain, les rapports d'intervention remontent vers la facturation. Quand un élément ne passe pas, la conséquence est concrète — une intervention qui n'apparaît pas sur le téléphone d'un technicien, ou un chantier réalisé qui ne peut pas être facturé.
+
+Ces anomalies arrivaient au service informatique sans aucun élément de diagnostic : « ça ne remonte pas ». Mon travail a consisté à analyser les causes réelles, puis à produire un guide permettant aux équipes de vérifier elles-mêmes les cas les plus fréquents.
+
+## Premier principe : distinguer le sens de la synchronisation
+
+Le diagnostic commence toujours par la même question, parce que les causes n'ont rien de commun : **la donnée part-elle du logiciel de gestion vers l'outil terrain, ou l'inverse ?**
+
+## Sens 1 — Du logiciel de gestion vers l'outil terrain
+
+### Étape 1 — Vérifier la fiche client
+
+Dans la grande majorité des cas, le blocage vient d'une adresse incomplète sur la fiche client. Cinq champs conditionnent la remontée, et l'absence d'un seul suffit à la bloquer.
+
+| Champ | Exigence |
+|---|---|
+| Nom de l'adresse | Le libellé identifiant l'adresse — ne doit jamais être vide |
+| Adresse | Numéro et rue du lieu d'intervention — champ obligatoire |
+| Code postal | Cinq chiffres, sans espace |
+| Commune | Ville exacte — vérifier l'orthographe |
+| Agence | Doit correspondre à l'agence de rattachement |
+
+<Capture
+  src="/captures/praxedo-synchro/p02.webp"
+  alt="Les cinq champs de la fiche client à vérifier avant tout diagnostic"
+  legende="Étape 1 — les cinq champs dont l'absence bloque la remontée vers l'outil terrain."
+  large
+/>
+
+### Le cas du changement d'agence
+
+Une situation particulière cause des blocages persistants : lorsque l'agence de rattachement a été modifiée après une première synchronisation, la correction du seul champ agence ne suffit pas. Il faut également **vider la date de dernière synchronisation**, sans quoi le système considère la fiche comme déjà traitée et ne la retraite jamais.
+
+<Capture
+  src="/captures/praxedo-synchro/p04.webp"
+  alt="Procédure de correction après changement d'agence : vider le champ agence et la date de synchronisation"
+  legende="Changement d'agence — vider le champ agence et la date de dernière synchronisation avant d'enregistrer."
+  large
+/>
+
+### Étape 2 — Vérifier l'intervention elle-même
+
+Si la fiche client est correcte, le problème se situe au niveau de l'intervention. Deux vérifications :
+
+**Réinitialiser l'adresse d'intervention.** Une manipulation contre-intuitive mais efficace : ouvrir l'intervention, supprimer l'adresse sélectionnée, puis sélectionner à nouveau la même adresse, enregistrer, et relancer la synchronisation. Cela force la réassociation entre l'intervention et l'adresse corrigée.
+
+**Contrôler les champs personnalisés.** Trois champs doivent être dans un état précis :
+
+| Champ | Valeur attendue |
+|---|---|
+| Date de dernière synchronisation | Doit être **vide** |
+| Identifiant de l'outil terrain | Doit être **vide** |
+| Agence | Doit correspondre à l'agence de rattachement |
+
+<Capture
+  src="/captures/praxedo-synchro/p05.webp"
+  alt="Procédure de réinitialisation de l'adresse d'intervention et contrôle des champs personnalisés"
+  legende="Étape 2 — réinitialisation de l'adresse d'intervention et état attendu des trois champs personnalisés."
+  large
+/>
+
+## Sens 2 — De l'outil terrain vers le logiciel de gestion
+
+Quatre causes expliquent qu'une intervention ne redescende pas. Les trois premières relèvent de la cohérence des données ; la quatrième est d'une autre nature.
+
+1. **Client bloqué, supprimé ou inexistant.** Une intervention créée dans l'outil terrain sur un client qui n'existe plus côté gestion ne peut pas redescendre.
+2. **Adresse introuvable ou inactive.** L'adresse liée à l'intervention doit exister et être active dans le logiciel de gestion.
+3. **Valeur erronée dans les champs personnalisés.** Un identifiant ou une agence incorrects empêchent l'association.
+4. **Commande facturée avant validation du rapport.** Ce cas est traité séparément.
+
+<Capture
+  src="/captures/praxedo-synchro/p06.webp"
+  alt="Les quatre causes empêchant une intervention de redescendre vers le logiciel de gestion"
+  legende="Sens inverse — les quatre causes identifiées, dont la dernière est irréversible."
+  large
+/>
+
+<Note type="alerte" titre="La règle impérative de back-office">
+Ne jamais facturer une commande si l'intervention correspondante n'est pas encore validée dans l'outil terrain. **Une fois la commande facturée, le pointage ne peut plus être modifié.** Contrairement aux trois autres causes, celle-ci est irréversible : aucune manipulation ne permet de rattraper la situation côté système. C'est le point qui a justifié à lui seul la diffusion du guide au-delà du service informatique.
+</Note>
+
+## Étape 3 — La checklist de pré-escalade
+
+L'objectif de ce travail n'était pas seulement de résoudre, mais de réduire le nombre d'appels en donnant aux équipes les moyens de vérifier d'abord. J'ai donc produit une checklist en deux colonnes, une par sens de synchronisation, à parcourir avant tout contact avec le service informatique.
+
+<Capture
+  src="/captures/praxedo-synchro/p07.webp"
+  alt="Checklist en deux colonnes à vérifier avant de contacter le service informatique"
+  legende="Checklist de pré-escalade — huit points côté remontée, six points côté redescente."
+  large
+/>
+
+## Séquence de diagnostic
+
+L'ensemble se résume en six étapes ordonnées, qui constituent le résumé opérationnel du guide.
+
+1. **Identifier le sens** de la synchronisation concernée.
+2. **Vérifier le client** — actif, non bloqué, fiche complète.
+3. **Vérifier l'adresse** — tous les champs obligatoires renseignés, agence correcte.
+4. **Vérifier les champs personnalisés** — identifiant et agence.
+5. **Relancer la synchronisation** — d'abord les clients, puis les interventions, en laissant deux à trois minutes entre les deux.
+6. **Si le blocage persiste**, contacter le service informatique **avec le détail des vérifications déjà effectuées**.
+
+<Capture
+  src="/captures/praxedo-synchro/p08.webp"
+  alt="Séquence de diagnostic en six étapes et rappel de la règle de back-office"
+  legende="Séquence de diagnostic — six étapes dans l'ordre, et rappel de la règle irréversible de facturation."
+  large
+/>
+
+<Note type="info" titre="Ce que la sixième étape a changé">
+Préciser « avec le détail des vérifications déjà effectuées » a eu plus d'effet que le reste du guide. Les demandes qui arrivent maintenant au service informatique sont déjà qualifiées : je sais ce qui a été testé, et je peux commencer le diagnostic là où l'utilisateur s'est arrêté au lieu de tout reprendre depuis le début.
+</Note>
+
+### Un point d'attention sur l'indexation
+
+Une observation faite pendant les tests et consignée dans le guide : après un déplacement ou une modification manuelle, les résultats de recherche peuvent mettre plusieurs minutes à se mettre à jour. Relancer la synchronisation immédiatement après une correction donne donc parfois l'impression d'un échec alors que la correction est bonne. Il faut patienter quelques minutes avant de conclure.

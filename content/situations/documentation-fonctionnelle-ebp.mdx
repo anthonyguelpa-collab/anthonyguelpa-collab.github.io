@@ -1,0 +1,109 @@
+Le logiciel de gestion est l'outil central de l'entreprise : devis, clients, chantiers, interventions et facturation y passent. Il est utilisé tous les jours par les équipes commerciales et le back-office — et aucun support n'existait pour les nouveaux arrivants.
+
+La formation se faisait de poste à poste, ce qui produisait deux effets : une durée d'accompagnement variable selon la disponibilité du collègue formateur, et surtout des **pratiques divergentes** selon le service, chacun transmettant sa propre manière de faire.
+
+## Choix de périmètre
+
+J'ai délibérément limité le premier module au socle commun à tous les utilisateurs, plutôt que de viser l'exhaustivité. Un support de 200 pages ne se lit pas ; un module couvrant ce que tout le monde fait tous les jours se lit.
+
+Six parties ont été retenues :
+
+| Partie | Contenu |
+|---|---|
+| A | Présentation du logiciel et navigation |
+| B | Effectuer une recherche |
+| C | Créer un client |
+| D | Demande client — intervention ou devis, par appel ou courriel |
+| E | Transformer une demande en intervention |
+| F | Créer un événement ponctuel |
+
+## Partie A — Connexion et navigation
+
+### Ouvrir le bon dossier
+
+Le logiciel gère plusieurs dossiers correspondant aux différentes entités. La première source d'erreur pour un nouvel arrivant est de travailler dans le mauvais dossier sans s'en apercevoir. Le module commence donc par le choix du raccourci approprié.
+
+<Capture
+  src="/captures/ebp-module1/p03.webp"
+  alt="Ouverture du logiciel et sélection du bon dossier via le raccourci dédié"
+  legende="Étape 1 — ouvrir le bon dossier : chaque entité dispose de son propre raccourci."
+  large
+/>
+
+### Identification
+
+La convention d'identification est propre à l'entreprise : le code utilisateur correspond aux initiales en majuscules, prénom puis nom.
+
+<Capture
+  src="/captures/ebp-module1/p04.webp"
+  alt="Écran d'identification et convention de code utilisateur"
+  legende="Identification — convention de code utilisateur en vigueur dans l'entreprise."
+  large
+/>
+
+### Vérifier le contexte de travail
+
+Point que j'ai mis en avant parce qu'il évite des erreurs coûteuses : le nom du dossier et le code de l'utilisateur connecté sont affichés en permanence en bas à droite de **toutes** les pages du logiciel. Le réflexe de vérification avant toute saisie est enseigné dès le premier module.
+
+<Capture
+  src="/captures/ebp-module1/p05.webp"
+  alt="Emplacement de l'indicateur de dossier et d'utilisateur connecté"
+  legende="Vérification du contexte — dossier et utilisateur connectés, affichés en permanence."
+  large
+/>
+
+### Changer d'utilisateur
+
+Opération fréquente sur les postes partagés du back-office, et à l'origine d'erreurs d'attribution lorsqu'elle est oubliée.
+
+<Capture
+  src="/captures/ebp-module1/p06.webp"
+  alt="Procédure de changement d'utilisateur depuis l'indicateur en bas de fenêtre"
+  legende="Changement d'utilisateur — accessible directement depuis l'indicateur de contexte."
+  large
+/>
+
+### Le tableau de bord et l'onglet d'exploitation
+
+La page ouverte par défaut est un tableau de bord personnalisable par utilisateur, ce qui permet d'afficher les données correspondant à chaque poste. L'onglet d'exploitation donne accès à l'ensemble des pages métier : clients, devis, commandes, suivi de chantier et événements.
+
+<Capture
+  src="/captures/ebp-module1/p08.webp"
+  alt="Présentation de l'onglet d'exploitation et des pages métier accessibles"
+  legende="Navigation — l'onglet d'exploitation et les cinq familles de pages métier."
+  large
+/>
+
+## Partie B — Comprendre la notion de tiers et d'adresses
+
+Une spécificité du logiciel qui déroute systématiquement les nouveaux arrivants : un client est désigné comme un **tiers**, et un tiers peut porter plusieurs adresses de types différents — adresse de facturation, adresses d'intervention.
+
+<Note type="info" titre="Pourquoi cette notion est traitée dès le premier module">
+Cette structure explique une grande partie des anomalies de synchronisation avec l'outil de planification terrain : une adresse d'intervention mal renseignée sur un tiers bloque la remontée de l'intervention. Comprendre la structure des données en amont évite l'incident en aval — le module de formation et le guide de dépannage se répondent directement.
+</Note>
+
+<Capture
+  src="/captures/ebp-module1/p09.webp"
+  alt="Explication de la notion de tiers et de la gestion des adresses multiples"
+  legende="La notion de tiers — un client peut porter plusieurs adresses de types distincts."
+  large
+/>
+
+## Format retenu
+
+Chaque opération du module suit la même construction :
+
+1. **l'objectif** — ce que l'on cherche à obtenir ;
+2. **le chemin** — où cliquer, dans l'ordre ;
+3. **la capture** — l'écran concerné, annoté ;
+4. **le point de vigilance** — l'erreur fréquente à éviter.
+
+Cette structure répétitive rend le document utilisable en consultation ponctuelle autant qu'en formation initiale : l'utilisateur trouve rapidement l'opération recherchée et n'a pas à relire ce qui précède.
+
+## Résultat
+
+Le module est diffusé et sert de support à l'accueil des nouveaux arrivants. Il a produit un effet que je n'avais pas anticipé : en harmonisant les pratiques, il a réduit le nombre de fiches clients mal renseignées, et donc le nombre d'anomalies de synchronisation remontées au service informatique. Documenter un logiciel métier n'est pas seulement de la formation — c'est aussi de la prévention d'incidents.
+
+<Note type="caviardage">
+Les captures affichent des données d'exemple issues du logiciel. Les écrans comportant des noms de clients réels n'ont pas été retenus pour la publication.
+</Note>

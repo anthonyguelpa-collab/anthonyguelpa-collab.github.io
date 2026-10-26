@@ -1,0 +1,50 @@
+Le point de départ de ce thème de veille est un constat de terrain : mots de passe notés sur papier, stockés dans un tableur, ou réutilisés à l'identique sur plusieurs services. Le plan de sécurisation recommandait un gestionnaire de mots de passe ; restait à déterminer lequel, pour une structure sans utilisateur expert.
+
+## Construire une grille de critères avant de comparer
+
+La première erreur à éviter était de comparer des fonctionnalités. Un gestionnaire de mots de passe se choisit sur des critères d'usage, pas sur une liste de cases cochées. J'ai donc établi quatre critères, par ordre d'importance pour le contexte de l'entreprise.
+
+| Critère | Pourquoi il compte ici |
+|---|---|
+| **Ergonomie** | Les utilisateurs ne sont pas techniciens. Un outil jugé contraignant sera contourné, et le contournement sera pire que la situation actuelle. |
+| **Gestion centralisée** | Le service informatique doit pouvoir attribuer et surtout **révoquer** des accès lors d'un départ. |
+| **Conformité RGPD** | Les mots de passe donnent accès à des traitements de données personnelles. L'hébergement et les garanties contractuelles doivent être vérifiés. |
+| **Coût par utilisateur** | Pour une PME, un écart de deux euros par utilisateur et par mois décide de l'adoption. |
+
+<Note type="info" titre="Le critère qui a été ajouté après coup">
+Un cinquième critère est apparu pendant les tests et ne figurait pas dans la grille initiale : **l'auto-remplissage sur les logiciels installés**, par opposition aux sites web. Une partie importante du travail quotidien se fait dans des applications de bureau, où aucune solution du marché ne propose de remplissage natif. Ce point a été réintégré dans la grille pour les tests suivants.
+</Note>
+
+## Le paysage observé
+
+L'état des lieux a distingué les solutions adaptées au profil de l'entreprise de celles qui ne le sont pas, en explicitant le motif dans les deux cas.
+
+### Solutions retenues pour évaluation
+
+- Des solutions grand public à forte ergonomie, avec tableau de bord d'administration en version entreprise.
+- Une solution française, mise en avant pour la souveraineté numérique et la traçabilité.
+- Des solutions open source, auditables, avec hébergement européen possible.
+
+### Solutions écartées, et pourquoi
+
+- Une solution historique du marché, écartée en raison d'incidents de sécurité passés ayant entamé la confiance. Le critère n'est pas technique mais relève du risque de réputation : expliquer à une direction qu'on a choisi un outil ayant connu une fuite de données est un exercice difficile.
+- Les solutions à configuration entièrement manuelle, écartées pour le déploiement généralisé en raison de la charge de prise en main pour des utilisateurs non techniciens.
+
+## Les points de surveillance retenus
+
+Le panorama a permis de définir ce qu'il fallait suivre semaine après semaine, plutôt que de tout lire :
+
+1. **Sécurité** — nouvelles vulnérabilités, incidents et fuites de données, mises à jour correctives.
+2. **Fonctionnalités** — support des nouvelles normes d'authentification sans mot de passe, améliorations d'ergonomie, nouvelles intégrations.
+3. **Tarifs** — évolutions tarifaires, nouveaux plans destinés aux équipes.
+4. **Comparatifs** — tests indépendants et retours d'expérience de structures comparables.
+
+## Les canaux activés
+
+Des alertes par mots-clés ont été configurées sur les noms des solutions suivies, ainsi que sur les termes anglais associés aux vulnérabilités et aux fuites de données — ce sont ces alertes qui remontent l'information la plus critique, et le plus rapidement.
+
+Les blogs officiels des éditeurs complètent le dispositif pour les évolutions produit, et les sources institutionnelles pour les recommandations de référence.
+
+## Ce que le panorama a produit
+
+Aucune décision à ce stade, et c'était l'objectif. Un panorama sert à cadrer, pas à choisir. Son résultat concret est la grille de critères, qui a ensuite été appliquée à l'identique aux deux solutions réellement testées — ce qui rend les deux bilans comparables entre eux.

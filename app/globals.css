@@ -1,0 +1,387 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design tokens — Portfolio BTS SIO SISR
+   Palette conforme UFIP : 3 couleurs hors noir et blanc
+     · Bleu nuit  → base structurelle
+     · Cyan       → accent 1, bloc E4
+     · Ambre      → accent 2, bloc E5
+   ------------------------------------------------------------------ */
+
+@theme {
+  /* Base bleu nuit */
+  --color-night-950: #070b14;
+  --color-night-900: #0a1020;
+  --color-night-850: #0e1627;
+  --color-night-800: #111a2e;
+  --color-night-700: #19243d;
+  --color-night-600: #22304f;
+  --color-night-500: #334160;
+
+  /* Accent 1 — cyan électrique (E4) */
+  --color-cyan-bright: #22d3ee;
+  --color-cyan-soft: #67e8f9;
+  --color-cyan-deep: #0e7490;
+
+  /* Accent 2 — ambre (E5) */
+  --color-amber-bright: #f59e0b;
+  --color-amber-soft: #fcd34d;
+  --color-amber-deep: #b45309;
+
+  /* Texte */
+  --color-ink-100: #eef3fb;
+  --color-ink-200: #cbd6e8;
+  --color-ink-300: #9babc6;
+  --color-ink-400: #71809b;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo,
+    monospace;
+
+  --radius-card: 0.875rem;
+}
+
+/* ------------------------------------------------------------------
+   Réglages globaux
+   ------------------------------------------------------------------ */
+
+:root {
+  color-scheme: dark;
+  --bloc-accent: var(--color-cyan-bright);
+  --bloc-accent-soft: var(--color-cyan-soft);
+}
+
+* {
+  border-color: color-mix(in oklab, var(--color-night-600) 70%, transparent);
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-night-900);
+  color: var(--color-ink-200);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
+}
+
+/* Trame technique discrète — évoque la grille d'un schéma réseau,
+   sans jamais devenir un décor de faux tableau de bord. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-night-600) 28%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-night-600) 28%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse 90% 60% at 50% 0%, #000 20%, transparent 75%);
+}
+
+::selection {
+  background-color: color-mix(in oklab, var(--color-cyan-bright) 35%, transparent);
+  color: var(--color-ink-100);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-cyan-bright);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------------
+   Contexte de bloc : E4 (cyan) / E5 (ambre)
+   Toute l'interface dérive son accent de cette variable.
+   ------------------------------------------------------------------ */
+
+[data-bloc="e4"] {
+  --bloc-accent: var(--color-cyan-bright);
+  --bloc-accent-soft: var(--color-cyan-soft);
+  --bloc-accent-deep: var(--color-cyan-deep);
+}
+
+[data-bloc="e5"] {
+  --bloc-accent: var(--color-amber-bright);
+  --bloc-accent-soft: var(--color-amber-soft);
+  --bloc-accent-deep: var(--color-amber-deep);
+}
+
+/* ------------------------------------------------------------------
+   Utilitaires
+   ------------------------------------------------------------------ */
+
+@utility surface {
+  background-color: color-mix(in oklab, var(--color-night-800) 72%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-night-600) 60%, transparent);
+  border-radius: var(--radius-card);
+  backdrop-filter: blur(6px);
+}
+
+@utility rule-top {
+  border-top: 2px solid var(--bloc-accent);
+}
+
+@utility text-accent {
+  color: var(--bloc-accent);
+}
+
+/* ------------------------------------------------------------------
+   Typographie du corps de documentation (déroulés techniques MDX)
+   ------------------------------------------------------------------ */
+
+.prose-doc {
+  color: var(--color-ink-200);
+  line-height: 1.75;
+  font-size: 1rem;
+}
+
+.prose-doc > * + * {
+  margin-top: 1.1em;
+}
+
+.prose-doc h2 {
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+  font-size: 1.4rem;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+  color: var(--color-ink-100);
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid
+    color-mix(in oklab, var(--color-night-600) 75%, transparent);
+  scroll-margin-top: 6rem;
+}
+
+.prose-doc h3 {
+  margin-top: 2rem;
+  margin-bottom: 0.6rem;
+  font-size: 1.1rem;
+  font-weight: 650;
+  color: var(--color-ink-100);
+  scroll-margin-top: 6rem;
+}
+
+.prose-doc h4 {
+  margin-top: 1.5rem;
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 650;
+  color: var(--bloc-accent-soft);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.prose-doc strong {
+  color: var(--color-ink-100);
+  font-weight: 620;
+}
+
+.prose-doc a {
+  color: var(--bloc-accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in oklab, var(--bloc-accent) 45%, transparent);
+}
+
+.prose-doc a:hover {
+  text-decoration-color: var(--bloc-accent);
+}
+
+.prose-doc ul,
+.prose-doc ol {
+  padding-left: 1.3rem;
+}
+
+.prose-doc ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.prose-doc ul > li {
+  position: relative;
+  padding-left: 1.4rem;
+  margin-top: 0.5rem;
+}
+
+.prose-doc ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.68em;
+  width: 5px;
+  height: 5px;
+  border-radius: 1px;
+  background-color: var(--bloc-accent);
+  transform: rotate(45deg);
+}
+
+.prose-doc ol {
+  list-style: none;
+  counter-reset: step;
+  padding-left: 0;
+}
+
+.prose-doc ol > li {
+  position: relative;
+  counter-increment: step;
+  padding-left: 2.4rem;
+  margin-top: 0.85rem;
+}
+
+.prose-doc ol > li::before {
+  content: counter(step, decimal-leading-zero);
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--bloc-accent);
+  background-color: color-mix(in oklab, var(--bloc-accent) 12%, transparent);
+  border: 1px solid color-mix(in oklab, var(--bloc-accent) 32%, transparent);
+  border-radius: 5px;
+  padding: 0.2rem 0.35rem;
+  line-height: 1;
+}
+
+.prose-doc code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  background-color: color-mix(in oklab, var(--color-night-700) 85%, transparent);
+  border: 1px solid color-mix(in oklab, var(--color-night-600) 80%, transparent);
+  border-radius: 5px;
+  padding: 0.12em 0.4em;
+  color: var(--bloc-accent-soft);
+  word-break: break-word;
+}
+
+.prose-doc pre {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.6;
+  background-color: var(--color-night-950);
+  border: 1px solid color-mix(in oklab, var(--color-night-600) 70%, transparent);
+  border-left: 3px solid var(--bloc-accent);
+  border-radius: 10px;
+  padding: 1rem 1.1rem;
+  overflow-x: auto;
+}
+
+.prose-doc pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-ink-200);
+  font-size: inherit;
+}
+
+.prose-doc blockquote {
+  border-left: 3px solid var(--bloc-accent);
+  padding: 0.3rem 0 0.3rem 1.1rem;
+  color: var(--color-ink-300);
+  font-style: normal;
+}
+
+.prose-doc hr {
+  border: none;
+  border-top: 1px solid
+    color-mix(in oklab, var(--color-night-600) 70%, transparent);
+  margin: 2.5rem 0;
+}
+
+/* Tableaux de documentation */
+.prose-doc table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  display: block;
+  overflow-x: auto;
+}
+
+.prose-doc thead th {
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--color-ink-300);
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid var(--bloc-accent);
+  white-space: nowrap;
+}
+
+.prose-doc tbody td {
+  padding: 0.65rem 0.85rem;
+  border-bottom: 1px solid
+    color-mix(in oklab, var(--color-night-600) 50%, transparent);
+  vertical-align: top;
+}
+
+.prose-doc tbody tr:hover {
+  background-color: color-mix(in oklab, var(--color-night-800) 55%, transparent);
+}
+
+/* ------------------------------------------------------------------
+   Apparition au défilement — discrète, et neutralisée si l'utilisateur
+   a demandé moins d'animations.
+   ------------------------------------------------------------------ */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility animate-rise {
+  animation: rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Impression — le portfolio doit rester lisible imprimé
+   ------------------------------------------------------------------ */
+
+@media print {
+  body {
+    background: #fff;
+    color: #111;
+  }
+  body::before,
+  header,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+  .prose-doc a {
+    color: #111;
+  }
+}
