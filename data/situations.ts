@@ -107,11 +107,11 @@ export const situations: Situation[] = [
     reference: "SP-02",
     titre: "Formaliser et renforcer la stratégie de sauvegarde",
     resume:
-      "Description de l'existant, puis mise en place d'une rotation de supports chiffrés pour garantir une copie hors site permanente.",
+      "Description de l'existant, puis mise en place d'une rotation hebdomadaire de supports externes pour garantir une copie hors site permanente.",
     contexte:
       "Les sauvegardes existaient mais n'étaient décrites nulle part, et toutes les copies se trouvaient dans le même local que le serveur. Chargé de vérifier les conditions de continuité du service, j'ai documenté les flux de sauvegarde existants puis identifié le point faible : un sinistre unique détruisait simultanément la production et sa sauvegarde.",
     conclusion:
-      "Objectif atteint : la stratégie est documentée et complétée par une rotation hebdomadaire de deux disques chiffrés, dont un conservé hors site. La perte maximale de données en cas de sinistre total passe de la totalité à une semaine.",
+      "Objectif atteint : la stratégie est documentée et complétée par une rotation hebdomadaire de deux disques externes, dont un conservé hors site. La perte maximale de données en cas de sinistre total passe de la totalité à une semaine. Le chiffrement des supports, préconisé dans le plan de sécurisation, n'est pas encore activé.",
     periode: { debut: "2026-03", source: "document" },
     blocPrincipal: "e4",
     competences: ["e4-patrimoine", "e5-exploiter"],
@@ -119,7 +119,6 @@ export const situations: Situation[] = [
       "Windows Server Backup",
       "Hyper-V",
       "NAS",
-      "BitLocker",
       "Sauvegarde cloud",
     ],
     livrables: [
@@ -375,13 +374,13 @@ export const situations: Situation[] = [
   {
     slug: "redondance-acces-internet",
     reference: "SP-12",
-    titre: "Mettre en place la redondance de l'accès Internet",
+    titre: "Contribuer à la mise en place de la redondance de l'accès Internet",
     resume:
-      "Architecture multi-WAN à trois niveaux de bascule automatique, pour maintenir les services cloud en cas de coupure.",
+      "Architecture multi-WAN à trois niveaux de bascule automatique : analyse d'impact, raccordement physique des liens de secours et documentation, la configuration du pare-feu restant au prestataire.",
     contexte:
       "L'activité dépend de services en ligne — planification terrain, comptabilité, messagerie, téléphonie — qu'une coupure du lien fibre rendait totalement inaccessibles. La direction m'a demandé d'étudier et de documenter une solution de continuité d'accès à Internet.",
     conclusion:
-      "Objectif atteint : trois liens d'accès sont hiérarchisés sur le pare-feu avec bascule automatique en moins de cinq minutes, sans intervention humaine. La procédure de test de bascule est intégrée au calendrier de tests du plan de reprise d'activité.",
+      "Objectif atteint : trois liens d'accès sont hiérarchisés sur le pare-feu avec bascule automatique en moins de cinq minutes, sans intervention humaine. J'ai réalisé le raccordement physique des liens de secours, rédigé la documentation et la procédure de test ; la configuration du pare-feu a été assurée par le prestataire. La procédure de test est intégrée au calendrier du plan de reprise d'activité.",
     periode: { debut: "2026-03", source: "document" },
     blocPrincipal: "e5",
     competences: ["e5-concevoir", "e5-deployer", "e5-exploiter"],

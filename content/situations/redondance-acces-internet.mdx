@@ -21,7 +21,7 @@ Le logiciel métier et les partages restent accessibles en local : une coupure I
 
 ## Conception de la solution
 
-Le pare-feu en place supporte plusieurs interfaces WAN avec bascule automatique. J'ai donc conçu une architecture à trois niveaux, hiérarchisés par coût et par performance plutôt que par technologie.
+Le pare-feu en place supporte plusieurs interfaces WAN avec bascule automatique. La solution a été définie avec le prestataire, sur la base de mon analyse d'impact : une architecture à trois niveaux, hiérarchisés par coût et par performance plutôt que par technologie.
 
 ### Hiérarchie des liens
 
@@ -45,6 +45,20 @@ Le délai de bascule observé est inférieur à cinq minutes, qui correspond au 
 <Note type="alerte" titre="Limite assumée de la solution">
 La bascule interrompt brièvement les sessions en cours : un appel en cours est coupé, un transfert de fichier doit être relancé. Cette solution assure la continuité du service, pas la transparence totale. Une continuité sans coupure aurait exigé un équipement de répartition de charge d'un tout autre budget, hors de proportion avec le besoin.
 </Note>
+
+## Ma part dans la mise en œuvre
+
+La répartition des rôles a été la suivante :
+
+| Étape | Qui |
+|---|---|
+| Recensement des services et analyse d'impact | Moi |
+| Définition de la hiérarchie des liens | Avec le prestataire |
+| Configuration multi-WAN du pare-feu | Le prestataire |
+| Raccordement physique des liens de secours | Moi |
+| Procédure de test et documentation | Moi |
+
+Le filtrage et la configuration du pare-feu restent du ressort du prestataire : je n'y ai pas accès en écriture. Mon intervention a porté sur le raccordement matériel, la vérification du résultat et la documentation de l'ensemble.
 
 ## Tests et validation
 

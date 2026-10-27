@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   ArrowRight,
   Building2,
+  Compass,
   Cpu,
   HardDrive,
   Headphones,
@@ -18,35 +19,50 @@ import { Breadcrumb, PageHeader, Section, Badge } from "@/components/ui";
 export const metadata: Metadata = {
   title: "L'entreprise",
   description:
-    "Goiran et Compagnie, entreprise d'assainissement des Alpes-Maritimes, et mon alternance au service informatique : missions, environnement technique et apports de la formation.",
+    "Goiran et Compagnie, entreprise d'assainissement des Alpes-Maritimes, et mon alternance au service informatique : missions, environnement technique et progression.",
 };
 
 /* ------------------------------------------------------------------ Données */
+
+/**
+ * Lien discret vers une situation professionnelle, posé dans le fil du texte.
+ * La page raconte l'expérience ; la preuve technique vit dans la situation.
+ */
+function Preuve({ slug, children }: { slug: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={`/situations/${slug}`}
+      className="text-cyan-bright underline decoration-cyan-bright/40 underline-offset-2 transition-colors hover:decoration-cyan-bright"
+    >
+      {children}
+    </Link>
+  );
+}
 
 const perimetre = [
   {
     icone: Cpu,
     titre: "Virtualisation",
     detail:
-      "Un serveur physique porte l'hyperviseur et héberge deux machines virtuelles : celle du logiciel de gestion métier, et celle qui porte les rôles d'infrastructure.",
+      "Un serveur physique porte l'hyperviseur et héberge deux machines virtuelles. Je l'ai découvert en arrivant et c'est en le cartographiant que j'ai compris comment l'ensemble tenait debout.",
   },
   {
     icone: Network,
     titre: "Réseau et annuaire",
     detail:
-      "Active Directory, DHCP et DNS, un réseau local filaire commuté, un pare-feu en point d'entrée unique et trois liens Internet hiérarchisés avec bascule automatique.",
+      "Active Directory, DHCP et DNS, un réseau local commuté, un pare-feu en point d'entrée unique et trois liens Internet hiérarchisés. J'y interviens pour les comptes et les habilitations ; les modifications du pare-feu passent par le prestataire.",
   },
   {
     icone: HardDrive,
     titre: "Stockage et sauvegarde",
     detail:
-      "Des partages réseau par service, un NAS pour les sauvegardes quotidiennes et mensuelles, deux disques externes chiffrés en rotation et une sauvegarde cloud des données.",
+      "Des partages par service, un NAS pour les sauvegardes quotidiennes et mensuelles, deux disques externes en rotation hebdomadaire et une sauvegarde cloud. Je suis leur bon déroulement et j'ai documenté l'ensemble des flux.",
   },
   {
     icone: ShieldCheck,
     titre: "Sécurité",
     detail:
-      "Antivirus centralisé sur les postes, filtrage de la messagerie, gestion de la flotte mobile par MDM, et la démarche de mise en conformité RGPD que j'ai menée.",
+      "Antivirus centralisé, filtrage de la messagerie, gestion de la flotte mobile. C'est le domaine où j'ai le plus proposé et le moins déployé seul : les mesures touchent à des budgets et à des habitudes de travail.",
   },
 ];
 
@@ -59,54 +75,33 @@ const applicatifs = [
   { nom: "Téléphonie VoIP", role: "Postes IP et softphones" },
 ];
 
-const missions = [
+const apports = [
   {
-    icone: Headphones,
-    titre: "Le support au quotidien",
+    titre: "Passer du symptôme à la cause",
     detail:
-      "Je reçois les demandes, je les qualifie et je les traite : postes, messagerie, impressions, logiciels métier. Quand un incident revient plusieurs fois, j'écris la procédure plutôt que de réintervenir — c'est comme ça que sont nées mes fiches sur le logiciel de gestion.",
+      "Au début, je traitais les demandes une par une. En documentant les incidents récurrents sur le logiciel métier, j'ai compris que la plupart venaient de fiches clients incomplètes — et qu'une procédure écrite réglait le problème mieux qu'une nouvelle intervention.",
   },
   {
-    icone: Network,
-    titre: "L'administration de l'infrastructure",
+    titre: "Formuler un besoin autrement qu'en termes techniques",
     detail:
-      "Comptes et habilitations dans l'annuaire, suivi des sauvegardes, rotation des disques externes, surveillance des services. C'est la partie la moins visible du poste et celle où une erreur coûte le plus cher.",
+      "Une recommandation de sécurité ne se défend pas avec des arguments techniques devant une direction. J'ai appris à la présenter en coût, en risque et en délai — et à accepter qu'elle soit arbitrée, parfois reportée.",
   },
   {
-    icone: Building2,
-    titre: "Les projets confiés par la direction",
+    titre: "Savoir où s'arrête mon périmètre",
     detail:
-      "Plan de reprise d'activité, plan de sécurisation, étude de vidéosurveillance, automatisation du suivi des tâches, mise en conformité RGPD. Ces dossiers m'ont appris à chiffrer une proposition et à la défendre devant des personnes qui ne sont pas informaticiennes.",
+      "Une partie de mon apprentissage a consisté à reconnaître les situations où j'escalade vers le prestataire plutôt que d'intervenir. C'est moins spectaculaire que de tout faire soi-même, mais c'est ce qu'on attend d'un niveau 1 et 2.",
   },
   {
-    icone: Users,
-    titre: "La formation et la documentation",
+    titre: "Documenter comme méthode de travail",
     detail:
-      "Je conçois les supports destinés aux collaborateurs. Dans une entreprise où presque personne n'est informaticien, un service n'est réellement déployé que lorsque les gens savent s'en servir.",
+      "Rien de ce que j'ai décrit n'existait sur le papier à mon arrivée. Documenter est devenu ma façon d'apprendre l'infrastructure autant que de la transmettre.",
   },
 ];
 
-const apports = [
-  {
-    titre: "Un périmètre complet, à petite échelle",
-    detail:
-      "Virtualisation, annuaire, sauvegardes, réseau, sécurité, logiciels métier : j'ai sous la main à peu près tous les sujets du référentiel SISR, sur une infrastructure que je peux embrasser entièrement. Dans une grande structure, je serais spécialisé sur une brique.",
-  },
-  {
-    titre: "La responsabilité réelle des décisions",
-    detail:
-      "Quand je recommande une mesure de sécurité, elle est chiffrée et elle part en arbitrage. Ça oblige à formuler un besoin en termes de coût et de risque, pas seulement en termes techniques.",
-  },
-  {
-    titre: "L'utilisateur comme partie du système",
-    detail:
-      "La moitié des incidents se règlent par une procédure écrite ou une formation. Mon parcours précédent en encadrement d'équipes me sert ici au moins autant que la technique.",
-  },
-  {
-    titre: "La documentation comme réflexe",
-    detail:
-      "Rien de ce que j'ai mis en place n'existait sur le papier à mon arrivée. Documenter est devenu ma façon de travailler — et c'est ce qui rend ce portfolio possible.",
-  },
+const enCours = [
+  "L'administration réseau au-delà de la couche utilisateur : la segmentation et le filtrage restent du ressort du prestataire, je les étudie plutôt que je ne les configure.",
+  "Le déploiement d'infrastructure en conditions réelles, que je travaille cette année en laboratoire.",
+  "La supervision et la journalisation, aujourd'hui limitées à ce que remontent les outils en place.",
 ];
 
 /* -------------------------------------------------------------------- Page */
@@ -121,7 +116,7 @@ export default function EntreprisePage() {
       <PageHeader
         surtitre="Mon alternance"
         titre={site.entreprise.nom}
-        intro="Je suis alternant au service informatique d'une entreprise d'assainissement des Alpes-Maritimes. Voici ce qu'elle fait, où je me situe dedans, et ce que ce poste m'apporte dans ma formation."
+        intro="Je suis alternant au service informatique d'une entreprise d'assainissement des Alpes-Maritimes. Voici ce qu'elle fait, comment j'y suis entré, et ce que j'y ai appris jusqu'ici."
       >
         <ul className="flex flex-wrap gap-2">
           <Badge>{site.entreprise.secteur}</Badge>
@@ -142,8 +137,8 @@ export default function EntreprisePage() {
             Goiran et Compagnie intervient dans l&apos;assainissement et les
             travaux publics : vidange, débouchage, curage, nettoyage et
             dératisation. L&apos;activité se partage entre des interventions
-            d&apos;urgence — une canalisation bouchée ne peut pas attendre —
-            et des chantiers planifiés pour des professionnels et des
+            d&apos;urgence — une canalisation bouchée ne peut pas attendre — et
+            des chantiers planifiés pour des professionnels et des
             collectivités.
           </p>
           <p>
@@ -156,24 +151,25 @@ export default function EntreprisePage() {
           <p>
             L&apos;activité est organisée en deux pôles, qui disposent chacun de
             leur propre dossier dans le logiciel de gestion et de leur agence
-            dans l&apos;outil de planification terrain. Cette séparation
-            explique une bonne partie des réglages que je documente : une
-            intervention saisie sur le mauvais pôle ne remonte pas.
+            dans l&apos;outil de planification terrain. J&apos;ai mis un certain
+            temps à comprendre cette séparation, et elle explique une bonne
+            partie des anomalies que je traite : une intervention saisie sur le
+            mauvais pôle ne remonte pas.
           </p>
           <p>
-            Côté organisation, le travail s&apos;articule entre les équipes
-            commerciales qui établissent les devis, les techniciens qui
-            interviennent sur le terrain, le back-office qui facture, et la
-            direction. Le service informatique est transverse : il touche à
-            tous ces métiers.
+            Le travail s&apos;articule entre les équipes commerciales qui
+            établissent les devis, les techniciens qui interviennent sur le
+            terrain, le back-office qui facture, et la direction. Le service
+            informatique est transverse : il touche à tous ces métiers, ce qui
+            oblige à comprendre un peu de chacun.
           </p>
         </div>
       </section>
 
-      {/* ------------------------------------------- Mon arrivée et ma place */}
+      {/* -------------------------------------------------- Mon arrivée */}
       <section className="mt-14">
         <h2 className="text-2xl font-semibold tracking-tight text-ink-100">
-          Mon arrivée et ma place dans l&apos;équipe
+          Mon arrivée et ma progression
         </h2>
 
         <div className="mt-4 max-w-3xl space-y-4 leading-relaxed text-ink-300">
@@ -181,32 +177,54 @@ export default function EntreprisePage() {
             Je suis arrivé en contrat de professionnalisation, en parallèle de
             mon BTS SIO option SISR. L&apos;entreprise n&apos;a pas de service
             informatique étoffé : elle s&apos;appuie sur un prestataire externe
-            pour les niveaux 2 et 3, et sur le service interne pour tout le
+            pour les niveaux 2 et 3, et sur le service interne pour le
             quotidien. Je suis donc rapidement devenu l&apos;interlocuteur de
-            premier niveau pour l&apos;ensemble des collaborateurs.
+            premier niveau pour les collaborateurs.
           </p>
           <p>
-            Ce que j&apos;ai découvert en arrivant a orienté une grande partie
-            de mon travail : l&apos;infrastructure fonctionnait, mais elle
-            n&apos;était décrite nulle part. Elle reposait sur la mémoire de
-            l&apos;équipe et du prestataire. Ma première mission d&apos;ampleur
-            a donc été de la cartographier — et c&apos;est ce recensement qui a
-            rendu possibles tous les projets qui ont suivi.
+            Mes premières semaines ont surtout consisté à prendre les demandes
+            courantes et à découvrir l&apos;environnement : les logiciels
+            métier, la manière dont les équipes travaillent, et ce qui
+            tombe en panne le plus souvent. C&apos;est en faisant ça que
+            j&apos;ai constaté que l&apos;infrastructure, qui fonctionnait,
+            n&apos;était décrite nulle part — elle reposait sur la mémoire de
+            l&apos;équipe et du prestataire.
           </p>
           <p>
-            Ma position est un peu particulière : je suis le seul en interne sur
-            le sujet, ce qui veut dire beaucoup d&apos;autonomie, mais aussi
-            l&apos;obligation de savoir quand escalader. Une partie de mon
-            apprentissage a consisté à apprendre où s&apos;arrête mon périmètre
-            et où commence celui du prestataire.
+            Ma première mission d&apos;ampleur a donc été de la{" "}
+            <Preuve slug="cartographie-architecture-it">cartographier</Preuve>.
+            C&apos;était autant un travail de recensement qu&apos;un moyen
+            d&apos;apprendre : j&apos;ai découvert l&apos;hyperviseur, les
+            machines virtuelles, les partages et les flux en les décrivant. Ce
+            document est ensuite devenu la base de tout ce qui a suivi.
           </p>
           <p>
-            Le fait de ne pas être spécialisé m&apos;a plutôt servi : je traite
-            une demande d&apos;assistance le matin et je travaille sur le plan
-            de reprise d&apos;activité l&apos;après-midi. C&apos;est exigeant,
-            mais c&apos;est exactement ce qu&apos;on attend d&apos;un
-            administrateur systèmes et réseaux dans une structure de cette
-            taille.
+            À partir de là, les sujets confiés se sont élargis. La direction
+            m&apos;a demandé de formaliser le{" "}
+            <Preuve slug="plan-de-reprise-dactivite">
+              plan de reprise d&apos;activité
+            </Preuve>
+            , puis d&apos;étudier la{" "}
+            <Preuve slug="etude-videosurveillance-parking">
+              vidéosurveillance du parking
+            </Preuve>{" "}
+            et de proposer un{" "}
+            <Preuve slug="plan-de-securisation-it">
+              plan de sécurisation
+            </Preuve>
+            . Sur ces dossiers, mon rôle est d&apos;analyser, de chiffrer et de
+            proposer ; la décision revient à la direction, et certaines mesures
+            attendent encore son arbitrage.
+          </p>
+          <p>
+            J&apos;ai aussi pris quelques initiatives de mon côté. La plus
+            aboutie est l&apos;
+            <Preuve slug="automatisation-outlook-planner">
+              automatisation du suivi des tâches
+            </Preuve>{" "}
+            : je l&apos;ai construite et testée sur un périmètre pilote, en
+            documentant les erreurs que j&apos;ai commises en chemin pour ne pas
+            les reproduire lors de la duplication.
           </p>
         </div>
       </section>
@@ -217,43 +235,106 @@ export default function EntreprisePage() {
           Mes missions au quotidien
         </h2>
         <p className="mt-2 max-w-3xl leading-relaxed text-ink-400">
-          Mon poste couvre quatre volets. Ils se répondent : le support nourrit
-          la documentation, la documentation réduit le support, et les projets
-          naissent le plus souvent d&apos;un problème constaté au support.
+          Mon poste couvre quatre volets, et ils se répondent : le support
+          nourrit la documentation, la documentation réduit le support, et les
+          projets naissent presque toujours d&apos;un problème constaté au
+          support.
         </p>
 
         <ul className="mt-7 grid gap-4 sm:grid-cols-2">
-          {missions.map((m) => {
-            const Icone = m.icone;
-            return (
-              <li key={m.titre} className="surface rule-top flex flex-col gap-3 p-5">
-                <span
-                  aria-hidden
-                  className="grid size-10 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
-                >
-                  <Icone className="size-5" />
-                </span>
-                <h3 className="text-base font-semibold text-ink-100">
-                  {m.titre}
-                </h3>
-                <p className="text-sm leading-relaxed text-ink-400">
-                  {m.detail}
-                </p>
-              </li>
-            );
-          })}
-        </ul>
+          <li className="surface rule-top flex flex-col gap-3 p-5">
+            <span
+              aria-hidden
+              className="grid size-10 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
+            >
+              <Headphones className="size-5" />
+            </span>
+            <h3 className="text-base font-semibold text-ink-100">
+              Le support aux utilisateurs
+            </h3>
+            <p className="text-sm leading-relaxed text-ink-400">
+              Je reçois les demandes, je les qualifie et je les traite : postes,
+              messagerie, impressions, logiciels métier. Quand un incident
+              revient, j&apos;écris la procédure plutôt que de réintervenir —
+              c&apos;est ainsi que j&apos;ai rédigé les{" "}
+              <Preuve slug="procedures-de-support-ebp">
+                procédures sur le logiciel de gestion
+              </Preuve>{" "}
+              et le{" "}
+              <Preuve slug="depannage-synchronisation-ebp-praxedo">
+                guide de dépannage de la synchronisation
+              </Preuve>
+              .
+            </p>
+          </li>
 
-        <p className="mt-6 max-w-3xl leading-relaxed text-ink-400">
-          Chacun de ces volets est documenté en détail dans les{" "}
-          <Link
-            href="/situations"
-            className="text-cyan-bright underline underline-offset-2 hover:text-cyan-soft"
-          >
-            {situations.length} situations professionnelles
-          </Link>{" "}
-          de ce portfolio.
-        </p>
+          <li className="surface rule-top flex flex-col gap-3 p-5">
+            <span
+              aria-hidden
+              className="grid size-10 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
+            >
+              <Network className="size-5" />
+            </span>
+            <h3 className="text-base font-semibold text-ink-100">
+              L&apos;administration courante
+            </h3>
+            <p className="text-sm leading-relaxed text-ink-400">
+              Comptes et habilitations dans l&apos;annuaire, suivi des
+              sauvegardes, vérification du bon fonctionnement des services. Je
+              travaille sur une infrastructure que je n&apos;ai pas montée :
+              j&apos;ai commencé par l&apos;observer et la{" "}
+              <Preuve slug="strategie-de-sauvegarde">documenter</Preuve> avant
+              d&apos;y intervenir.
+            </p>
+          </li>
+
+          <li className="surface rule-top flex flex-col gap-3 p-5">
+            <span
+              aria-hidden
+              className="grid size-10 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
+            >
+              <Building2 className="size-5" />
+            </span>
+            <h3 className="text-base font-semibold text-ink-100">
+              Les études confiées par la direction
+            </h3>
+            <p className="text-sm leading-relaxed text-ink-400">
+              Plan de reprise d&apos;activité, plan de sécurisation, étude de
+              vidéosurveillance,{" "}
+              <Preuve slug="mise-en-conformite-rgpd">
+                mise en conformité RGPD
+              </Preuve>
+              . J&apos;analyse l&apos;existant, je chiffre les options et je
+              rédige le dossier ; la mise en œuvre dépend ensuite d&apos;un
+              arbitrage qui ne m&apos;appartient pas.
+            </p>
+          </li>
+
+          <li className="surface rule-top flex flex-col gap-3 p-5">
+            <span
+              aria-hidden
+              className="grid size-10 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
+            >
+              <Users className="size-5" />
+            </span>
+            <h3 className="text-base font-semibold text-ink-100">
+              La formation et la documentation
+            </h3>
+            <p className="text-sm leading-relaxed text-ink-400">
+              J&apos;ai conçu les supports destinés aux collaborateurs :{" "}
+              <Preuve slug="formation-et-deploiement-outlook">
+                formation à la messagerie
+              </Preuve>{" "}
+              et{" "}
+              <Preuve slug="documentation-fonctionnelle-ebp">
+                prise en main du logiciel métier
+              </Preuve>
+              . Dans une entreprise où presque personne n&apos;est
+              informaticien, un outil n&apos;est réellement utilisable que
+              lorsque les gens savent s&apos;en servir.
+            </p>
+          </li>
+        </ul>
       </section>
 
       {/* --------------------------------------------- L'environnement technique */}
@@ -262,9 +343,12 @@ export default function EntreprisePage() {
           L&apos;environnement technique
         </h2>
         <p className="mt-2 max-w-3xl leading-relaxed text-ink-400">
-          Une infrastructure de taille modeste, mais qui réunit en un seul
-          périmètre à peu près tous les sujets d&apos;un administrateur
-          systèmes et réseaux. Voici ce sur quoi je travaille réellement.
+          Au fil de mon alternance, j&apos;ai eu l&apos;occasion d&apos;aborder
+          des aspects variés de l&apos;environnement informatique de
+          l&apos;entreprise — de l&apos;assistance aux utilisateurs à
+          l&apos;administration de certains services. Mon degré
+          d&apos;intervention n&apos;est pas le même partout, et je le précise
+          ci-dessous.
         </p>
 
         <ul className="mt-7 grid gap-4 sm:grid-cols-2">
@@ -297,8 +381,8 @@ export default function EntreprisePage() {
         <p className="mt-2 max-w-3xl leading-relaxed text-ink-400">
           La chaîne applicative va du devis à la facturation, en passant par la
           planification des interventions. Ces outils dialoguent entre eux, et
-          maintenir ces échanges en bon état représente une part importante de
-          mon travail.
+          maintenir ces échanges en bon état occupe une part importante de mon
+          temps.
         </p>
 
         <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -319,10 +403,10 @@ export default function EntreprisePage() {
           Ce que cette alternance m&apos;apporte
         </h2>
         <p className="mt-2 max-w-3xl leading-relaxed text-ink-400">
-          Je suis arrivé à l&apos;informatique après un parcours en
-          architecture d&apos;intérieur, en encadrement d&apos;équipes et en
-          sécurité. Cette alternance est ce qui a transformé une reconversion en
-          métier.
+          Je suis arrivé à l&apos;informatique après un parcours en architecture
+          d&apos;intérieur, en encadrement d&apos;équipes et en sécurité. Ce
+          poste est ce qui transforme une reconversion en métier — et quatre
+          choses ont vraiment changé ma façon de travailler.
         </p>
 
         <ul className="mt-7 grid gap-4 sm:grid-cols-2">
@@ -335,18 +419,56 @@ export default function EntreprisePage() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* --------------------------------- Ce que je continue d'apprendre */}
+      <section className="mt-14">
+        <div className="surface rule-top p-6">
+          <div className="flex items-center gap-3">
+            <span
+              aria-hidden
+              className="grid size-10 shrink-0 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
+            >
+              <Compass className="size-5" />
+            </span>
+            <h2 className="text-xl font-semibold tracking-tight text-ink-100">
+              Ce que je continue d&apos;apprendre
+            </h2>
+          </div>
+
+          <p className="mt-4 max-w-3xl leading-relaxed text-ink-300">
+            Je ne couvre pas encore tout le périmètre d&apos;un administrateur
+            systèmes et réseaux, et il me semble plus utile de dire où j&apos;en
+            suis que de laisser croire le contraire.
+          </p>
+
+          <ul className="mt-4 space-y-2.5">
+            {enCours.map((e) => (
+              <li
+                key={e}
+                className="flex items-start gap-3 text-sm leading-relaxed text-ink-400"
+              >
+                <span
+                  aria-hidden
+                  className="mt-[0.45rem] size-1.5 shrink-0 rotate-45 rounded-[1px] bg-cyan-bright"
+                />
+                {e}
+              </li>
+            ))}
+          </ul>
+        </div>
 
         <div className="surface mt-6 flex flex-col gap-3 p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-2xl leading-relaxed text-ink-300">
-            Pour voir concrètement ce que ce poste m&apos;a permis de produire,
-            le plus simple est de parcourir les compétences et les preuves qui
-            les étayent.
+            Le détail de chaque mission, avec son déroulé technique et ses
+            preuves, se trouve dans les {situations.length} situations
+            professionnelles.
           </p>
           <Link
-            href="/competences"
+            href="/situations"
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-cyan-bright px-4 py-2.5 text-sm font-semibold text-night-950 transition-all duration-150 hover:brightness-110"
           >
-            Voir les compétences
+            Voir les situations
             <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
