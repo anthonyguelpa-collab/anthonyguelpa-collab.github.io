@@ -122,6 +122,14 @@ au même titre qu'une situation professionnelle.
 La page, les liens depuis les compétences concernées et l'entrée dans la vue
 d'ensemble apparaissent automatiquement.
 
+### Ajouter une réalisation de laboratoire
+
+Même principe, avec une étape préalable au tout premier projet : renommer
+`app/realisations/_modele-page-detail` en `[slug]`. L'export statique refuse
+une route dynamique qui ne génèrerait aucune page, le gabarit est donc mis de
+côté tant que `data/realisations.ts` est vide. Le détail figure dans le
+LISEZ-MOI de ce dossier.
+
 ### Ajouter un exemple de veille
 
 Même principe avec `data/veille.ts` et `content/veille/<slug>.mdx`.

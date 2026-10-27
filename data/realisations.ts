@@ -16,6 +16,11 @@
  *
  * POUR AJOUTER UNE RÉALISATION
  *
+ *   0. AU PREMIER PROJET SEULEMENT : renommer le dossier
+ *      `app/realisations/_modele-page-detail` en `[slug]`. L'export
+ *      statique refuse une route dynamique sans aucune page à générer,
+ *      le gabarit est donc mis de côté tant que cette liste est vide.
+ *      Voir le LISEZ-MOI de ce dossier.
  *   1. Ajouter une entrée dans le tableau `realisations` ci-dessous.
  *   2. Créer `content/realisations/<slug>.mdx` avec le déroulé technique.
  *   3. Déposer les captures dans `public/captures/<dossier>/`.
