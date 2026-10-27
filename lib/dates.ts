@@ -8,16 +8,21 @@
  *
  * Le champ `source` trace d'où vient la date :
  *   · "document"    — relevée dans le document d'origine ;
+ *   · "confirme"    — confirmée par Anthony, notamment lorsque le document
+ *                     porte une coquille ou ne porte aucune date ;
  *   · "a-confirmer" — estimation d'après l'enchaînement des missions,
  *                     à confirmer. Le contrôle de validation les liste.
+ *
+ * Une période peut être réduite à l'année (« 2025 ») lorsque le mois n'est
+ * pas connu : mieux vaut une date vraie mais imprécise qu'un mois inventé.
  */
 
 export interface Periode {
-  /** Début, au format AAAA-MM ou AAAA-MM-JJ. */
+  /** Début, au format AAAA, AAAA-MM ou AAAA-MM-JJ. */
   debut: string;
   /** Fin, si la mission s'est déroulée sur plusieurs semaines ou mois. */
   fin?: string;
-  source: "document" | "a-confirmer";
+  source: "document" | "confirme" | "a-confirmer";
 }
 
 const MOIS = [
@@ -35,11 +40,15 @@ const MOIS = [
   "décembre",
 ];
 
-function decouper(iso: string): { annee: number; mois: number; jour?: number } {
+function decouper(iso: string): {
+  annee: number;
+  mois?: number;
+  jour?: number;
+} {
   const [a, m, j] = iso.split("-");
   return {
     annee: Number(a),
-    mois: Number(m),
+    mois: m ? Number(m) : undefined,
     jour: j ? Number(j) : undefined,
   };
 }
@@ -51,6 +60,8 @@ function capitaliser(mot: string): string {
 /** « Mars 2026 », « 12 mars 2026 ». */
 function formaterDate(iso: string, avecMajuscule = true): string {
   const { annee, mois, jour } = decouper(iso);
+  if (!mois) return String(annee);
+
   const nomMois = MOIS[mois - 1] ?? "";
   if (jour) return `${jour} ${nomMois} ${annee}`;
   return `${avecMajuscule ? capitaliser(nomMois) : nomMois} ${annee}`;
@@ -71,6 +82,10 @@ export function formaterPeriode(periode: Periode): string {
     return formaterDate(periode.debut);
   }
 
+  if (!d.mois || !f.mois) {
+    return `${formaterDate(periode.debut)} – ${formaterDate(periode.fin, false)}`;
+  }
+
   if (d.annee === f.annee) {
     const debutSansAnnee = d.jour
       ? `${d.jour} ${MOIS[d.mois - 1]}`
@@ -86,9 +101,11 @@ export function formaterPeriodeCourte(periode: Periode): string {
   const d = decouper(periode.debut);
   const pad = (n: number) => String(n).padStart(2, "0");
 
+  if (!d.mois) return String(d.annee);
   if (!periode.fin) return `${pad(d.mois)}/${d.annee}`;
 
   const f = decouper(periode.fin);
+  if (!f.mois) return `${pad(d.mois)}/${d.annee} – ${f.annee}`;
   if (d.annee === f.annee && d.mois === f.mois) return `${pad(d.mois)}/${d.annee}`;
   if (d.annee === f.annee) return `${pad(d.mois)} – ${pad(f.mois)}/${d.annee}`;
   return `${pad(d.mois)}/${d.annee} – ${pad(f.mois)}/${f.annee}`;
@@ -102,7 +119,7 @@ export function isoPeriode(periode: Periode): string {
 /** Clé de tri — la plus récente d'abord. */
 export function cleTri(periode: Periode): number {
   const { annee, mois, jour } = decouper(periode.debut);
-  return annee * 10000 + mois * 100 + (jour ?? 0);
+  return annee * 10000 + (mois ?? 0) * 100 + (jour ?? 0);
 }
 
 /** Trie du plus récent au plus ancien, sans modifier le tableau d'origine. */

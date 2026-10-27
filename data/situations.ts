@@ -197,7 +197,7 @@ export const situations: Situation[] = [
       "Les collaborateurs utilisaient Outlook sans en maîtriser les fonctions utiles, et les demandes d'assistance répétitives sur la signature, les réponses automatiques ou le champ Cci occupaient une part importante du support. En parallèle, la messagerie restait le principal vecteur de risque. J'ai conçu un support unique traitant les deux sujets.",
     conclusion:
       "Objectif atteint : le support couvre la configuration, l'usage quotidien et la cybersécurité, et sert aujourd'hui de référence pour l'accueil des nouveaux arrivants. Les demandes d'assistance sur les sujets traités ont nettement diminué.",
-    periode: { debut: "2026-04", fin: "2026-05", source: "a-confirmer" },
+    periode: { debut: "2025", source: "confirme" },
     blocPrincipal: "e4",
     competences: ["e4-service-utilisateurs", "e4-incidents"],
     technologies: [

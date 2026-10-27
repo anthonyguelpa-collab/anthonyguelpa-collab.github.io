@@ -191,7 +191,7 @@ console.log(
   `Documentations PDF           : ${pdfPresents.length} / ${slugsSituations.length} situations`,
 );
 console.log(
-  `Dates sourcées               : ${slugsSituations.length - aConfirmer.length} / ${slugsSituations.length} situations`,
+  `Dates établies               : ${slugsSituations.length - aConfirmer.length} / ${slugsSituations.length} situations`,
 );
 console.log("=".repeat(60));
 
