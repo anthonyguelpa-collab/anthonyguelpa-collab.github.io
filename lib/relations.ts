@@ -10,6 +10,7 @@
 import { competences, type Competence, type Bloc } from "@/data/competences";
 import { situations, type Situation } from "@/data/situations";
 import { exemples, type ExempleVeille } from "@/data/veille";
+import { realisations, type Realisation } from "@/data/realisations";
 
 /** Compétences validées par une situation, dans l'ordre du référentiel. */
 export function competencesDeSituation(situation: Situation): Competence[] {
@@ -29,6 +30,11 @@ export function competencesDeSituationParBloc(
   return competencesDeSituation(situation).filter((c) => c.bloc === bloc);
 }
 
+/** Réalisations de laboratoire qui valident une compétence. */
+export function realisationsDeCompetence(competenceId: string): Realisation[] {
+  return realisations.filter((r) => r.competences.includes(competenceId));
+}
+
 /** Exemples de veille qui étayent une compétence. */
 export function veilleDeCompetence(competenceId: string): ExempleVeille[] {
   return exemples.filter((e) => e.competences.includes(competenceId));
@@ -43,6 +49,7 @@ export function compteurParCompetence(): Record<string, number> {
   for (const competence of competences) {
     compteur[competence.id] =
       situationsDeCompetence(competence.id).length +
+      realisationsDeCompetence(competence.id).length +
       veilleDeCompetence(competence.id).length;
   }
   return compteur;
@@ -65,6 +72,7 @@ export function verifierCoherence(): {
     .filter(
       (c) =>
         situationsDeCompetence(c.id).length === 0 &&
+        realisationsDeCompetence(c.id).length === 0 &&
         veilleDeCompetence(c.id).length === 0,
     )
     .map((c) => c.titre);
@@ -74,6 +82,16 @@ export function verifierCoherence(): {
     for (const id of situation.competences) {
       if (!idsConnus.has(id)) {
         referencesInvalides.push({ situation: situation.slug, competence: id });
+      }
+    }
+  }
+  for (const realisation of realisations) {
+    for (const id of realisation.competences) {
+      if (!idsConnus.has(id)) {
+        referencesInvalides.push({
+          situation: realisation.slug,
+          competence: id,
+        });
       }
     }
   }

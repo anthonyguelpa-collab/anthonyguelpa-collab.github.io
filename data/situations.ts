@@ -49,6 +49,18 @@ export interface Situation {
   preuves: "completes" | "partielles" | "absentes";
   /** Note affichée lorsque des preuves manquent. Jamais de preuve fictive. */
   notePreuves?: string;
+  /**
+   * Documentation PDF téléchargeable.
+   *
+   * Laisser vide dans la très grande majorité des cas : par convention, le
+   * fichier est cherché à `/documents/situations/<slug>.pdf`. Déposer le PDF
+   * à ce chemin suffit pour que le bouton de téléchargement apparaisse ;
+   * l'enlever le fait disparaître. Aucun bouton n'est affiché pour un
+   * document absent.
+   *
+   * Ne renseigner ce champ que pour pointer un fichier au nom différent.
+   */
+  documentation?: string;
 }
 
 export const situations: Situation[] = [

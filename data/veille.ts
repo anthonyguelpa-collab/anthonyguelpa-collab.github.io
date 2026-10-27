@@ -33,6 +33,12 @@ export interface ExempleVeille {
    * qu'une situation professionnelle pour étayer une compétence.
    */
   competences: string[];
+  /**
+   * Qualité des preuves apportées par cet exemple, même convention que les
+   * situations professionnelles. Sert au calcul des statuts du tableau de
+   * suivi : un banc d'essai illustré ne pèse pas comme une revue de marché.
+   */
+  preuves: "completes" | "partielles" | "absentes";
   sources: { libelle: string; url?: string }[];
 }
 
@@ -127,6 +133,7 @@ export const exemples: ExempleVeille[] = [
     date: "Novembre 2025",
     statut: "en-evaluation",
     competences: ["e4-developpement-pro"],
+    preuves: "absentes",
     sources: [
       { libelle: "ANSSI — recommandations relatives aux mots de passe", url: "https://cyber.gouv.fr" },
       { libelle: "CNIL — recommandation mots de passe", url: "https://www.cnil.fr" },
@@ -145,6 +152,7 @@ export const exemples: ExempleVeille[] = [
     date: "Novembre 2025",
     statut: "ecartee",
     competences: ["e4-developpement-pro", "e5-concevoir"],
+    preuves: "absentes",
     sources: [
       { libelle: "ANSSI — visa de sécurité KeePass", url: "https://cyber.gouv.fr" },
     ],
@@ -162,6 +170,7 @@ export const exemples: ExempleVeille[] = [
     date: "Août 2026",
     statut: "en-evaluation",
     competences: ["e4-developpement-pro", "e5-concevoir"],
+    preuves: "completes",
     sources: [{ libelle: "Documentation officielle Bitwarden", url: "https://bitwarden.com/help/" }],
   },
   {
@@ -177,6 +186,7 @@ export const exemples: ExempleVeille[] = [
     date: "Août 2026",
     statut: "en-evaluation",
     competences: ["e4-developpement-pro", "e5-concevoir"],
+    preuves: "completes",
     sources: [{ libelle: "Documentation officielle LockSelf", url: "https://www.lockself.com" }],
   },
   {
@@ -192,6 +202,7 @@ export const exemples: ExempleVeille[] = [
     date: "Suivi continu depuis 2025",
     statut: "veille-passive",
     competences: ["e4-developpement-pro"],
+    preuves: "absentes",
     sources: [],
   },
   {
@@ -207,6 +218,7 @@ export const exemples: ExempleVeille[] = [
     date: "Novembre 2025",
     statut: "veille-passive",
     competences: ["e4-developpement-pro"],
+    preuves: "absentes",
     sources: [],
   },
 ];

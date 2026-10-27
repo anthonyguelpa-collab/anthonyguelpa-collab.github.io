@@ -7,10 +7,16 @@ import { CalendarDays, CheckCircle2, Target } from "lucide-react";
 import { situations, getSituation } from "@/data/situations";
 import { competencesDeSituation } from "@/lib/relations";
 import { lireContenu } from "@/lib/mdx";
+import {
+  documentationDeSituation,
+  formaterTaille,
+} from "@/lib/documents";
+import { ressource } from "@/lib/chemin";
 import { Breadcrumb, Section, TechBadges } from "@/components/ui";
 import {
   LinkedCompetences,
   Livrables,
+  TelechargerDocumentation,
 } from "@/components/portfolio/Cards";
 import { composantsMDX, Note } from "@/components/portfolio/mdx";
 
@@ -43,6 +49,7 @@ export default async function SituationPage({
 
   const competences = competencesDeSituation(situation);
   const corps = lireContenu("situations", slug);
+  const documentation = documentationDeSituation(situation);
 
   return (
     <div data-bloc={situation.blocPrincipal}>
@@ -132,6 +139,14 @@ export default async function SituationPage({
                 {situation.conclusion}
               </p>
             </div>
+
+            {documentation && (
+              <TelechargerDocumentation
+                chemin={ressource(documentation.chemin)}
+                nom={documentation.nom}
+                taille={formaterTaille(documentation.taille)}
+              />
+            )}
           </article>
 
           {/* ------------------------------------------------------- Aside */}

@@ -10,7 +10,7 @@ import path from "node:path";
 
 const RACINE_CONTENU = path.join(process.cwd(), "content");
 
-export type Collection = "situations" | "veille";
+export type Collection = "situations" | "realisations" | "veille";
 
 /** Lit le corps MDX d'un document. Retourne null si le fichier n'existe pas. */
 export function lireContenu(

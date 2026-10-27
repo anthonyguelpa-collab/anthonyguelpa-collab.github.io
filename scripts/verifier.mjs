@@ -33,10 +33,12 @@ const extraire = (source, champ) =>
 const srcSituations = lire("data/situations.ts");
 const srcCompetences = lire("data/competences.ts");
 const srcVeille = lire("data/veille.ts");
+const srcRealisations = lire("data/realisations.ts");
 
 const slugsSituations = extraire(srcSituations, "slug");
 const idsCompetences = extraire(srcCompetences, "id");
 const slugsVeille = extraire(srcVeille, "slug");
+const slugsRealisations = extraire(srcRealisations, "slug");
 
 /* ---------------------------------------------- 1 et 2 — fichiers MDX */
 
@@ -62,12 +64,13 @@ function verifierCollection(collection, slugs) {
 }
 
 verifierCollection("situations", slugsSituations);
+verifierCollection("realisations", slugsRealisations);
 verifierCollection("veille", slugsVeille);
 
 /* --------------------------------------------------- 3 — captures */
 
 let nbCaptures = 0;
-for (const collection of ["situations", "veille"]) {
+for (const collection of ["situations", "realisations", "veille"]) {
   const dossier = path.join(racine, "content", collection);
   if (!fs.existsSync(dossier)) continue;
 
@@ -97,6 +100,7 @@ for (const collection of ["situations", "veille"]) {
 const blocsCompetences = [
   ...srcSituations.matchAll(/competences:\s*\[([^\]]*)\]/g),
   ...srcVeille.matchAll(/competences:\s*\[([^\]]*)\]/g),
+  ...srcRealisations.matchAll(/competences:\s*\[([^\]]*)\]/g),
 ].map((m) => m[1]);
 
 const referencees = new Set();
@@ -117,7 +121,30 @@ for (const id of idsCompetences) {
   }
 }
 
-/* ------------------------------------------- 6 — éléments obligatoires */
+/* ------------------------------------- 6 — documentations PDF */
+
+const pdfPresents = [];
+const pdfManquants = [];
+for (const slug of slugsSituations) {
+  const chemin = `public/documents/situations/${slug}.pdf`;
+  if (existe(chemin)) {
+    pdfPresents.push(slug);
+    // Un PDF vide ou tronqué serait pire qu'absent.
+    const taille = fs.statSync(path.join(racine, chemin)).size;
+    if (taille < 1024) {
+      erreurs.push(`Documentation PDF vide ou tronquée : ${chemin}`);
+    }
+  } else {
+    pdfManquants.push(slug);
+  }
+}
+for (const slug of pdfManquants) {
+  avertissements.push(
+    `Pas de documentation PDF — aucun bouton ne sera affiché : public/documents/situations/${slug}.pdf`,
+  );
+}
+
+/* ------------------------------------------- 7 — éléments obligatoires */
 
 const obligatoires = [
   ["public/img/cv.png", "CV intégré comme image (page CV)"],
@@ -144,7 +171,11 @@ console.log("=".repeat(60));
 console.log(`Situations professionnelles  : ${slugsSituations.length}`);
 console.log(`Compétences                  : ${idsCompetences.length}`);
 console.log(`Exemples de veille           : ${slugsVeille.length}`);
+console.log(`Réalisations (laboratoire)   : ${slugsRealisations.length}`);
 console.log(`Captures référencées         : ${nbCaptures}`);
+console.log(
+  `Documentations PDF           : ${pdfPresents.length} / ${slugsSituations.length} situations`,
+);
 console.log("=".repeat(60));
 
 if (avertissements.length) {

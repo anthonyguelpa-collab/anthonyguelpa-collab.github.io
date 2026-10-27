@@ -1,5 +1,12 @@
 import Link from "next/link";
-import { ArrowRight, Camera, CameraOff, FileText, Radar } from "lucide-react";
+import {
+  ArrowRight,
+  Camera,
+  CameraOff,
+  Download,
+  FileText,
+  Radar,
+} from "lucide-react";
 import type { Competence } from "@/data/competences";
 import type { Situation } from "@/data/situations";
 import { Badge, BlocTag, TechBadges } from "@/components/ui";
@@ -261,5 +268,104 @@ export function LinkedVeille({
         ))}
       </ul>
     </section>
+  );
+}
+
+/* ------------------------------------------------- TelechargerDocumentation */
+
+/**
+ * Bouton de téléchargement de la documentation PDF d'une situation.
+ * N'est rendu que si le fichier existe réellement (voir lib/documents.ts) :
+ * aucun lien mort ne peut être produit.
+ */
+export function TelechargerDocumentation({
+  chemin,
+  nom,
+  taille,
+}: {
+  chemin: string;
+  nom: string;
+  taille: string;
+}) {
+  return (
+    <section
+      aria-labelledby="documentation-pdf"
+      className="surface rule-top not-prose mt-12 flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between"
+    >
+      <div>
+        <h2
+          id="documentation-pdf"
+          className="text-base font-semibold text-ink-100"
+        >
+          Documentation technique complète
+        </h2>
+        <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-ink-400">
+          Le dossier d&apos;origine produit pour l&apos;entreprise, en version
+          caviardée pour publication : noms d&apos;hôtes, adressage, prestataire
+          et adresses de sites remplacés par des équivalents génériques.
+        </p>
+        <p className="mt-2 font-mono text-[0.7rem] text-ink-400">
+          PDF · {taille}
+        </p>
+      </div>
+
+      <a
+        href={chemin}
+        download={nom}
+        className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-[var(--bloc-accent)] px-4 py-2.5 text-sm font-semibold text-night-950 transition-all duration-150 hover:brightness-110"
+      >
+        <Download className="size-4" aria-hidden />
+        Télécharger la documentation PDF
+      </a>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------ RealisationCard */
+
+/**
+ * Carte d'une réalisation de laboratoire. Même traitement visuel que les
+ * situations professionnelles : les deux rubriques se lisent de la même
+ * façon, seule leur origine diffère.
+ */
+export function RealisationCard({
+  realisation,
+}: {
+  realisation: import("@/data/realisations").Realisation;
+}) {
+  return (
+    <Link
+      href={`/realisations/${realisation.slug}`}
+      data-bloc={realisation.blocPrincipal}
+      className="surface rule-top group flex flex-col gap-4 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--bloc-accent)_50%,transparent)]"
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="font-mono text-[0.72rem] font-bold tracking-wider text-[var(--bloc-accent)]">
+          {realisation.reference}
+        </span>
+        <span aria-hidden className="text-night-500">
+          ·
+        </span>
+        <span className="font-mono text-[0.7rem] text-ink-400">
+          {realisation.periode}
+        </span>
+      </div>
+
+      <div>
+        <h3 className="text-balance text-base font-semibold leading-snug text-ink-100">
+          {realisation.titre}
+        </h3>
+        <p className="mt-2 text-sm leading-relaxed text-ink-400">
+          {realisation.resume}
+        </p>
+      </div>
+
+      <TechBadges items={realisation.technologies.slice(0, 5)} />
+
+      <span className="mt-auto inline-flex items-center gap-1.5 border-t border-night-700/60 pt-3 font-mono text-[0.72rem] font-medium text-[var(--bloc-accent)]">
+        Lire
+        <ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-1" />
+      </span>
+    </Link>
   );
 }

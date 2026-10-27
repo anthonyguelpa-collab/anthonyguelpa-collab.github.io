@@ -12,6 +12,8 @@ import { site } from "@/data/site";
 import { competences, BLOCS } from "@/data/competences";
 import { situations } from "@/data/situations";
 import { exemples, themes } from "@/data/veille";
+import { tableauSuivi, syntheseSuivi } from "@/lib/suivi";
+import { TableauCompetences } from "@/components/portfolio/TableauCompetences";
 import { Section, LinkButton, BlocTag } from "@/components/ui";
 import { Photo, Logos } from "@/components/portfolio/Identite";
 import { SituationCard } from "@/components/portfolio/Cards";
@@ -46,6 +48,10 @@ const acces = [
 export default function Accueil() {
   const nbE4 = competences.filter((c) => c.bloc === "e4").length;
   const nbE5 = competences.filter((c) => c.bloc === "e5").length;
+
+  // Statuts calculés à partir des preuves réellement présentes.
+  const lignes = tableauSuivi();
+  const synthese = syntheseSuivi(lignes);
 
   const chiffres = [
     { valeur: `${situations.length}`, libelle: "situations professionnelles" },
@@ -119,6 +125,23 @@ export default function Accueil() {
               ))}
             </dl>
           </div>
+        </div>
+      </Section>
+
+      {/* ------------------------------------------- Suivi des compétences */}
+      <Section id="suivi" className="mt-20 scroll-mt-24 sm:mt-28">
+        <h2 className="text-2xl font-semibold tracking-tight text-ink-100">
+          Suivi des compétences
+        </h2>
+        <p className="mt-2 max-w-3xl leading-relaxed text-ink-400">
+          Les neuf domaines du référentiel SISR, avec les preuves que ce
+          portfolio apporte pour chacun. Chaque ligne mène à la page de la
+          compétence, où figurent les activités du référentiel et les
+          situations qui la valident.
+        </p>
+
+        <div className="mt-7">
+          <TableauCompetences lignes={lignes} synthese={synthese} />
         </div>
       </Section>
 

@@ -1,26 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, FileText } from "lucide-react";
+import { ArrowRight, FlaskConical, Workflow } from "lucide-react";
 
+import { realisations } from "@/data/realisations";
 import { situations } from "@/data/situations";
-import { competencesByBloc } from "@/data/competences";
-import { situationsDeCompetence } from "@/lib/relations";
-import { Breadcrumb, PageHeader, Section, TechBadges } from "@/components/ui";
+import { Breadcrumb, PageHeader, Section } from "@/components/ui";
+import { RealisationCard } from "@/components/portfolio/Cards";
 
 export const metadata: Metadata = {
   title: "Réalisations professionnelles",
   description:
-    "Les réalisations professionnelles présentées au titre de l'épreuve E5 — administration des systèmes et des réseaux.",
+    "Projets techniques menés en laboratoire dans le cadre du BTS SIO option SISR. Rubrique en cours de constitution.",
 };
 
 export default function RealisationsPage() {
-  // Les réalisations présentées pour E5 sont les situations qui valident
-  // au moins une compétence du bloc 2.
-  const idsE5 = competencesByBloc("e5").map((c) => c.id);
-  const realisations = situations.filter((s) =>
-    s.competences.some((c) => idsE5.includes(c)),
-  );
-
   return (
     <div data-bloc="e5">
       <Section>
@@ -36,99 +29,99 @@ export default function RealisationsPage() {
           titre="Réalisations professionnelles"
           intro={
             <>
-              Les réalisations retenues pour l&apos;épreuve E5 sont celles qui
-              mettent en œuvre la conception, le déploiement ou
-              l&apos;exploitation d&apos;une solution d&apos;infrastructure.
-              Elles sont présentées ici avec les compétences du bloc 2
-              qu&apos;elles valident ; le déroulé technique complet se trouve
-              sur la page de chaque situation.
+              Cette rubrique rassemble les projets techniques que je mène en
+              laboratoire dans le cadre du BTS SIO option SISR — maquettage,
+              configuration et validation de solutions d&apos;infrastructure
+              sur un environnement dédié.
             </>
           }
         />
 
-        <ol className="mt-12 space-y-4">
-          {realisations.map((s) => {
-            const competencesE5 = competencesByBloc("e5").filter((c) =>
-              s.competences.includes(c.id),
-            );
-            return (
-              <li key={s.slug}>
-                <Link
-                  href={`/situations/${s.slug}`}
-                  className="surface rule-top group block p-6 transition-all duration-200 hover:-translate-y-0.5 hover:border-amber-bright/50"
+        {realisations.length === 0 ? (
+          <>
+            {/* ------------------------------------------- Rubrique à venir */}
+            <section className="surface rule-top mt-12 px-6 py-12 text-center sm:px-10 sm:py-16">
+              <span
+                aria-hidden
+                className="mx-auto grid size-14 place-items-center rounded-xl border border-amber-bright/30 bg-amber-bright/10 text-amber-bright"
+              >
+                <FlaskConical className="size-6" />
+              </span>
+
+              <h2 className="mx-auto mt-6 max-w-2xl text-balance text-xl font-semibold leading-snug text-ink-100 sm:text-2xl">
+                Rubrique en cours de constitution
+              </h2>
+
+              <p className="mx-auto mt-4 max-w-2xl text-pretty leading-relaxed text-ink-300">
+                Les projets de laboratoire de l&apos;année sont en cours de
+                réalisation. Ils seront publiés ici au fur et à mesure, avec le
+                même niveau de détail que les situations professionnelles :
+                contexte, déroulé technique complet, preuves de réalisation et
+                compétences validées.
+              </p>
+
+              <p className="mx-auto mt-4 max-w-2xl text-pretty text-sm leading-relaxed text-ink-400">
+                En attendant, les compétences du bloc E5 sont déjà étayées par
+                les missions menées en entreprise.
+              </p>
+            </section>
+
+            {/* --------------------- Distinction avec les situations pro */}
+            <section className="mt-6 grid gap-4 md:grid-cols-2">
+              <article className="surface flex flex-col gap-3 p-6">
+                <span
+                  aria-hidden
+                  className="grid size-10 place-items-center rounded-lg border border-amber-bright/30 bg-amber-bright/10 text-amber-bright"
                 >
-                  <div className="flex flex-wrap items-center gap-3">
-                    <span className="font-mono text-sm font-bold tracking-wider text-amber-bright">
-                      {s.reference}
-                    </span>
-                    <span aria-hidden className="text-night-500">·</span>
-                    <span className="font-mono text-xs text-ink-400">
-                      {s.periode}
-                    </span>
-                  </div>
+                  <FlaskConical className="size-5" />
+                </span>
+                <h3 className="text-base font-semibold text-ink-100">
+                  Réalisations professionnelles
+                </h3>
+                <p className="text-sm leading-relaxed text-ink-400">
+                  Les projets techniques conduits <strong className="text-ink-300">en laboratoire</strong>,
+                  sur un environnement de formation dédié. Cette page.
+                </p>
+                <p className="mt-auto pt-2 font-mono text-[0.7rem] text-ink-400">
+                  0 projet publié pour l&apos;instant
+                </p>
+              </article>
 
-                  <h2 className="mt-2 flex items-center gap-2 text-balance text-xl font-semibold leading-snug text-ink-100">
-                    {s.titre}
-                    <ArrowRight
-                      className="size-4 shrink-0 text-ink-400 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-amber-bright"
-                      aria-hidden
-                    />
-                  </h2>
-
-                  <p className="mt-2 max-w-3xl leading-relaxed text-ink-400">
-                    {s.resume}
-                  </p>
-
-                  <div className="mt-5 grid gap-5 lg:grid-cols-2">
-                    <div>
-                      <p className="mb-2 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
-                        Compétences E5 validées
-                      </p>
-                      <ul className="space-y-1.5">
-                        {competencesE5.map((c) => (
-                          <li
-                            key={c.id}
-                            className="flex items-start gap-2 text-sm text-ink-300"
-                          >
-                            <span
-                              aria-hidden
-                              className="mt-[0.45rem] size-1.5 shrink-0 rotate-45 rounded-[1px] bg-amber-bright"
-                            />
-                            {c.titre}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div>
-                      <p className="mb-2 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
-                        Livrables
-                      </p>
-                      <ul className="space-y-1.5">
-                        {s.livrables.map((l) => (
-                          <li
-                            key={l}
-                            className="flex items-start gap-2 text-sm text-ink-300"
-                          >
-                            <FileText
-                              className="mt-0.5 size-3.5 shrink-0 text-ink-400"
-                              aria-hidden
-                            />
-                            {l}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div className="mt-5">
-                    <TechBadges items={s.technologies} />
-                  </div>
+              <article className="surface flex flex-col gap-3 p-6">
+                <span
+                  aria-hidden
+                  className="grid size-10 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
+                >
+                  <Workflow className="size-5" />
+                </span>
+                <h3 className="text-base font-semibold text-ink-100">
+                  Situations professionnelles
+                </h3>
+                <p className="text-sm leading-relaxed text-ink-400">
+                  Les missions réellement menées{" "}
+                  <strong className="text-ink-300">en entreprise</strong> pendant
+                  mon alternance, dans leur rubrique dédiée.
+                </p>
+                <Link
+                  href="/situations"
+                  className="mt-auto inline-flex items-center gap-1.5 pt-2 font-mono text-[0.72rem] font-medium text-cyan-bright transition-colors hover:text-cyan-soft"
+                >
+                  Consulter les {situations.length} situations
+                  <ArrowRight className="size-3.5" aria-hidden />
                 </Link>
+              </article>
+            </section>
+          </>
+        ) : (
+          /* ------------------------------ Projets publiés (futur) */
+          <ul className="mt-12 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {realisations.map((r) => (
+              <li key={r.slug} className="flex">
+                <RealisationCard realisation={r} />
               </li>
-            );
-          })}
-        </ol>
+            ))}
+          </ul>
+        )}
       </Section>
     </div>
   );
