@@ -34,9 +34,9 @@ export const STATUTS: Record<
       "Plusieurs preuves présentes, dont au moins une illustrée de bout en bout.",
   },
   "en-cours": {
-    libelle: "En cours",
+    libelle: "Partiellement documentée",
     description:
-      "Des réalisations existent, mais les preuves ou la documentation restent incomplètes.",
+      "Des réalisations existent, mais les preuves réunies ne couvrent qu'une partie des critères de la grille.",
   },
   "non-documentee": {
     libelle: "Non documentée",

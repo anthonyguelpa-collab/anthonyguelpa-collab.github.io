@@ -215,7 +215,7 @@ export const competences: Competence[] = [
     titre: "Installer, tester et déployer une solution d'infrastructure réseau",
     titreCourt: "Installer, tester et déployer",
     description:
-      "Mettre réellement en œuvre, dans un environnement de test d'abord, puis en production. Mon chantier le plus abouti sur ce volet est l'automatisation des flux Outlook vers Planner : construite sur un dossier pilote, testée de bout en bout, documentée avec ses pièges, et préparée pour duplication sur les autres périmètres.",
+      "Mettre réellement en œuvre, dans un environnement de test d'abord, puis en production. C'est le volet le moins couvert par mon alternance : sur l'infrastructure réseau de l'entreprise, l'installation et la configuration des équipements de sécurité reviennent au prestataire. Ma contribution la plus directe est le raccordement physique et la recette de la redondance d'accès Internet. Une réalisation en laboratoire est prévue pour compléter ce volet.",
     criteres: [
       "Installer et configurer des éléments d'infrastructure",
       "Installer et configurer des éléments nécessaires pour assurer la continuité des services",

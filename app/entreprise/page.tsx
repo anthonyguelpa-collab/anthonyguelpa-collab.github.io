@@ -50,7 +50,7 @@ const perimetre = [
     icone: Network,
     titre: "Réseau et annuaire",
     detail:
-      "Active Directory, DHCP et DNS, un réseau local commuté, un pare-feu en point d'entrée unique et trois liens Internet hiérarchisés. J'y interviens pour les comptes et les habilitations ; les modifications du pare-feu passent par le prestataire.",
+      "Active Directory, DHCP et DNS, un réseau local commuté, un pare-feu en point d'entrée unique et trois liens Internet hiérarchisés. J'y interviens pour les comptes et les habilitations ; les modifications du pare-feu passent par le prestataire. J'ai participé à la mise en place des liens de secours, en réalisant le raccordement physique et la recette.",
   },
   {
     icone: HardDrive,

@@ -5,28 +5,27 @@ import { useMemo, useState } from "react";
 import { ArrowRight, Info } from "lucide-react";
 
 import { BLOCS, type Bloc } from "@/data/competences";
-import type { LigneSuivi, Statut, SyntheseSuivi } from "@/lib/suivi";
+import { STATUTS, type LigneSuivi, type Statut, type SyntheseSuivi } from "@/lib/suivi";
 
 /* ------------------------------------------------------------ Statuts */
 
+// Le libellé vient de lib/suivi.ts — une seule écriture, pas de dérive
+// possible entre le tableau et le reste du site.
 const APPARENCE: Record<
   Statut,
-  { libelle: string; pastille: string; texte: string; bordure: string }
+  { pastille: string; texte: string; bordure: string }
 > = {
   documentee: {
-    libelle: "Documentée",
     pastille: "bg-emerald-400",
     texte: "text-emerald-300",
     bordure: "border-emerald-500/35 bg-emerald-500/10",
   },
   "en-cours": {
-    libelle: "En cours",
     pastille: "bg-amber-bright",
     texte: "text-amber-soft",
     bordure: "border-amber-bright/35 bg-amber-bright/10",
   },
   "non-documentee": {
-    libelle: "Non documentée",
     pastille: "bg-night-500",
     texte: "text-ink-400",
     bordure: "border-night-600 bg-night-800/60",
@@ -40,7 +39,7 @@ function Pastille({ statut }: { statut: Statut }) {
       className={`inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-md border px-2 py-0.5 font-mono text-[0.68rem] font-medium ${a.bordure} ${a.texte}`}
     >
       <span aria-hidden className={`size-1.5 rounded-full ${a.pastille}`} />
-      {a.libelle}
+      {STATUTS[statut].libelle}
     </span>
   );
 }
@@ -76,7 +75,11 @@ function Synthese({ synthese }: { synthese: SyntheseSuivi }) {
       libelle: "documentés",
       ton: "text-emerald-300",
     },
-    { valeur: synthese.enCours, libelle: "en cours", ton: "text-amber-soft" },
+    {
+      valeur: synthese.enCours,
+      libelle: "partiellement documentés",
+      ton: "text-amber-soft",
+    },
     {
       valeur: synthese.nonDocumentees,
       libelle: "non documentés",

@@ -266,8 +266,8 @@ export const situations: Situation[] = [
     conclusion:
       "Objectif atteint : les flux sont validés de bout en bout sur le dossier pilote, avec mécanismes anti-doublon et anti-spam, et sont prêts à être dupliqués sur les autres périmètres. La documentation consigne les pièges rencontrés pour ne pas les reproduire.",
     periode: { debut: "2026-07", source: "document" },
-    blocPrincipal: "e5",
-    competences: ["e5-deployer", "e4-mode-projet", "e4-service-utilisateurs"],
+    blocPrincipal: "e4",
+    competences: ["e4-mode-projet", "e4-service-utilisateurs"],
     technologies: [
       "Power Automate",
       "Microsoft Planner",
