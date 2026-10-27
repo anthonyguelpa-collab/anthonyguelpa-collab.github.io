@@ -19,6 +19,7 @@
  */
 
 import type { Bloc } from "./competences";
+import type { Periode } from "@/lib/dates";
 
 export interface Situation {
   slug: string;
@@ -31,7 +32,13 @@ export interface Situation {
   contexte: string;
   /** Conclusion UFIP : ~2 lignes. Objectif atteint ou non, et pourquoi. */
   conclusion: string;
-  periode: string;
+  /**
+   * Période de réalisation. Les dates marquées "document" sont relevées
+   * dans le dossier d'origine ; celles marquées "a-confirmer" sont des
+   * estimations d'après l'enchaînement des missions et attendent
+   * confirmation — le contrôle de validation les liste.
+   */
+  periode: Periode;
   /** Bloc dominant — détermine l'accent couleur de la page. */
   blocPrincipal: Bloc;
   /** Identifiants des compétences validées par cette situation. */
@@ -74,7 +81,7 @@ export const situations: Situation[] = [
       "À mon arrivée en alternance au service informatique, l'infrastructure fonctionnait mais n'existait sur aucun document : elle reposait sur la mémoire de l'équipe et du prestataire. La direction m'a confié le recensement du patrimoine, préalable indispensable au plan de sauvegarde et au plan de reprise d'activité qui devaient suivre.",
     conclusion:
       "Objectif atteint : trois dossiers d'architecture couvrent désormais l'hôte de virtualisation, les disques partagés et l'ensemble des flux entrants et sortants. Cette cartographie est devenue le document de référence sur lequel se sont appuyés tous les projets suivants.",
-    periode: "Mars 2026",
+    periode: { debut: "2026-03", source: "document" },
     blocPrincipal: "e4",
     competences: ["e4-patrimoine", "e5-concevoir"],
     technologies: [
@@ -105,7 +112,7 @@ export const situations: Situation[] = [
       "Les sauvegardes existaient mais n'étaient décrites nulle part, et toutes les copies se trouvaient dans le même local que le serveur. Chargé de vérifier les conditions de continuité du service, j'ai documenté les flux de sauvegarde existants puis identifié le point faible : un sinistre unique détruisait simultanément la production et sa sauvegarde.",
     conclusion:
       "Objectif atteint : la stratégie est documentée et complétée par une rotation hebdomadaire de deux disques chiffrés, dont un conservé hors site. La perte maximale de données en cas de sinistre total passe de la totalité à une semaine.",
-    periode: "Mars 2026",
+    periode: { debut: "2026-03", source: "document" },
     blocPrincipal: "e4",
     competences: ["e4-patrimoine", "e5-exploiter"],
     technologies: [
@@ -132,7 +139,7 @@ export const situations: Situation[] = [
       "L'entreprise ne disposait d'aucune procédure écrite en cas de sinistre majeur : en l'absence du technicien, personne n'aurait su par où commencer. La direction m'a confié la rédaction d'un plan de reprise d'activité exploitable par un tiers, en m'appuyant sur la cartographie et la stratégie de sauvegarde déjà produites.",
     conclusion:
       "Objectif partiellement atteint : le plan est rédigé, structuré et validé dans sa méthode, mais les valeurs de RTO et de RPO restent à arbitrer avec la direction et le prestataire, car elles engagent un budget. Le premier exercice de restauration reste à planifier.",
-    periode: "Mars 2026",
+    periode: { debut: "2026-03", source: "document" },
     blocPrincipal: "e5",
     competences: ["e5-exploiter", "e5-concevoir", "e4-mode-projet", "e4-patrimoine"],
     technologies: [
@@ -161,7 +168,7 @@ export const situations: Situation[] = [
       "Plusieurs pratiques héritées fragilisaient le système d'information : comptes de session partagés entre collaborateurs, mots de passe notés sur papier, sauvegardes regroupées dans un seul local. J'ai été chargé de produire un plan de sécurisation réaliste pour une entreprise sans budget dédié à la cybersécurité.",
     conclusion:
       "Objectif atteint sur la conception : six mesures sont proposées, chiffrées et argumentées, pour un investissement matériel d'environ 500 €. La mise en œuvre est échelonnée ; les mesures sans coût ont été engagées en premier.",
-    periode: "Mars – Avril 2026",
+    periode: { debut: "2026-03", fin: "2026-04", source: "a-confirmer" },
     blocPrincipal: "e5",
     competences: ["e5-concevoir", "e4-patrimoine"],
     technologies: [
@@ -190,7 +197,7 @@ export const situations: Situation[] = [
       "Les collaborateurs utilisaient Outlook sans en maîtriser les fonctions utiles, et les demandes d'assistance répétitives sur la signature, les réponses automatiques ou le champ Cci occupaient une part importante du support. En parallèle, la messagerie restait le principal vecteur de risque. J'ai conçu un support unique traitant les deux sujets.",
     conclusion:
       "Objectif atteint : le support couvre la configuration, l'usage quotidien et la cybersécurité, et sert aujourd'hui de référence pour l'accueil des nouveaux arrivants. Les demandes d'assistance sur les sujets traités ont nettement diminué.",
-    periode: "Avril – Mai 2026",
+    periode: { debut: "2026-04", fin: "2026-05", source: "a-confirmer" },
     blocPrincipal: "e4",
     competences: ["e4-service-utilisateurs", "e4-incidents"],
     technologies: [
@@ -217,7 +224,7 @@ export const situations: Situation[] = [
       "Trois incidents revenaient en boucle sur le logiciel de gestion : session utilisateur verrouillée, liaison Outlook rompue, modèle d'impression inadapté. Chaque occurrence mobilisait le service informatique pour une manipulation de quelques minutes. J'ai choisi de documenter plutôt que de réintervenir.",
     conclusion:
       "Objectif atteint : les trois procédures sont diffusées et permettent aux utilisateurs habilités de traiter eux-mêmes ces cas. Le paramétrage d'impression, global à tous les utilisateurs, reste volontairement réservé au service informatique.",
-    periode: "Avril 2026",
+    periode: { debut: "2026-04", source: "a-confirmer" },
     blocPrincipal: "e4",
     competences: ["e4-incidents", "e4-service-utilisateurs"],
     technologies: ["EBP Bâtiment Elite", "SQL Server", "Microsoft Outlook"],
@@ -238,7 +245,7 @@ export const situations: Situation[] = [
       "Les interventions saisies dans l'outil de planification terrain ne remontaient pas systématiquement dans le logiciel de gestion, et inversement. Chaque anomalie était remontée au service informatique sans élément de diagnostic. J'ai analysé les causes réelles afin de rendre les équipes autonomes sur les cas les plus fréquents.",
     conclusion:
       "Objectif atteint : les causes sont identifiées et classées par sens de synchronisation, et une checklist permet aux équipes de vérifier huit points avant toute escalade. Une règle impérative de back-office a été formalisée pour éviter un blocage irréversible.",
-    periode: "Mai 2026",
+    periode: { debut: "2026-05", source: "a-confirmer" },
     blocPrincipal: "e4",
     competences: ["e4-incidents", "e4-service-utilisateurs"],
     technologies: ["EBP Bâtiment Elite", "Praxedo", "Synchronisation applicative"],
@@ -259,7 +266,7 @@ export const situations: Situation[] = [
       "L'affectation du travail reposait sur un tri manuel d'e-mails dans des dossiers nominatifs d'une boîte partagée, sans suivi ni relance : une demande oubliée restait invisible. La direction souhaitait un suivi automatique sans changer les habitudes de tri. J'ai conçu, testé et documenté l'automatisation sur un périmètre pilote.",
     conclusion:
       "Objectif atteint : les flux sont validés de bout en bout sur le dossier pilote, avec mécanismes anti-doublon et anti-spam, et sont prêts à être dupliqués sur les autres périmètres. La documentation consigne les pièges rencontrés pour ne pas les reproduire.",
-    periode: "Juillet 2026",
+    periode: { debut: "2026-07", source: "document" },
     blocPrincipal: "e5",
     competences: ["e5-deployer", "e4-mode-projet", "e4-service-utilisateurs"],
     technologies: [
@@ -288,7 +295,7 @@ export const situations: Situation[] = [
       "L'entreprise traitait des données personnelles de clients, de salariés et de prospects sans registre ni documentation, et un projet de géolocalisation des véhicules se profilait. Chargé du volet technique et documentaire de la mise en conformité, j'ai produit l'ensemble du socle réglementaire.",
     conclusion:
       "Objectif atteint sur le socle documentaire : registre, politique de confidentialité, formulaire de droits, procédure de violation et analyse d'impact sont livrés et prêts à l'emploi. La désignation formelle du responsable RGPD et la publication sur le site relèvent de la direction.",
-    periode: "Juin – Juillet 2026",
+    periode: { debut: "2026-06", fin: "2026-07", source: "a-confirmer" },
     blocPrincipal: "e4",
     competences: ["e4-presence-en-ligne", "e4-patrimoine", "e4-mode-projet"],
     technologies: [
@@ -320,7 +327,7 @@ export const situations: Situation[] = [
       "Le parking, exposé et accessible librement, subissait des vols et des dégradations. La direction souhaitait un dispositif de vidéosurveillance. J'ai été chargé de l'étude complète : solutions techniques, chiffrage, et surtout cadre réglementaire, le parking étant ouvert au public.",
     conclusion:
       "Objectif atteint sur l'étude : deux architectures sont décrites, chiffrées et confrontées aux obligations légales, et le chemin critique du projet est identifié — l'autorisation préfectorale, jusqu'à quatre mois d'instruction. La décision d'investissement appartient à la direction.",
-    periode: "Juillet 2026",
+    periode: { debut: "2026-07", source: "document" },
     blocPrincipal: "e5",
     competences: ["e5-concevoir", "e4-mode-projet", "e4-presence-en-ligne"],
     technologies: [
@@ -355,7 +362,7 @@ export const situations: Situation[] = [
       "Le logiciel de gestion est l'outil central de l'entreprise, utilisé quotidiennement par les équipes commerciales et le back-office, mais aucun support n'existait pour les nouveaux arrivants. La formation se faisait de poste à poste, avec des pratiques divergentes selon les services.",
     conclusion:
       "Objectif atteint : le premier module est diffusé et couvre le socle commun à tous les utilisateurs. Il harmonise les pratiques et réduit la durée d'accompagnement d'un nouvel arrivant.",
-    periode: "Mai – Juin 2026",
+    periode: { debut: "2026-05", fin: "2026-06", source: "a-confirmer" },
     blocPrincipal: "e4",
     competences: ["e4-service-utilisateurs", "e4-incidents"],
     technologies: ["EBP Bâtiment Elite", "Gestion de chantiers", "Devis et facturation"],
@@ -375,9 +382,9 @@ export const situations: Situation[] = [
       "L'activité dépend de services en ligne — planification terrain, comptabilité, messagerie, téléphonie — qu'une coupure du lien fibre rendait totalement inaccessibles. La direction m'a demandé d'étudier et de documenter une solution de continuité d'accès à Internet.",
     conclusion:
       "Objectif atteint : trois liens d'accès sont hiérarchisés sur le pare-feu avec bascule automatique en moins de cinq minutes, sans intervention humaine. La procédure de test de bascule est intégrée au calendrier de tests du plan de reprise d'activité.",
-    periode: "Mars 2026",
+    periode: { debut: "2026-03", source: "document" },
     blocPrincipal: "e5",
-    competences: ["e5-concevoir", "e5-exploiter"],
+    competences: ["e5-concevoir", "e5-deployer", "e5-exploiter"],
     technologies: [
       "Multi-WAN",
       "Failover",

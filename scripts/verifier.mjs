@@ -121,7 +121,21 @@ for (const id of idsCompetences) {
   }
 }
 
-/* ------------------------------------- 6 — documentations PDF */
+/* ----------------------------------------- 6 — dates à confirmer */
+
+// Une date non sourcée dans un document est signalée tant qu'elle n'a pas
+// été confirmée : elle s'affiche, mais elle ne doit pas être oubliée.
+const aConfirmer = [];
+for (const m of srcSituations.matchAll(
+  /slug:\s*"([^"]+)"[\s\S]*?periode:\s*\{([^}]*)\}/g,
+)) {
+  if (m[2].includes('"a-confirmer"')) aConfirmer.push(m[1]);
+}
+for (const slug of aConfirmer) {
+  avertissements.push(`Date de réalisation à confirmer : ${slug}`);
+}
+
+/* ------------------------------------- 7 — documentations PDF */
 
 const pdfPresents = [];
 const pdfManquants = [];
@@ -144,7 +158,7 @@ for (const slug of pdfManquants) {
   );
 }
 
-/* ------------------------------------------- 7 — éléments obligatoires */
+/* ------------------------------------------- 8 — éléments obligatoires */
 
 const obligatoires = [
   ["public/img/cv.png", "CV intégré comme image (page CV)"],
@@ -175,6 +189,9 @@ console.log(`Réalisations (laboratoire)   : ${slugsRealisations.length}`);
 console.log(`Captures référencées         : ${nbCaptures}`);
 console.log(
   `Documentations PDF           : ${pdfPresents.length} / ${slugsSituations.length} situations`,
+);
+console.log(
+  `Dates sourcées               : ${slugsSituations.length - aConfirmer.length} / ${slugsSituations.length} situations`,
 );
 console.log("=".repeat(60));
 

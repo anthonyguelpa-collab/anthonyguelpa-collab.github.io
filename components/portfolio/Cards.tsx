@@ -10,6 +10,7 @@ import {
 import type { Competence } from "@/data/competences";
 import type { Situation } from "@/data/situations";
 import { Badge, BlocTag, TechBadges } from "@/components/ui";
+import { formaterPeriode, isoPeriode } from "@/lib/dates";
 
 /* ------------------------------------------------------- CompetenceCard */
 
@@ -72,9 +73,12 @@ export function SituationCard({ situation }: { situation: Situation }) {
         <span aria-hidden className="text-night-500">
           ·
         </span>
-        <span className="font-mono text-[0.7rem] text-ink-400">
-          {situation.periode}
-        </span>
+        <time
+          dateTime={isoPeriode(situation.periode)}
+          className="font-mono text-[0.7rem] text-ink-400"
+        >
+          {formaterPeriode(situation.periode)}
+        </time>
       </div>
 
       <div>
@@ -346,9 +350,12 @@ export function RealisationCard({
         <span aria-hidden className="text-night-500">
           ·
         </span>
-        <span className="font-mono text-[0.7rem] text-ink-400">
-          {realisation.periode}
-        </span>
+        <time
+          dateTime={isoPeriode(realisation.periode)}
+          className="font-mono text-[0.7rem] text-ink-400"
+        >
+          {formaterPeriode(realisation.periode)}
+        </time>
       </div>
 
       <div>

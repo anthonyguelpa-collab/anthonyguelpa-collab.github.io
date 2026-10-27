@@ -5,10 +5,14 @@ import remarkGfm from "remark-gfm";
 import { CalendarDays, CheckCircle2, Target } from "lucide-react";
 
 import { realisations, getRealisation } from "@/data/realisations";
-import { competences as toutesCompetences } from "@/data/competences";
+import {
+  competences as toutesCompetences,
+  BLOCS,
+} from "@/data/competences";
 import { lireContenu } from "@/lib/mdx";
 import { documentationDeRealisation, formaterTaille } from "@/lib/documents";
 import { ressource } from "@/lib/chemin";
+import { formaterPeriode, isoPeriode } from "@/lib/dates";
 import { Breadcrumb, Section, TechBadges } from "@/components/ui";
 import {
   LinkedCompetences,
@@ -65,21 +69,43 @@ export default async function RealisationPage({
         />
 
         <header className="border-b border-night-700/60 pb-8 pt-8">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="font-mono text-sm font-bold tracking-wider text-[var(--bloc-accent)]">
-              {realisation.reference}
-            </span>
-            <span aria-hidden className="text-night-500">
-              ·
-            </span>
-            <span className="inline-flex items-center gap-1.5 font-mono text-xs text-ink-400">
-              <CalendarDays className="size-3.5" aria-hidden />
-              {realisation.periode}
-            </span>
-          </div>
+          <span className="font-mono text-sm font-bold tracking-wider text-[var(--bloc-accent)]">
+            {realisation.reference}
+          </span>
           <h1 className="mt-3 text-balance text-3xl font-semibold leading-tight tracking-tight text-ink-100 sm:text-4xl">
             {realisation.titre}
           </h1>
+          <dl className="mt-5 flex flex-wrap items-center gap-x-8 gap-y-3 rounded-xl border border-night-700/60 bg-night-850/40 px-5 py-3.5">
+            <div className="inline-flex items-center gap-2">
+              <CalendarDays
+                className="size-4 shrink-0 text-[var(--bloc-accent)]"
+                aria-hidden
+              />
+              <div>
+              <dt className="font-mono text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
+                Période de réalisation
+              </dt>
+              <dd className="mt-0.5">
+                <time
+                  dateTime={isoPeriode(realisation.periode)}
+                  className="text-sm font-medium text-ink-100"
+                >
+                  {formaterPeriode(realisation.periode)}
+                </time>
+              </dd>
+              </div>
+            </div>
+            <div>
+              <dt className="font-mono text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
+                Épreuve
+              </dt>
+              <dd className="mt-0.5 font-mono text-sm font-medium text-ink-100">
+                {BLOCS[realisation.blocPrincipal].code} —{" "}
+                {BLOCS[realisation.blocPrincipal].titre}
+              </dd>
+            </div>
+          </dl>
+
           <div className="mt-5">
             <TechBadges items={realisation.technologies} />
           </div>

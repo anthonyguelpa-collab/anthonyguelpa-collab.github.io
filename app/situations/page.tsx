@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 
 import { situations } from "@/data/situations";
+import { parDateDecroissante } from "@/lib/dates";
 import { BLOCS } from "@/data/competences";
 import { Breadcrumb, PageHeader, Section, BlocTag } from "@/components/ui";
 import { SituationCard } from "@/components/portfolio/Cards";
@@ -12,9 +13,11 @@ export const metadata: Metadata = {
 };
 
 export default function SituationsPage() {
+  // Groupées par bloc — l'organisation attendue par le référentiel — puis
+  // classées de la plus récente à la plus ancienne à l'intérieur de chaque bloc.
   const parBloc = {
-    e5: situations.filter((s) => s.blocPrincipal === "e5"),
-    e4: situations.filter((s) => s.blocPrincipal === "e4"),
+    e5: parDateDecroissante(situations.filter((s) => s.blocPrincipal === "e5")),
+    e4: parDateDecroissante(situations.filter((s) => s.blocPrincipal === "e4")),
   };
 
   return (

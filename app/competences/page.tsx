@@ -7,8 +7,10 @@ import {
   competencesByBloc,
 } from "@/data/competences";
 import { compteurParCompetence, verifierCoherence } from "@/lib/relations";
+import { tableauSuivi, syntheseSuivi } from "@/lib/suivi";
 import { Breadcrumb, PageHeader, Section, BlocTag } from "@/components/ui";
 import { CompetenceCard } from "@/components/portfolio/Cards";
+import { TableauCompetences } from "@/components/portfolio/TableauCompetences";
 
 export const metadata: Metadata = {
   title: "Compétences",
@@ -19,6 +21,8 @@ export const metadata: Metadata = {
 export default function CompetencesPage() {
   const compteur = compteurParCompetence();
   const coherence = verifierCoherence();
+  const lignes = tableauSuivi();
+  const synthese = syntheseSuivi(lignes);
 
   return (
     <Section>
@@ -52,6 +56,25 @@ export default function CompetencesPage() {
           </p>
         </div>
       </aside>
+
+      {/* ------------------------------------------- Tableau de suivi */}
+      <section aria-labelledby="suivi" className="mt-14">
+        <h2
+          id="suivi"
+          className="text-2xl font-semibold tracking-tight text-ink-100"
+        >
+          Suivi documentaire
+        </h2>
+        <p className="mt-2 max-w-3xl leading-relaxed text-ink-400">
+          Les neuf domaines, avec les preuves que ce portfolio apporte pour
+          chacun. Chaque ligne mène à la compétence, où figurent les activités
+          du référentiel et les situations qui la valident.
+        </p>
+
+        <div className="mt-7">
+          <TableauCompetences lignes={lignes} synthese={synthese} />
+        </div>
+      </section>
 
       {(["e4", "e5"] as const).map((bloc) => (
         <section key={bloc} id={bloc} data-bloc={bloc} className="mt-16 scroll-mt-24">

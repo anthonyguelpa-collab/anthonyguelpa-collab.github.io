@@ -29,6 +29,7 @@
  */
 
 import type { Bloc } from "./competences";
+import type { Periode } from "@/lib/dates";
 
 export interface Realisation {
   slug: string;
@@ -41,7 +42,8 @@ export interface Realisation {
   contexte: string;
   /** Conclusion : objectif atteint ou non, et pourquoi. */
   conclusion: string;
-  periode: string;
+  /** Période de réalisation, même modèle que les situations. */
+  periode: Periode;
   /** Bloc dominant — détermine l'accent couleur de la page. */
   blocPrincipal: Bloc;
   /** Identifiants des compétences validées par cette réalisation. */
