@@ -123,13 +123,15 @@ for (const id of idsCompetences) {
 
 /* ----------------------------------------- 6 — dates à confirmer */
 
-// Une date non sourcée dans un document est signalée tant qu'elle n'a pas
-// été confirmée : elle s'affiche, mais elle ne doit pas être oubliée.
+// Seules les dates explicitement marquées "a-confirmer" sont signalées.
+// Les dates "estimee" sont des mois approchés, assumés comme tels.
 const aConfirmer = [];
+let nbEstimees = 0;
 for (const m of srcSituations.matchAll(
   /slug:\s*"([^"]+)"[\s\S]*?periode:\s*\{([^}]*)\}/g,
 )) {
   if (m[2].includes('"a-confirmer"')) aConfirmer.push(m[1]);
+  if (m[2].includes('"estimee"')) nbEstimees++;
 }
 for (const slug of aConfirmer) {
   avertissements.push(`Date de réalisation à confirmer : ${slug}`);
@@ -191,7 +193,7 @@ console.log(
   `Documentations PDF           : ${pdfPresents.length} / ${slugsSituations.length} situations`,
 );
 console.log(
-  `Dates établies               : ${slugsSituations.length - aConfirmer.length} / ${slugsSituations.length} situations`,
+  `Dates établies               : ${slugsSituations.length - aConfirmer.length} / ${slugsSituations.length} situations (${nbEstimees} approchées)`,
 );
 console.log("=".repeat(60));
 

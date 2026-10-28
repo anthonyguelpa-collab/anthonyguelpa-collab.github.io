@@ -10,8 +10,11 @@
  *   · "document"    — relevée dans le document d'origine ;
  *   · "confirme"    — confirmée par Anthony, notamment lorsque le document
  *                     porte une coquille ou ne porte aucune date ;
- *   · "a-confirmer" — estimation d'après l'enchaînement des missions,
- *                     à confirmer. Le contrôle de validation les liste.
+ *   · "estimee"     — mois approché d'après l'enchaînement des missions.
+ *                     Assumé comme tel : mieux vaut un mois approximatif
+ *                     et vrai qu'une précision inventée.
+ *   · "a-confirmer" — à vérifier avant publication. Le contrôle de
+ *                     validation le signale.
  *
  * Une période peut être réduite à l'année (« 2025 ») lorsque le mois n'est
  * pas connu : mieux vaut une date vraie mais imprécise qu'un mois inventé.
@@ -22,7 +25,7 @@ export interface Periode {
   debut: string;
   /** Fin, si la mission s'est déroulée sur plusieurs semaines ou mois. */
   fin?: string;
-  source: "document" | "confirme" | "a-confirmer";
+  source: "document" | "confirme" | "estimee" | "a-confirmer";
 }
 
 const MOIS = [

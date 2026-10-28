@@ -34,9 +34,9 @@ export interface Situation {
   conclusion: string;
   /**
    * Période de réalisation. Les dates marquées "document" sont relevées
-   * dans le dossier d'origine ; celles marquées "a-confirmer" sont des
-   * estimations d'après l'enchaînement des missions et attendent
-   * confirmation — le contrôle de validation les liste.
+   * dans le dossier d'origine, "confirme" vient d'Anthony, et "estimee"
+   * désigne un mois approché d'après l'enchaînement des missions, jugé
+   * suffisant pour un portfolio de BTS.
    */
   periode: Periode;
   /** Bloc dominant — détermine l'accent couleur de la page. */
@@ -167,7 +167,7 @@ export const situations: Situation[] = [
       "Plusieurs pratiques héritées fragilisaient le système d'information : comptes de session partagés entre collaborateurs, mots de passe notés sur papier, sauvegardes regroupées dans un seul local. J'ai été chargé de produire un plan de sécurisation réaliste pour une entreprise sans budget dédié à la cybersécurité.",
     conclusion:
       "Objectif atteint sur la conception : six mesures sont proposées, chiffrées et argumentées, pour un investissement matériel d'environ 500 €. La mise en œuvre est échelonnée ; les mesures sans coût ont été engagées en premier.",
-    periode: { debut: "2026-03", fin: "2026-04", source: "a-confirmer" },
+    periode: { debut: "2026-03", fin: "2026-04", source: "estimee" },
     blocPrincipal: "e5",
     competences: ["e5-concevoir", "e4-patrimoine"],
     technologies: [
@@ -196,7 +196,7 @@ export const situations: Situation[] = [
       "Les collaborateurs utilisaient Outlook sans en maîtriser les fonctions utiles, et les demandes d'assistance répétitives sur la signature, les réponses automatiques ou le champ Cci occupaient une part importante du support. En parallèle, la messagerie restait le principal vecteur de risque. J'ai conçu un support unique traitant les deux sujets.",
     conclusion:
       "Objectif atteint : le support couvre la configuration, l'usage quotidien et la cybersécurité, et sert aujourd'hui de référence pour l'accueil des nouveaux arrivants. Les demandes d'assistance sur les sujets traités ont nettement diminué.",
-    periode: { debut: "2025", source: "confirme" },
+    periode: { debut: "2025-06", source: "confirme" },
     blocPrincipal: "e4",
     competences: ["e4-service-utilisateurs", "e4-incidents"],
     technologies: [
@@ -223,7 +223,7 @@ export const situations: Situation[] = [
       "Trois incidents revenaient en boucle sur le logiciel de gestion : session utilisateur verrouillée, liaison Outlook rompue, modèle d'impression inadapté. Chaque occurrence mobilisait le service informatique pour une manipulation de quelques minutes. J'ai choisi de documenter plutôt que de réintervenir.",
     conclusion:
       "Objectif atteint : les trois procédures sont diffusées et permettent aux utilisateurs habilités de traiter eux-mêmes ces cas. Le paramétrage d'impression, global à tous les utilisateurs, reste volontairement réservé au service informatique.",
-    periode: { debut: "2026-04", source: "a-confirmer" },
+    periode: { debut: "2026-04", source: "estimee" },
     blocPrincipal: "e4",
     competences: ["e4-incidents", "e4-service-utilisateurs"],
     technologies: ["EBP Bâtiment Elite", "SQL Server", "Microsoft Outlook"],
@@ -244,7 +244,7 @@ export const situations: Situation[] = [
       "Les interventions saisies dans l'outil de planification terrain ne remontaient pas systématiquement dans le logiciel de gestion, et inversement. Chaque anomalie était remontée au service informatique sans élément de diagnostic. J'ai analysé les causes réelles afin de rendre les équipes autonomes sur les cas les plus fréquents.",
     conclusion:
       "Objectif atteint : les causes sont identifiées et classées par sens de synchronisation, et une checklist permet aux équipes de vérifier huit points avant toute escalade. Une règle impérative de back-office a été formalisée pour éviter un blocage irréversible.",
-    periode: { debut: "2026-05", source: "a-confirmer" },
+    periode: { debut: "2026-05", source: "estimee" },
     blocPrincipal: "e4",
     competences: ["e4-incidents", "e4-service-utilisateurs"],
     technologies: ["EBP Bâtiment Elite", "Praxedo", "Synchronisation applicative"],
@@ -294,7 +294,7 @@ export const situations: Situation[] = [
       "L'entreprise traitait des données personnelles de clients, de salariés et de prospects sans registre ni documentation, et un projet de géolocalisation des véhicules se profilait. Chargé du volet technique et documentaire de la mise en conformité, j'ai produit l'ensemble du socle réglementaire.",
     conclusion:
       "Objectif atteint sur le socle documentaire : registre, politique de confidentialité, formulaire de droits, procédure de violation et analyse d'impact sont livrés et prêts à l'emploi. La désignation formelle du responsable RGPD et la publication sur le site relèvent de la direction.",
-    periode: { debut: "2026-06", fin: "2026-07", source: "a-confirmer" },
+    periode: { debut: "2026-06", fin: "2026-07", source: "estimee" },
     blocPrincipal: "e4",
     competences: ["e4-presence-en-ligne", "e4-patrimoine", "e4-mode-projet"],
     technologies: [
@@ -361,7 +361,7 @@ export const situations: Situation[] = [
       "Le logiciel de gestion est l'outil central de l'entreprise, utilisé quotidiennement par les équipes commerciales et le back-office, mais aucun support n'existait pour les nouveaux arrivants. La formation se faisait de poste à poste, avec des pratiques divergentes selon les services.",
     conclusion:
       "Objectif atteint : le premier module est diffusé et couvre le socle commun à tous les utilisateurs. Il harmonise les pratiques et réduit la durée d'accompagnement d'un nouvel arrivant.",
-    periode: { debut: "2026-05", fin: "2026-06", source: "a-confirmer" },
+    periode: { debut: "2026-05", fin: "2026-06", source: "estimee" },
     blocPrincipal: "e4",
     competences: ["e4-service-utilisateurs", "e4-incidents"],
     technologies: ["EBP Bâtiment Elite", "Gestion de chantiers", "Devis et facturation"],
