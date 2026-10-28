@@ -35,45 +35,62 @@ La raison est d'ordre logique : le premier réagit à un **événement** — un 
 
 ### Le mécanisme anti-doublon
 
-C'est l'étape 5 qui empêche les doublons, et le choix mérite d'être expliqué. L'approche naturelle aurait été de marquer les messages traités par un drapeau. Elle s'est révélée impraticable : **le connecteur de messagerie n'expose pas le statut du drapeau**, ni à la récupération d'une liste de messages, ni à la lecture d'un message unitaire. Le filtre ne renvoie donc jamais rien.
+<Difficulte probleme="Impossible de marquer un courriel comme déjà traité">
 
-La solution retenue repose sur un principe plus robuste : un message déplacé vers un sous-dossier sort du périmètre de recherche du passage suivant. Il ne peut plus être retrouvé, donc plus être traité deux fois.
+L'approche naturelle était de poser un drapeau sur les messages traités, puis de les exclure au passage suivant. Elle s'est révélée impraticable : **le connecteur de messagerie n'expose pas le statut du drapeau**, ni à la récupération d'une liste de messages, ni à la lecture d'un message unitaire. Le filtre ne renvoie donc jamais rien.
+
+**Solution retenue** — c'est l'étape 5 qui empêche les doublons, sur un principe plus robuste : un message déplacé vers un sous-dossier sort du périmètre de recherche du passage suivant. Il ne peut plus être retrouvé, donc plus être traité deux fois.
+
+</Difficulte>
 
 ### Deux paramètres de configuration non évidents
+
+<CaptureCote
+  src="/captures/power-automate-1/p05.webp"
+  alt="Paramètres clés de configuration et contournement du sélecteur de dossier en boîte partagée"
+  legende="Configuration — les deux paramètres non évidents, et le contournement du sélecteur de dossier."
+>
 
 **Messages non lus uniquement : non.** Les courriels triés manuellement ont souvent déjà été lus par le responsable au moment du tri. Filtrer sur les non-lus les aurait tous ignorés.
 
 **Description de la tâche : utiliser l'aperçu du corps.** Le champ contenant le corps du message renvoie du HTML brut, illisible une fois inséré dans la tâche. L'aperçu du corps fournit un texte propre, tronqué mais lisible. J'ai d'abord cherché une fonction de nettoyage HTML avant de constater qu'elle n'existe pas dans l'environnement.
 
-<Capture
-  src="/captures/power-automate-1/p05.webp"
-  alt="Paramètres clés de configuration et contournement du sélecteur de dossier en boîte partagée"
-  legende="Configuration — paramètres non évidents et contournement du sélecteur de dossier en boîte partagée."
-  large
-/>
+</CaptureCote>
 
-<Note type="alerte" titre="Contournement d'une limite du connecteur">
-En boîte partagée, le sélecteur de dossier de l'action de récupération n'affiche que les dossiers personnels, jamais ceux de la boîte partagée. Le contournement trouvé : ajouter temporairement une action de déplacement de message, y sélectionner la boîte partagée et le bon dossier, inspecter le code généré pour en extraire le chemin du dossier, coller cette valeur en saisie personnalisée dans le champ de l'action de récupération, puis supprimer l'action temporaire.
-</Note>
+<Difficulte probleme="Le sélecteur de dossier ignore les boîtes partagées">
+
+En boîte partagée, le sélecteur de dossier de l'action de récupération n'affiche que les dossiers personnels. Le dossier à surveiller est donc inatteignable par l'interface.
+
+**Contournement trouvé** — ajouter temporairement une action de déplacement de message, y sélectionner la boîte partagée et le bon dossier, inspecter le code généré pour en extraire le chemin du dossier, coller cette valeur en saisie personnalisée dans le champ de l'action de récupération, puis supprimer l'action temporaire.
+
+</Difficulte>
 
 ## Flux 2 — La relance à 24 heures
 
 ### Pourquoi un simple minuteur ne suffit pas
 
-La logique naïve consistait à vérifier chaque heure si la tâche a été créée il y a plus de 24 heures. Elle ne fonctionne pas : **une fois le seuil franchi, le test reste vrai indéfiniment**. La tâche est donc relancée à chaque passage horaire, soit une dizaine de rappels par jour tant qu'elle n'est pas cochée.
-
-<Capture
+<CaptureCote
   src="/captures/power-automate-1/p10.webp"
   alt="Illustration du problème : le test reste vrai et génère des rappels en boucle"
-  legende="Le problème — comparer à la date de création produit un rappel à chaque passage une fois le seuil franchi."
-  large
-/>
+  legende="Le problème — comparer à la date de création produit un rappel à chaque passage, une fois le seuil franchi."
+  position="gauche"
+>
+
+La logique naïve consistait à vérifier chaque heure si la tâche a été créée il y a plus de 24 heures. Elle ne fonctionne pas : **une fois le seuil franchi, le test reste vrai indéfiniment**. La tâche est donc relancée à chaque passage horaire, soit une dizaine de rappels par jour tant qu'elle n'est pas cochée.
+
+</CaptureCote>
 
 Ce qui manque est une **mémoire externe** : il faut retenir quand la dernière relance a eu lieu, pour comparer à ce moment plutôt qu'à la date de création. L'outil de gestion de tâches n'offrant aucun champ libre pour stocker cette information, une source de données externe était nécessaire.
 
 ### La solution retenue
 
 Un tableau dans un classeur, stocké dans un espace privé, avec deux colonnes : l'identifiant de la tâche et la date du dernier rappel.
+
+<CaptureCote
+  src="/captures/power-automate-1/p11.webp"
+  alt="Logique de la mémoire anti-doublon avec les deux branches de la condition"
+  legende="La mémoire externe — deux branches, selon qu'une relance a déjà eu lieu ou non."
+>
 
 La logique devient alors :
 
@@ -82,12 +99,7 @@ La logique devient alors :
    - **Non** — jamais relancée : comparer à la date de création. Si plus de 24 heures, envoyer le rappel et **ajouter** une ligne.
    - **Oui** — déjà relancée : comparer à la date du dernier rappel stocké. Si plus de 24 heures, envoyer le rappel et **mettre à jour** la ligne.
 
-<Capture
-  src="/captures/power-automate-1/p11.webp"
-  alt="Logique de la mémoire anti-doublon avec les deux branches de la condition"
-  legende="La mémoire externe — deux branches selon qu'une relance a déjà eu lieu ou non."
-  large
-/>
+</CaptureCote>
 
 ### Référence technique
 

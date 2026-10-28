@@ -29,7 +29,13 @@ Dans la grande majorité des cas, le blocage vient d'une adresse incomplète sur
 
 ### Le cas du changement d'agence
 
-Une situation particulière cause des blocages persistants : lorsque l'agence de rattachement a été modifiée après une première synchronisation, la correction du seul champ agence ne suffit pas. Il faut également **vider la date de dernière synchronisation**, sans quoi le système considère la fiche comme déjà traitée et ne la retraite jamais.
+<Difficulte probleme="Une fiche corrigée qui ne se resynchronise jamais">
+
+Lorsque l'agence de rattachement a été modifiée après une première synchronisation, corriger le seul champ agence ne débloque rien : le système considère la fiche comme déjà traitée et ne la reprend plus.
+
+**Solution** — vider également la **date de dernière synchronisation**, ce qui remet la fiche dans le périmètre du prochain passage.
+
+</Difficulte>
 
 <Capture
   src="/captures/praxedo-synchro/p04.webp"
@@ -63,17 +69,19 @@ Si la fiche client est correcte, le problème se situe au niveau de l'interventi
 
 Quatre causes expliquent qu'une intervention ne redescende pas. Les trois premières relèvent de la cohérence des données ; la quatrième est d'une autre nature.
 
+<CaptureCote
+  src="/captures/praxedo-synchro/p06.webp"
+  alt="Les quatre causes empêchant une intervention de redescendre vers le logiciel de gestion"
+  legende="Sens inverse — les quatre causes identifiées, dont la dernière est irréversible."
+  position="gauche"
+>
+
 1. **Client bloqué, supprimé ou inexistant.** Une intervention créée dans l'outil terrain sur un client qui n'existe plus côté gestion ne peut pas redescendre.
 2. **Adresse introuvable ou inactive.** L'adresse liée à l'intervention doit exister et être active dans le logiciel de gestion.
 3. **Valeur erronée dans les champs personnalisés.** Un identifiant ou une agence incorrects empêchent l'association.
 4. **Commande facturée avant validation du rapport.** Ce cas est traité séparément.
 
-<Capture
-  src="/captures/praxedo-synchro/p06.webp"
-  alt="Les quatre causes empêchant une intervention de redescendre vers le logiciel de gestion"
-  legende="Sens inverse — les quatre causes identifiées, dont la dernière est irréversible."
-  large
-/>
+</CaptureCote>
 
 <Note type="alerte" titre="La règle impérative de back-office">
 Ne jamais facturer une commande si l'intervention correspondante n'est pas encore validée dans l'outil terrain. **Une fois la commande facturée, le pointage ne peut plus être modifié.** Contrairement aux trois autres causes, celle-ci est irréversible : aucune manipulation ne permet de rattraper la situation côté système. C'est le point qui a justifié à lui seul la diffusion du guide au-delà du service informatique.
@@ -94,6 +102,12 @@ L'objectif de ce travail n'était pas seulement de résoudre, mais de réduire l
 
 L'ensemble se résume en six étapes ordonnées, qui constituent le résumé opérationnel du guide.
 
+<CaptureCote
+  src="/captures/praxedo-synchro/p08.webp"
+  alt="Séquence de diagnostic en six étapes et rappel de la règle de back-office"
+  legende="Séquence de diagnostic — six étapes dans l'ordre, et rappel de la règle irréversible de facturation."
+>
+
 1. **Identifier le sens** de la synchronisation concernée.
 2. **Vérifier le client** — actif, non bloqué, fiche complète.
 3. **Vérifier l'adresse** — tous les champs obligatoires renseignés, agence correcte.
@@ -101,12 +115,7 @@ L'ensemble se résume en six étapes ordonnées, qui constituent le résumé op�
 5. **Relancer la synchronisation** — d'abord les clients, puis les interventions, en laissant deux à trois minutes entre les deux.
 6. **Si le blocage persiste**, contacter le service informatique **avec le détail des vérifications déjà effectuées**.
 
-<Capture
-  src="/captures/praxedo-synchro/p08.webp"
-  alt="Séquence de diagnostic en six étapes et rappel de la règle de back-office"
-  legende="Séquence de diagnostic — six étapes dans l'ordre, et rappel de la règle irréversible de facturation."
-  large
-/>
+</CaptureCote>
 
 <Note type="info" titre="Ce que la sixième étape a changé">
 Préciser « avec le détail des vérifications déjà effectuées » a eu plus d'effet que le reste du guide. Les demandes qui arrivent maintenant au service informatique sont déjà qualifiées : je sais ce qui a été testé, et je peux commencer le diagnostic là où l'utilisateur s'est arrêté au lieu de tout reprendre depuis le début.

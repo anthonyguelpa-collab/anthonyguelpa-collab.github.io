@@ -4,20 +4,17 @@ J'ai structuré le plan en quatre parties, en m'imposant une contrainte : **chaq
 
 ## Partie 1 — Sécurité physique des sauvegardes
 
-### Le constat
-
-Le NAS et le serveur se trouvaient dans le même local technique. En cas de sinistre, les deux disparaissent ensemble : la perte des données sur site est totale.
-
-### La recommandation
-
-Déplacer le NAS dans un bâtiment différent — bureau administratif ou local technique secondaire — en le maintenant sur le même réseau local pour que les sauvegardes automatiques continuent de fonctionner sans changement.
-
-<Capture
+<CaptureCote
   src="/captures/plan-securite/p02.webp"
   alt="Schéma de séparation physique entre le local serveur, le local NAS et le stockage hors site"
   legende="Séparation physique — un sinistre sur un bâtiment laisse l'autre intact, et la sauvegarde reste accessible."
-  large
-/>
+>
+
+**Le constat** — le NAS et le serveur se trouvaient dans le même local technique. En cas de sinistre, les deux disparaissent ensemble : la perte des données sur site est totale.
+
+**La recommandation** — déplacer le NAS dans un bâtiment différent, bureau administratif ou local technique secondaire, en le maintenant sur le même réseau local pour que les sauvegardes automatiques continuent de fonctionner sans changement.
+
+</CaptureCote>
 
 Cette mesure, complétée par la rotation de disques externes décrite dans la situation consacrée aux sauvegardes, constitue le premier axe. La rotation est en service ; le chiffrement des disques, lui, reste à engager. Coût : un câble réseau, et environ 350 € pour le second disque.
 
@@ -91,11 +88,15 @@ La solution retenue ici l'a été sur des critères de coût et de certification
 
 ### Le constat
 
-Plusieurs collaborateurs partageaient le même identifiant de session. Trois conséquences :
+<Difficulte probleme="Plusieurs collaborateurs partageaient le même identifiant de session">
+
+Trois conséquences, toutes invisibles tant qu'il ne se passe rien :
 
 - **aucune traçabilité** — impossible de savoir qui a fait quoi en cas d'incident ;
 - **départ ingérable** — un partant connaît les mots de passe de tout le monde, il faudrait tout changer ;
 - **responsabilité diluée** — personne ne se sent comptable de ce qui se passe sur « le » poste.
+
+</Difficulte>
 
 ### La solution
 

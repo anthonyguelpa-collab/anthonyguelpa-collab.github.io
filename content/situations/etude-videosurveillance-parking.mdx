@@ -56,16 +56,18 @@ Des caméras IP alimentées par le câble réseau, raccordées à un commutateur
 
 ### L'alimentation par le câble réseau
 
+<CaptureCote
+  src="/captures/video-ip/p03.webp"
+  alt="Schéma de l'alimentation et du câblage par le réseau, avec les contraintes et protections"
+  legende="Alimentation par le câble réseau — contraintes de câblage, budget de puissance et protections obligatoires."
+  position="gauche"
+>
+
 L'intérêt principal de cette architecture : **un seul câble par caméra**, transportant à la fois les données et l'alimentation. Aucune arrivée électrique à créer en extérieur.
 
 Les contraintes de câblage sont précisées : câble blindé, longueur maximale de 100 mètres par tronçon, gaine extérieure, chemin de câble dédié et séparé du courant fort. Les protections associées — parafoudre sur la liaison réseau, mise à la terre — ne sont pas optionnelles sur une installation extérieure.
 
-<Capture
-  src="/captures/video-ip/p03.webp"
-  alt="Schéma de l'alimentation et du câblage par le réseau, avec les contraintes et protections"
-  legende="Alimentation par le câble réseau — contraintes de câblage, budget de puissance et protections obligatoires."
-  large
-/>
+</CaptureCote>
 
 ### La segmentation réseau
 
@@ -143,16 +145,17 @@ Des caméras autonomes sur batterie, maintenues en charge par panneau solaire, d
 
 ### Le point technique déterminant
 
-L'architecture réseau de cette solution est volontairement minimale et c'est son principal argument de sécurité : **seul le relais est présent sur le réseau de l'entreprise**. Les caméras dialoguent avec lui en radio propriétaire et n'apparaissent jamais sur le réseau.
-
-La règle de pare-feu correspondante est simple : le relais initie lui-même ses connexions sortantes vers le service, **aucune ouverture de port entrant n'est nécessaire**.
-
-<Capture
+<CaptureCote
   src="/captures/video-cloud/p06.webp"
   alt="Architecture réseau de la solution cloud : caméras, relais et règles de pare-feu sortantes"
   legende="Architecture réseau — un seul équipement sur le LAN, en sortant uniquement, sans ouverture entrante."
-  large
-/>
+>
+
+L'architecture réseau de cette solution est volontairement minimale, et c'est son principal argument de sécurité : **seul le relais est présent sur le réseau de l'entreprise**. Les caméras dialoguent avec lui en radio propriétaire et n'apparaissent jamais sur le réseau.
+
+La règle de pare-feu correspondante est simple : le relais initie lui-même ses connexions sortantes vers le service, **aucune ouverture de port entrant n'est nécessaire**.
+
+</CaptureCote>
 
 ### Le filet de sécurité local
 

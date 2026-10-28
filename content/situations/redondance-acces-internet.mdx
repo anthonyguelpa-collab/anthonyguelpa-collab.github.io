@@ -25,9 +25,17 @@ Le pare-feu en place supporte plusieurs interfaces WAN avec bascule automatique.
 
 ### Hiérarchie des liens
 
-1. **Lien principal — fibre opérateur.** Actif par défaut, raccordé au port WAN 1. Supporte l'intégralité du trafic en fonctionnement normal : navigation, flux applicatifs, téléphonie, messagerie.
-2. **Secours de niveau 1 — accès satellite.** En veille sur le port WAN 2. Prend le relais automatiquement si le lien principal tombe. Débit suffisant pour maintenir l'ensemble des services, y compris la voix.
-3. **Dernier recours — accès mobile 4G.** En veille sur le port WAN 3. Intervient si les deux liens précédents sont indisponibles. Débit volontairement considéré comme dégradé : il maintient la messagerie et les applications métier, pas le confort.
+<Etapes>
+<Etape numero={1} titre="Lien principal — fibre opérateur">
+Actif par défaut, raccordé au port WAN 1. Supporte l'intégralité du trafic en fonctionnement normal : navigation, flux applicatifs, téléphonie, messagerie.
+</Etape>
+<Etape numero={2} titre="Secours de niveau 1 — accès satellite">
+En veille sur le port WAN 2. Prend le relais automatiquement si le lien principal tombe. Débit suffisant pour maintenir l'ensemble des services, y compris la voix.
+</Etape>
+<Etape numero={3} titre="Dernier recours — accès mobile 4G">
+En veille sur le port WAN 3. Intervient si les deux liens précédents sont indisponibles. Débit volontairement considéré comme dégradé : il maintient la messagerie et les applications métier, pas le confort.
+</Etape>
+</Etapes>
 
 ### Logique de bascule
 

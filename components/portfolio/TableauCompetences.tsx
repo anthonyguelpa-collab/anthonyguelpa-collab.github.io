@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowRight, Info } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 import { BLOCS, type Bloc } from "@/data/competences";
-import { STATUTS, type LigneSuivi, type Statut, type SyntheseSuivi } from "@/lib/suivi";
+import { STATUTS, type LigneSuivi, type Statut } from "@/lib/suivi";
 
 /* ------------------------------------------------------------ Statuts */
 
@@ -65,95 +65,9 @@ function DetailPreuves({ ligne }: { ligne: LigneSuivi }) {
   );
 }
 
-/* --------------------------------------------------------- Synthèse */
-
-function Synthese({ synthese }: { synthese: SyntheseSuivi }) {
-  const cartes = [
-    { valeur: synthese.total, libelle: "domaines suivis", ton: "text-ink-100" },
-    {
-      valeur: synthese.documentees,
-      libelle: "documentés",
-      ton: "text-emerald-300",
-    },
-    {
-      valeur: synthese.enCours,
-      libelle: "partiellement documentés",
-      ton: "text-amber-soft",
-    },
-    {
-      valeur: synthese.nonDocumentees,
-      libelle: "non documentés",
-      ton: "text-ink-400",
-    },
-  ];
-
-  return (
-    <div className="surface p-5 sm:p-6">
-      <dl className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {cartes.map((c) => (
-          <div key={c.libelle}>
-            <dd className={`font-mono text-3xl font-semibold ${c.ton}`}>
-              {c.valeur}
-            </dd>
-            <dt className="mt-1 text-xs leading-tight text-ink-400">
-              {c.libelle}
-            </dt>
-          </div>
-        ))}
-      </dl>
-
-      <div className="mt-6">
-        <div className="flex items-baseline justify-between gap-3">
-          <p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
-            Couverture documentaire
-          </p>
-          <p className="font-mono text-sm font-semibold text-ink-200">
-            {synthese.documentees}&nbsp;/&nbsp;{synthese.total}
-          </p>
-        </div>
-
-        {/* Barre segmentée : une case par domaine, lisible sans lire le chiffre. */}
-        <div
-          role="img"
-          aria-label={`${synthese.documentees} domaines documentés et ${synthese.enCours} en cours, sur ${synthese.total} domaines au total`}
-          className="mt-2.5 flex gap-1"
-        >
-          {Array.from({ length: synthese.total }).map((_, i) => {
-            const couleur =
-              i < synthese.documentees
-                ? "bg-emerald-400"
-                : i < synthese.documentees + synthese.enCours
-                  ? "bg-amber-bright"
-                  : "bg-night-600";
-            return (
-              <span
-                key={i}
-                className={`h-2 flex-1 rounded-sm ${couleur}`}
-              />
-            );
-          })}
-        </div>
-
-        <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-ink-400">
-          <Info className="mt-0.5 size-3.5 shrink-0" aria-hidden />
-          Ces statuts décrivent l&apos;état de ma documentation, calculé à
-          partir des preuves présentes dans ce portfolio. Ils ne constituent
-          ni une auto-évaluation de maîtrise, ni une validation par un jury.
-        </p>
-      </div>
-    </div>
-  );
-}
-
 /* ----------------------------------------------------------- Tableau */
 
-export function TableauCompetences({
-  lignes,
-  synthese,
-}: {
-  lignes: LigneSuivi[];
-  synthese: SyntheseSuivi;
-}) {
+export function TableauCompetences({ lignes }: { lignes: LigneSuivi[] }) {
   const [filtre, setFiltre] = useState<"tous" | Bloc>("tous");
 
   const visibles = useMemo(
@@ -175,13 +89,11 @@ export function TableauCompetences({
 
   return (
     <div>
-      <Synthese synthese={synthese} />
-
       {/* ------------------------------------------------------ Filtres */}
       <div
         role="group"
         aria-label="Filtrer par épreuve"
-        className="mt-6 flex flex-wrap gap-2"
+        className="flex flex-wrap gap-2"
       >
         {filtres.map((f) => {
           const actif = filtre === f.cle;

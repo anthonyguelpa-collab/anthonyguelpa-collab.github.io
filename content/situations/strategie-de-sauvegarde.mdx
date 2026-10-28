@@ -38,22 +38,20 @@ Deux disques externes identiques, appelés A et B. À tout instant, l'un est bra
 
 ### Procédure hebdomadaire
 
+<CaptureCote
+  src="/captures/sauvegardes/p03.webp"
+  alt="Schéma de la rotation hebdomadaire des deux disques externes et de ses avantages"
+  legende="Rotation hebdomadaire — un disque actif sur site, un disque de la semaine précédente conservé hors site."
+>
+
 1. Récupérer le disque conservé hors site.
 2. Le brancher sur le serveur, à la place du disque en cours.
 3. Vérifier que la sauvegarde du soir s'écrit bien sur le disque nouvellement branché.
 4. Emporter le disque retiré et le conserver hors site, en lieu sûr.
 
-### Résultat obtenu
+**Résultat obtenu** — une copie sur site, active, contenant la sauvegarde du jour ; et une copie hors site, contenant au maximum la sauvegarde de la semaine précédente.
 
-- Une copie **sur site**, active, contenant la sauvegarde du jour.
-- Une copie **hors site**, contenant au maximum la sauvegarde de la semaine précédente.
-
-<Capture
-  src="/captures/sauvegardes/p03.webp"
-  alt="Schéma de la rotation hebdomadaire des deux disques externes et de ses avantages"
-  legende="Rotation hebdomadaire — un disque actif sur site, un disque de la semaine précédente conservé hors site."
-  large
-/>
+</CaptureCote>
 
 ### Chiffrement des supports — mesure préconisée
 
@@ -79,10 +77,16 @@ Deux précautions l'accompagnent dans la procédure rédigée :
 
 Un détail d'exploitation, découvert lors du recensement, conditionne le bon déroulement des sauvegardes : le service de messagerie interne **se coupe tous les soirs** pour libérer ses fichiers de base de données et permettre leur sauvegarde, puis redémarre automatiquement.
 
-Deux cas nécessitent une intervention manuelle, et je les ai documentés car ils provoquaient des incidents matinaux sans cause apparente :
+<Difficulte probleme="Des incidents de messagerie le matin, sans cause apparente">
+
+Le service de messagerie ne redémarre pas toujours seul après son arrêt nocturne. Deux cas demandent une relance manuelle, et c'est ce qui produisait les incidents matinaux signalés sans explication :
 
 - après le redémarrage hebdomadaire du serveur, le service est à relancer le lundi matin ;
 - après toute coupure inopinée du serveur, le service est à relancer.
+
+**Traitement** — les deux cas sont consignés dans la procédure d'exploitation, avec la manipulation de relance correspondante.
+
+</Difficulte>
 
 <Capture
   src="/captures/sauvegardes/p04.webp"

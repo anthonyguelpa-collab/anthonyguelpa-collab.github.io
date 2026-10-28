@@ -34,12 +34,12 @@ export const STATUTS: Record<
       "Plusieurs preuves présentes, dont au moins une illustrée de bout en bout.",
   },
   "en-cours": {
-    libelle: "Partiellement documentée",
+    libelle: "En cours",
     description:
       "Des réalisations existent, mais les preuves réunies ne couvrent qu'une partie des critères de la grille.",
   },
   "non-documentee": {
-    libelle: "Non documentée",
+    libelle: "À documenter",
     description: "Aucune preuve disponible dans le portfolio à ce jour.",
   },
 };

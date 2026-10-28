@@ -66,10 +66,20 @@ Trois familles de sinistres couvrent les cas réalistes. Chacune donne lieu à u
 
 C'est le cas le plus probable. La procédure se déroule en quatre phases.
 
-1. **Détection (0–30 min)** — constater l'arrêt, vérifier l'alimentation, les branchements et les voyants disques, tenter un redémarrage simple.
-2. **Escalade (30 min – 1 h)** — informer la direction, contacter le prestataire, évaluer s'il s'agit d'une panne matérielle ou logicielle.
-3. **Restauration (1 h – 4 h)** — préparer un serveur de remplacement ou réparer, installer l'hyperviseur, puis restaurer les machines virtuelles **dans le bon ordre**.
-4. **Vérification (4 h – 6 h)** — tester l'annuaire, la résolution de noms et l'attribution d'adresses, les accès aux partages depuis un poste, l'ouverture du logiciel métier, l'envoi et la réception de courriels, puis informer les collaborateurs.
+<Etapes>
+<Etape numero={1} titre="Détection — 0 à 30 minutes">
+Constater l'arrêt, vérifier l'alimentation, les branchements et les voyants disques, tenter un redémarrage simple.
+</Etape>
+<Etape numero={2} titre="Escalade — 30 minutes à 1 heure">
+Informer la direction, contacter le prestataire, évaluer s'il s'agit d'une panne matérielle ou logicielle.
+</Etape>
+<Etape numero={3} titre="Restauration — 1 à 4 heures">
+Préparer un serveur de remplacement ou réparer, installer l'hyperviseur, puis restaurer les machines virtuelles **dans le bon ordre**.
+</Etape>
+<Etape numero={4} titre="Vérification — 4 à 6 heures">
+Tester l'annuaire, la résolution de noms et l'attribution d'adresses, les accès aux partages depuis un poste, l'ouverture du logiciel métier, l'envoi et la réception de courriels, puis informer les collaborateurs.
+</Etape>
+</Etapes>
 
 <Note type="info" titre="L'ordre de restauration n'est pas interchangeable">
 La **VM de production en premier** : elle porte l'annuaire et la résolution de noms, qui sont des prérequis réseau. La **VM métier en second** : elle en dépend. Inverser l'ordre fait échouer la restauration de la seconde machine, et c'est exactement le genre d'erreur qu'on commet sous pression.
@@ -86,7 +96,9 @@ La **VM de production en premier** : elle porte l'annuaire et la résolution de 
 
 Quatre cas traités séparément car les procédures divergent : incendie ou inondation du local serveur, sinistre total, cyberattaque par rançongiciel, et vol de matériel.
 
-Le cas du rançongiciel est celui qui demande le plus de discipline, parce que les deux premiers réflexes naturels sont mauvais :
+<Difficulte probleme="Face à un rançongiciel, les deux réflexes naturels sont les mauvais">
+
+Débrancher et éteindre est le geste spontané. Éteindre détruit pourtant la mémoire vive, qui contient les éléments d'analyse ; et rebrancher trop tôt propage le chiffrement. La procédure impose donc un ordre contre-intuitif :
 
 1. **Déconnecter** le serveur du réseau immédiatement.
 2. **Ne pas l'éteindre** — la mémoire vive contient des éléments utiles à l'analyse.
@@ -94,6 +106,8 @@ Le cas du rançongiciel est celui qui demande le plus de discipline, parce que l
 4. Restaurer depuis le disque hors site, non connecté donc non compromis.
 5. Changer **tous** les mots de passe.
 6. Évaluer l'exposition de données personnelles — avec obligation de notification en cas de risque.
+
+</Difficulte>
 
 <Capture
   src="/captures/pra/p07.webp"
@@ -117,18 +131,20 @@ Trois sous-cas : perte de l'accès Internet, panne du commutateur, panne du pare
 
 Un point souvent négligé : pendant la reprise, l'entreprise doit continuer à fonctionner. J'ai distingué explicitement ce qui reste accessible de ce qui ne l'est pas.
 
+<CaptureCote
+  src="/captures/pra/p09.webp"
+  alt="Arbre de décision, communication de crise, mode dégradé et checklist de reprise en quatre phases"
+  legende="Procédures transverses — arbre de décision, communication, mode dégradé et checklist du technicien."
+  position="gauche"
+>
+
 - **Accessible** — les applications en ligne et les téléphones mobiles, qui ne dépendent pas du serveur.
 - **Indisponible** — le logiciel métier, la comptabilité, les partages de fichiers et la messagerie interne.
 - **Consignes** — noter les interventions sur papier, reporter les devis et factures à la reprise, et ne surtout rien réinstaller soi-même.
 
 La communication de crise est également cadrée : information immédiate des collaborateurs par téléphone ou SMS — pas par courriel, puisque la messagerie est précisément en panne — et point d'avancement régulier.
 
-<Capture
-  src="/captures/pra/p09.webp"
-  alt="Arbre de décision, communication de crise, mode dégradé et checklist de reprise en quatre phases"
-  legende="Procédures transverses — arbre de décision, communication, mode dégradé et checklist à cocher par le technicien."
-  large
-/>
+</CaptureCote>
 
 ## 6 — Maintenir le plan vivant
 

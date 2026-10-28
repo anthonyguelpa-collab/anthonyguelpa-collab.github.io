@@ -1,15 +1,35 @@
-import Image from "next/image";
-import { AlertTriangle, ImageOff, Info, ShieldAlert } from "lucide-react";
+import { AlertTriangle, ImageOff, Info, ShieldAlert, Wrench } from "lucide-react";
 import type { ReactNode } from "react";
+
 import { ressource } from "@/lib/chemin";
+import { Agrandissable } from "@/components/portfolio/Agrandissable";
 
 /**
  * Composants mis à disposition dans les fichiers MDX.
- * Ils sont volontairement peu nombreux : la documentation doit rester
- * lisible en texte brut dans l'éditeur.
+ *
+ * Ils restent peu nombreux et explicites : la documentation doit pouvoir se
+ * lire en texte brut dans l'éditeur. Chacun répond à un besoin de lecture
+ * précis — illustrer une étape, comparer deux états, signaler une
+ * difficulté — jamais à un besoin décoratif.
  */
 
-/** Capture d'écran servant de preuve. Toujours légendée. */
+/* ------------------------------------------------------------- Légende */
+
+function Legende({ children }: { children: ReactNode }) {
+  return (
+    <figcaption className="mt-2.5 flex items-start gap-2 text-xs leading-relaxed text-ink-400">
+      <span
+        aria-hidden
+        className="mt-[0.3rem] size-1.5 shrink-0 rotate-45 rounded-[1px] bg-[var(--bloc-accent)]"
+      />
+      <span>{children}</span>
+    </figcaption>
+  );
+}
+
+/* ------------------------------------------------------------- Capture */
+
+/** Capture d'écran servant de preuve. Toujours légendée, toujours agrandissable. */
 export function Capture({
   src,
   alt,
@@ -23,30 +43,97 @@ export function Capture({
 }) {
   return (
     <figure className={`not-prose my-7 ${large ? "" : "mx-auto max-w-3xl"}`}>
-      <div className="overflow-hidden rounded-xl border border-night-600/70 bg-night-950">
-        <Image
-          src={ressource(src)}
-          alt={alt}
-          width={1600}
-          height={900}
-          className="h-auto w-full"
-        />
-      </div>
-      <figcaption className="mt-2.5 flex items-start gap-2 text-xs leading-relaxed text-ink-400">
-        <span
-          aria-hidden
-          className="mt-[0.3rem] size-1.5 shrink-0 rotate-45 rounded-[1px] bg-[var(--bloc-accent)]"
-        />
-        {legende}
-      </figcaption>
+      <Agrandissable src={ressource(src)} alt={alt} legende={legende} />
+      <Legende>{legende}</Legende>
     </figure>
   );
 }
 
+/* --------------------------------------------------------- CaptureCote */
+
+/**
+ * Capture placée à côté de son explication.
+ * Sur mobile, le texte passe au-dessus de l'image : l'ordre de lecture
+ * reste celui du raisonnement, pas celui de la mise en page.
+ */
+export function CaptureCote({
+  src,
+  alt,
+  legende,
+  position = "droite",
+  children,
+}: {
+  src: string;
+  alt: string;
+  legende: string;
+  position?: "droite" | "gauche";
+  children: ReactNode;
+}) {
+  return (
+    <div className="not-prose my-8 grid items-start gap-6 sm:grid-cols-2 sm:gap-8">
+      <div
+        className={`space-y-3 text-[0.95rem] leading-relaxed text-ink-300 [&_strong]:font-semibold [&_strong]:text-ink-100 [&_ul]:space-y-1.5 [&_ul]:pl-5 [&_li]:list-disc ${
+          position === "gauche" ? "sm:order-2" : ""
+        }`}
+      >
+        {children}
+      </div>
+
+      <figure className={position === "gauche" ? "sm:order-1" : ""}>
+        <Agrandissable src={ressource(src)} alt={alt} legende={legende} />
+        <Legende>{legende}</Legende>
+      </figure>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------ Captures */
+
+/**
+ * Deux captures côte à côte, pour une comparaison : avant/après, deux
+ * options, deux états d'une même configuration.
+ */
+export function Captures({
+  children,
+}: {
+  children: ReactNode;
+}) {
+  return (
+    <div className="not-prose my-8 grid gap-5 sm:grid-cols-2">{children}</div>
+  );
+}
+
+/** Élément d'une paire de captures. */
+export function CaptureItem({
+  src,
+  alt,
+  legende,
+  titre,
+}: {
+  src: string;
+  alt: string;
+  legende: string;
+  titre?: string;
+}) {
+  return (
+    <figure>
+      {titre && (
+        <p className="mb-2 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-[var(--bloc-accent)]">
+          {titre}
+        </p>
+      )}
+      <Agrandissable src={ressource(src)} alt={alt} legende={legende} />
+      <Legende>{legende}</Legende>
+    </figure>
+  );
+}
+
+/* --------------------------------------------------- CaptureManquante */
+
 /**
  * Emplacement de capture non disponible.
- * La règle UFIP impose de signaler l'absence plutôt que de la combler :
- * aucune preuve fictive n'est générée.
+ * On signale l'absence plutôt que de la combler : aucune preuve fictive
+ * n'est générée.
  */
 export function CaptureManquante({ etape }: { etape: string }) {
   return (
@@ -63,6 +150,77 @@ export function CaptureManquante({ etape }: { etape: string }) {
     </div>
   );
 }
+
+/* ----------------------------------------------------------- Difficulte */
+
+/**
+ * Difficulté rencontrée et solution apportée.
+ * Encadré discret, volontairement différent des notes : c'est le passage
+ * que l'examinateur cherche quand il demande « qu'est-ce qui a coincé ? ».
+ */
+export function Difficulte({
+  probleme,
+  children,
+}: {
+  probleme: string;
+  children: ReactNode;
+}) {
+  return (
+    <div className="not-prose my-7 overflow-hidden rounded-xl border border-night-600/60 bg-night-850/50">
+      <p className="flex items-start gap-2.5 border-b border-night-700/60 px-5 py-3 text-sm font-medium text-ink-100">
+        <Wrench
+          className="mt-0.5 size-4 shrink-0 text-amber-bright"
+          aria-hidden
+        />
+        <span>
+          <span className="mr-2 font-mono text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-amber-soft">
+            Difficulté
+          </span>
+          {probleme}
+        </span>
+      </p>
+      <div className="space-y-2.5 px-5 py-4 text-sm leading-relaxed text-ink-300 [&_strong]:font-semibold [&_strong]:text-ink-100 [&_ul]:space-y-1.5 [&_ul]:pl-5 [&_li]:list-disc">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------- Etapes */
+
+/** Suite d'étapes numérotées, pour les procédures. */
+export function Etapes({ children }: { children: ReactNode }) {
+  return <ol className="not-prose my-7 space-y-4">{children}</ol>;
+}
+
+export function Etape({
+  numero,
+  titre,
+  children,
+}: {
+  numero: number;
+  titre: string;
+  children: ReactNode;
+}) {
+  return (
+    <li className="flex gap-4">
+      <span
+        aria-hidden
+        className="grid size-8 shrink-0 place-items-center rounded-lg border border-[color-mix(in_oklab,var(--bloc-accent)_35%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_10%,transparent)] font-mono text-sm font-semibold text-[var(--bloc-accent)]"
+      >
+        {numero}
+      </span>
+      <div className="min-w-0 flex-1 pt-0.5">
+        <p className="text-sm font-semibold text-ink-100">{titre}</p>
+        <div className="mt-1.5 space-y-2 text-sm leading-relaxed text-ink-300 [&_strong]:font-semibold [&_strong]:text-ink-100 [&_ul]:space-y-1.5 [&_ul]:pl-5 [&_li]:list-disc">
+          {children}
+        </div>
+      </div>
+    </li>
+  );
+}
+
+/* ---------------------------------------------------------------- Note */
 
 /** Encart d'information, d'alerte ou de note de caviardage. */
 export function Note({
@@ -112,6 +270,8 @@ export function Note({
   );
 }
 
+/* ---------------------------------------------------------- Comparatif */
+
 /** Grille de deux colonnes pour comparer deux solutions. */
 export function Comparatif({ children }: { children: ReactNode }) {
   return (
@@ -149,6 +309,8 @@ export function Option({
   );
 }
 
+/* ------------------------------------------------------------- Chiffres */
+
 /** Mise en évidence d'un chiffre clé issu d'un document réel. */
 export function Chiffre({
   valeur,
@@ -178,7 +340,13 @@ export function Chiffres({ children }: { children: ReactNode }) {
 /** Composants injectés dans tous les documents MDX. */
 export const composantsMDX = {
   Capture,
+  CaptureCote,
+  Captures,
+  CaptureItem,
   CaptureManquante,
+  Difficulte,
+  Etapes,
+  Etape,
   Note,
   Comparatif,
   Option,

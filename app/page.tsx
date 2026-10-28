@@ -1,57 +1,45 @@
-import Link from "next/link";
-import {
-  ArrowRight,
-  Building2,
-  FileUser,
-  Layers,
-  Radar,
-  Workflow,
-} from "lucide-react";
+import { ArrowRight, FileUser } from "lucide-react";
 
 import { site } from "@/data/site";
-import { tableauSuivi, syntheseSuivi } from "@/lib/suivi";
+import { situations } from "@/data/situations";
 import { Section, LinkButton } from "@/components/ui";
 import { Photo, Logos } from "@/components/portfolio/Identite";
-import { ApercuCompetences } from "@/components/portfolio/ApercuCompetences";
+import {
+  Accroche,
+  ApercuVeille,
+  CompetencesTechniques,
+  Environnement,
+  Parcours,
+  SituationVedetteCard,
+  TitreSection,
+} from "@/components/portfolio/Accueil";
 
 /**
- * Page d'accueil — volontairement resserrée.
+ * Page d'accueil.
  *
- * Le visiteur doit comprendre en quelques secondes qui je suis, quelle
- * formation je prépare, et par où entrer. Le détail vit sur les pages
- * dédiées : pas de tableau complet ni d'extraits dupliqués ici.
+ * Elle présente le portfolio et invite à l'explorer : qui je suis, d'où je
+ * viens, où je travaille, quelques missions représentatives, les domaines
+ * techniques abordés et ma veille.
+ *
+ * Ce qu'elle ne contient délibérément PAS : compteurs E4/E5, statuts
+ * documentaires, décompte de preuves. Ces éléments servent à ma préparation
+ * et vivent en bas de la page Compétences, pas en page d'accueil.
  */
 
-const acces = [
-  {
-    href: "/competences",
-    icone: Layers,
-    titre: "Compétences",
-    texte: "Les 9 domaines E4 et E5, et les preuves qui les étayent.",
-  },
-  {
-    href: "/situations",
-    icone: Workflow,
-    titre: "Situations professionnelles",
-    texte: "Les missions menées en alternance, documentées de bout en bout.",
-  },
-  {
-    href: "/veille",
-    icone: Radar,
-    titre: "Veille technologique",
-    texte: "Méthode, planning et bancs d'essai menés en conditions réelles.",
-  },
-  {
-    href: "/entreprise",
-    icone: Building2,
-    titre: "Entreprise",
-    texte: "Goiran et Compagnie et ma place au service informatique.",
-  },
-];
+/** Situations mises en avant — diversité des blocs et des sujets. */
+const EN_VEDETTE = [
+  "plan-de-reprise-dactivite",
+  "formation-et-deploiement-outlook",
+  "automatisation-outlook-planner",
+  "etude-videosurveillance-parking",
+] as const;
 
 export default function Accueil() {
-  const lignes = tableauSuivi();
-  const synthese = syntheseSuivi(lignes);
+  // Résolues depuis la source unique : une situation retirée du portfolio
+  // disparaît d'elle-même de l'accueil, sans lien mort possible.
+  const vedettes = EN_VEDETTE.map((slug) =>
+    situations.find((s) => s.slug === slug),
+  ).filter((s): s is NonNullable<typeof s> => Boolean(s));
 
   return (
     <>
@@ -67,16 +55,13 @@ export default function Accueil() {
               {site.prenom} <span className="text-ink-300">{site.nom}</span>
             </h1>
 
-            <p className="mt-6 max-w-2xl text-pretty text-lg leading-relaxed text-ink-300">
-              Alternant au service informatique d&apos;une entreprise de BTP de
-              Nice. J&apos;y administre un système d&apos;information complet —
-              virtualisation, annuaire, sauvegardes, sécurité et logiciels
-              métier — et je documente tout ce que je mets en place.
-            </p>
+            <div className="mt-6 max-w-2xl">
+              <Accroche />
+            </div>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <LinkButton href="/competences">
-                Parcourir les compétences
+              <LinkButton href="/situations">
+                Découvrir mes situations
                 <ArrowRight className="size-4" aria-hidden />
               </LinkButton>
               <LinkButton href="/cv" variante="secondaire">
@@ -96,57 +81,51 @@ export default function Accueil() {
         </div>
       </Section>
 
-      {/* ------------------------------------------- Aperçu des compétences */}
+      {/* -------------------------------------------------------- Parcours */}
       <Section className="mt-24 sm:mt-32">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="text-2xl font-semibold tracking-tight text-ink-100">
-            Où j&apos;en suis
-          </h2>
-          <p className="font-mono text-[0.7rem] text-ink-400">
-            État de ma documentation, pas une validation de jury
-          </p>
-        </div>
-
-        <div className="mt-6">
-          <ApercuCompetences lignes={lignes} synthese={synthese} />
-        </div>
+        <Parcours />
       </Section>
 
-      {/* ----------------------------------------------------- Accès rapides */}
+      {/* --------------------------------------------------- Environnement */}
       <Section className="mt-24">
-        <h2 className="text-2xl font-semibold tracking-tight text-ink-100">
-          Par où commencer
-        </h2>
+        <Environnement />
+      </Section>
 
-        <ul className="mt-6 grid gap-4 sm:grid-cols-2">
-          {acces.map((a) => {
-            const Icone = a.icone;
-            return (
-              <li key={a.href}>
-                <Link
-                  href={a.href}
-                  className="surface group flex h-full items-start gap-4 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-cyan-bright/50"
-                >
-                  <span
-                    aria-hidden
-                    className="grid size-10 shrink-0 place-items-center rounded-lg border border-cyan-bright/30 bg-cyan-bright/10 text-cyan-bright"
-                  >
-                    <Icone className="size-5" />
-                  </span>
-                  <span>
-                    <span className="flex items-center gap-1.5 text-base font-semibold text-ink-100">
-                      {a.titre}
-                      <ArrowRight className="size-3.5 text-ink-400 transition-transform duration-200 group-hover:translate-x-1 group-hover:text-cyan-bright" />
-                    </span>
-                    <span className="mt-1 block text-sm leading-relaxed text-ink-400">
-                      {a.texte}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
+      {/* ------------------------------------------- Situations en vedette */}
+      <Section className="mt-24">
+        <TitreSection
+          surtitre="Mes situations professionnelles"
+          titre="Quelques missions de mon alternance"
+          lien={{
+            href: "/situations",
+            label: `Voir les ${situations.length} situations`,
+          }}
+        />
+
+        <p className="mt-5 max-w-3xl text-pretty leading-relaxed text-ink-400">
+          Quatre missions choisies pour leur diversité : une étude
+          d&apos;infrastructure, un support de formation, une automatisation et
+          un dossier de choix technique. Chacune est documentée de bout en
+          bout, avec sa documentation complète en téléchargement.
+        </p>
+
+        <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {vedettes.map((s) => (
+            <li key={s.slug} className="flex">
+              <SituationVedetteCard situation={s} />
+            </li>
+          ))}
         </ul>
+      </Section>
+
+      {/* --------------------------------------------------- Compétences */}
+      <Section className="mt-24">
+        <CompetencesTechniques />
+      </Section>
+
+      {/* -------------------------------------------------------- Veille */}
+      <Section className="mt-24">
+        <ApercuVeille />
       </Section>
     </>
   );

@@ -2,7 +2,15 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
-import { CalendarDays, CheckCircle2, Target } from "lucide-react";
+import {
+  CalendarDays,
+  CheckCircle2,
+  Download,
+  HelpCircle,
+  ListChecks,
+  Target,
+  UserRound,
+} from "lucide-react";
 
 import { situations, getSituation } from "@/data/situations";
 import { BLOCS } from "@/data/competences";
@@ -125,6 +133,61 @@ export default async function SituationPage({
           </p>
         </section>
 
+        {/* ---------------------------------------------------------- En bref */}
+        <section aria-labelledby="en-bref" className="mt-5">
+          <h2 id="en-bref" className="sr-only">
+            En bref
+          </h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="surface flex flex-col gap-2 p-5">
+              <p className="inline-flex items-center gap-2 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
+                <HelpCircle
+                  className="size-3.5 text-[var(--bloc-accent)]"
+                  aria-hidden
+                />
+                Le besoin
+              </p>
+              <p className="text-sm leading-relaxed text-ink-300">
+                {situation.besoin}
+              </p>
+            </div>
+
+            <div className="surface flex flex-col gap-2 p-5">
+              <p className="inline-flex items-center gap-2 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
+                <ListChecks
+                  className="size-3.5 text-[var(--bloc-accent)]"
+                  aria-hidden
+                />
+                Les objectifs
+              </p>
+              <ul className="space-y-1.5 text-sm leading-relaxed text-ink-300">
+                {situation.objectifs.map((o) => (
+                  <li key={o} className="flex gap-2">
+                    <span
+                      aria-hidden
+                      className="mt-[0.45rem] size-1.5 shrink-0 rotate-45 rounded-[1px] bg-[var(--bloc-accent)]"
+                    />
+                    {o}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="surface flex flex-col gap-2 p-5">
+              <p className="inline-flex items-center gap-2 font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
+                <UserRound
+                  className="size-3.5 text-[var(--bloc-accent)]"
+                  aria-hidden
+                />
+                Mon rôle
+              </p>
+              <p className="text-sm leading-relaxed text-ink-300">
+                {situation.role}
+              </p>
+            </div>
+          </div>
+        </section>
+
         {/* ------------------------------------------- Déroulé technique MDX */}
         <div className="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
           <article className="prose-doc min-w-0">
@@ -175,6 +238,29 @@ export default async function SituationPage({
 
           {/* ------------------------------------------------------- Aside */}
           <aside className="flex flex-col gap-5 lg:sticky lg:top-24">
+            {/* Accès au dossier complet sans avoir à dérouler toute la page.
+                Le bouton détaillé reste en fin d'article. */}
+            {documentation && (
+              <a
+                href={ressource(documentation.chemin)}
+                download={documentation.nom}
+                className="surface group flex items-center gap-3 px-5 py-4 transition-colors hover:border-[color-mix(in_oklab,var(--bloc-accent)_50%,transparent)]"
+              >
+                <Download
+                  className="size-4 shrink-0 text-[var(--bloc-accent)]"
+                  aria-hidden
+                />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-medium text-ink-200 group-hover:text-ink-100">
+                    Documentation complète
+                  </span>
+                  <span className="mt-0.5 block font-mono text-[0.68rem] text-ink-400">
+                    PDF · {formaterTaille(documentation.taille)}
+                  </span>
+                </span>
+              </a>
+            )}
+
             <LinkedCompetences competences={competences} />
             <Livrables items={situation.livrables} />
           </aside>

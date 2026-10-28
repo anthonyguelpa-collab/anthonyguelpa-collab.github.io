@@ -24,13 +24,18 @@ Avant d'entrer dans la technique, il fallait savoir ce qui entre dans le périm�
 
 ### Infrastructure réseau
 
-Le réseau local est entièrement filaire et commuté. Le point important relevé lors du recensement est l'existence d'un **point d'entrée unique** : tout le trafic entrant et sortant transite par le routeur et le pare-feu. C'est à la fois une force — un seul point à sécuriser — et une faiblesse, identifiée plus tard comme un point de défaillance unique.
-
-<Capture
+<CaptureCote
   src="/captures/architecture-technique/p04.webp"
   alt="Schéma de l'infrastructure réseau : accès Internet, commutation LAN et équipements utilisateurs"
   legende="Infrastructure réseau — accès Internet, filtrage périmétrique, commutation et équipements utilisateurs."
-/>
+  position="gauche"
+>
+
+Le réseau local est entièrement filaire et commuté. Le point important relevé lors du recensement est l'existence d'un **point d'entrée unique** : tout le trafic entrant et sortant transite par le routeur et le pare-feu.
+
+C'est à la fois une force — un seul point à sécuriser — et une faiblesse, identifiée plus tard comme un point de défaillance unique.
+
+</CaptureCote>
 
 ## Passe 2 — Cartographier l'hôte de virtualisation
 
@@ -38,14 +43,16 @@ C'est la partie la plus longue du recensement. Toute la production repose sur un
 
 ### Les deux machines virtuelles
 
-1. **VM applicative métier** — héberge le logiciel de gestion bâtiment et ses bases de données locales. C'est elle qui porte les devis, les chantiers et la facturation.
-2. **VM de production** — porte l'ensemble des rôles d'infrastructure et quatre disques virtuels aux usages séparés.
-
-<Capture
+<CaptureCote
   src="/captures/architecture-infrastructure/p02.webp"
   alt="Schéma de l'hôte Hyper-V et des deux machines virtuelles hébergées"
   legende="L'hôte de virtualisation et les deux machines virtuelles de production."
-/>
+>
+
+1. **VM applicative métier** — héberge le logiciel de gestion bâtiment et ses bases de données locales. C'est elle qui porte les devis, les chantiers et la facturation.
+2. **VM de production** — porte l'ensemble des rôles d'infrastructure et quatre disques virtuels aux usages séparés.
+
+</CaptureCote>
 
 ### Les rôles portés par le disque système
 
@@ -79,9 +86,17 @@ Les dossiers « Société » et « Scan » du disque de données sont les miroir
 
 Un inventaire de composants ne suffit pas : il fallait savoir qui parle à qui. J'ai identifié trois portes d'accès vers l'extérieur, et une seule : tout trafic entrant ou sortant passe obligatoirement par l'une d'elles.
 
-1. **Le pare-feu** — navigation web, flux applicatifs en ligne, téléphonie, mises à jour.
-2. **La passerelle de messagerie** — courriels entrants et sortants entre les boîtes internes et les correspondants externes.
-3. **L'accès distant chiffré** — connexions des collaborateurs en déplacement et remontée des alertes de sécurité.
+<Etapes>
+<Etape numero={1} titre="Le pare-feu">
+Navigation web, flux applicatifs en ligne, téléphonie et mises à jour.
+</Etape>
+<Etape numero={2} titre="La passerelle de messagerie">
+Courriels entrants et sortants entre les boîtes internes et les correspondants externes.
+</Etape>
+<Etape numero={3} titre="L'accès distant chiffré">
+Connexions des collaborateurs en déplacement et remontée des alertes de sécurité.
+</Etape>
+</Etapes>
 
 <Capture
   src="/captures/schema-flux/p02.webp"

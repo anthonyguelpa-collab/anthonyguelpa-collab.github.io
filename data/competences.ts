@@ -23,6 +23,13 @@ export interface Competence {
   titreCourt: string;
   /** Mise en contexte personnelle — ce que la compétence recouvre chez moi. */
   description: string;
+  /**
+   * Ce que j'ai concrètement réalisé au titre de cette compétence.
+   * Formulations factuelles, tirées des situations rattachées — jamais une
+   * reformulation des critères de la grille, qui décrivent un attendu et
+   * non une réalisation.
+   */
+  realise: string[];
   /** Les critères listés sous la compétence dans la grille. */
   criteres: string[];
   /** Indicateurs de performance retenus comme les plus parlants. */
@@ -53,6 +60,12 @@ export const competences: Competence[] = [
   /* ------------------------------------------------------------------ E4 */
   {
     id: "e4-patrimoine",
+    realise: [
+      "Recensé l'hôte de virtualisation, les machines virtuelles, les partages réseau et les flux de données, jusque-là décrits nulle part",
+      "Décrit les flux de sauvegarde existants, puis mis en place une rotation hebdomadaire garantissant une copie hors site",
+      "Inventorié les actifs critiques et leur niveau de criticité pour le plan de reprise d'activité",
+      "Constitué le registre des traitements de données personnelles de l'entreprise",
+    ],
     bloc: "e4",
     slug: "gerer-le-patrimoine-informatique",
     titre: "Gérer le patrimoine informatique",
@@ -77,6 +90,12 @@ export const competences: Competence[] = [
   },
   {
     id: "e4-incidents",
+    realise: [
+      "Traité au quotidien les demandes d'assistance sur les postes, la messagerie et le logiciel métier",
+      "Transformé trois incidents récurrents en procédures illustrées, utilisables en autonomie par les utilisateurs habilités",
+      "Diagnostiqué les causes de non-synchronisation entre le logiciel de gestion et l'outil de planification terrain, dans les deux sens",
+      "Produit une checklist de huit vérifications à dérouler avant toute escalade au prestataire",
+    ],
     bloc: "e4",
     slug: "repondre-aux-incidents-et-aux-demandes",
     titre:
@@ -99,6 +118,11 @@ export const competences: Competence[] = [
   },
   {
     id: "e4-presence-en-ligne",
+    realise: [
+      "Rédigé la politique de confidentialité destinée au site web de l'entreprise",
+      "Produit le formulaire d'exercice des droits et la procédure de gestion des violations de données",
+      "Analysé les obligations d'information des personnes dans le cadre du projet de vidéosurveillance",
+    ],
     bloc: "e4",
     slug: "developper-la-presence-en-ligne",
     titre: "Développer la présence en ligne de l'organisation",
@@ -119,6 +143,12 @@ export const competences: Competence[] = [
   },
   {
     id: "e4-mode-projet",
+    realise: [
+      "Conduit l'étude de vidéosurveillance de bout en bout : solutions techniques, chiffrage, cadre légal et plan de déploiement",
+      "Mené l'automatisation du suivi des tâches sur un périmètre pilote, de la conception aux tests de bout en bout",
+      "Rendu compte de l'avancement à la direction, à qui reviennent les décisions d'investissement",
+      "Travaillé avec le prestataire d'infogérance sur les sujets dépassant mon périmètre d'intervention",
+    ],
     bloc: "e4",
     slug: "travailler-en-mode-projet",
     titre: "Travailler en mode projet",
@@ -141,6 +171,12 @@ export const competences: Competence[] = [
   },
   {
     id: "e4-service-utilisateurs",
+    realise: [
+      "Conçu et rédigé des supports de formation sur la messagerie et sur le logiciel de gestion",
+      "Rédigé les procédures permettant aux utilisateurs de traiter eux-mêmes les cas les plus fréquents",
+      "Mis à disposition un suivi automatisé des demandes, sans modifier les habitudes de travail des équipes",
+      "Accompagné la prise en main du logiciel métier par les nouveaux arrivants",
+    ],
     bloc: "e4",
     slug: "mettre-a-disposition-un-service-informatique",
     titre: "Mettre à disposition des utilisateurs un service informatique",
@@ -162,6 +198,11 @@ export const competences: Competence[] = [
   },
   {
     id: "e4-developpement-pro",
+    realise: [
+      "Organisé une veille technologique régulière : 1 h 20 par semaine réparties sur trois séances, par alertes et flux RSS",
+      "Mené des bancs d'essai de gestionnaires de mots de passe en conditions réelles, jusqu'à une recommandation argumentée",
+      "Suivi l'évolution du marché de la virtualisation et des normes de connectique émergentes",
+    ],
     bloc: "e4",
     slug: "organiser-son-developpement-professionnel",
     titre: "Organiser son développement professionnel",
@@ -185,6 +226,12 @@ export const competences: Competence[] = [
   /* ------------------------------------------------------------------ E5 */
   {
     id: "e5-concevoir",
+    realise: [
+      "Comparé deux architectures de vidéosurveillance — IP segmentée sur VLAN et cloud sans fil — et chiffré chacune d'elles",
+      "Conçu une architecture de redondance d'accès Internet à trois niveaux de bascule automatique",
+      "Proposé des mesures de sécurisation chiffrées, réalisables sans budget exceptionnel",
+      "Formalisé l'architecture existante, devenue la base technique des projets suivants",
+    ],
     bloc: "e5",
     slug: "concevoir-une-solution-dinfrastructure-reseau",
     titre: "Concevoir une solution d'infrastructure réseau",
@@ -210,6 +257,11 @@ export const competences: Competence[] = [
   },
   {
     id: "e5-deployer",
+    realise: [
+      "Réalisé le raccordement physique des liens d'accès de secours sur le pare-feu",
+      "Rédigé la procédure de test de bascule, intégrée au calendrier du plan de reprise d'activité",
+      "La configuration du pare-feu a été assurée par le prestataire : ma contribution a porté sur le raccordement, la documentation et les tests",
+    ],
     bloc: "e5",
     slug: "installer-tester-et-deployer-une-solution",
     titre: "Installer, tester et déployer une solution d'infrastructure réseau",
@@ -235,6 +287,11 @@ export const competences: Competence[] = [
   },
   {
     id: "e5-exploiter",
+    realise: [
+      "Mis en place la rotation hebdomadaire des supports de sauvegarde, avec une copie conservée hors site",
+      "Écrit des procédures de reprise pour trois familles de sinistres, exploitables par un tiers",
+      "Documenté la logique de bascule automatique des accès Internet et sa procédure de vérification",
+    ],
     bloc: "e5",
     slug: "exploiter-depanner-et-superviser-une-solution",
     titre: "Exploiter, dépanner et superviser une solution d'infrastructure réseau",

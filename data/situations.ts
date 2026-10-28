@@ -28,6 +28,21 @@ export interface Situation {
   titre: string;
   /** Une phrase, affichée sur les cartes de la vue d'ensemble. */
   resume: string;
+  /**
+   * Capture de couverture, choisie parmi celles DÉJÀ publiées pour cette
+   * situation. Jamais une image décorative : toujours une preuve réelle.
+   */
+  illustration: string;
+  /** Le besoin ou la problématique à l'origine de la mission — 1 à 2 phrases. */
+  besoin: string;
+  /** Les objectifs visés — 2 à 4 formulations courtes. */
+  objectifs: string[];
+  /**
+   * Ma contribution personnelle, et ce qui ne relevait pas de moi.
+   * Rédigé sans surévaluer le niveau d'autonomie : le critère transverse
+   * E4 porte précisément sur cette distinction.
+   */
+  role: string;
   /** Contexte UFIP : 2 à 4 lignes. Rôle, objectif, raison de l'attribution. */
   contexte: string;
   /** Conclusion UFIP : ~2 lignes. Objectif atteint ou non, et pourquoi. */
@@ -74,6 +89,16 @@ export const situations: Situation[] = [
   {
     slug: "cartographie-architecture-it",
     reference: "SP-01",
+    illustration: "/captures/architecture-infrastructure/p02.webp",
+    besoin:
+      "L'infrastructure fonctionnait mais n'était décrite dans aucun document : sa connaissance reposait sur la mémoire de l'équipe et du prestataire.",
+    objectifs: [
+      "Recenser l'hôte de virtualisation, les machines virtuelles et les partages",
+      "Identifier les flux de données entrants et sortants",
+      "Produire un document de référence réutilisable par les projets suivants",
+    ],
+    role:
+      "Recensement et rédaction des trois dossiers d'architecture, a partir d'entretiens avec l'équipe et le prestataire.",
     titre: "Cartographier l'architecture IT de l'entreprise",
     resume:
       "Recensement complet de l'infrastructure serveur, des partages et des flux de données, jusque-là non documentée.",
@@ -105,6 +130,16 @@ export const situations: Situation[] = [
   {
     slug: "strategie-de-sauvegarde",
     reference: "SP-02",
+    illustration: "/captures/sauvegardes/p02.webp",
+    besoin:
+      "Les sauvegardes tournaient chaque soir sans que personne ne puisse dire ce qu'elles contenaient, ni ce qu'elles permettaient de restaurer.",
+    objectifs: [
+      "Décrire les flux de sauvegarde existants",
+      "Identifier le point faible du dispositif",
+      "Garantir une copie conservée hors site",
+    ],
+    role:
+      "Description de l'existant, analyse du risque et mise en place de la rotation hebdomadaire des supports.",
     titre: "Formaliser et renforcer la stratégie de sauvegarde",
     resume:
       "Description de l'existant, puis mise en place d'une rotation hebdomadaire de supports externes pour garantir une copie hors site permanente.",
@@ -131,6 +166,16 @@ export const situations: Situation[] = [
   {
     slug: "plan-de-reprise-dactivite",
     reference: "SP-03",
+    illustration: "/captures/pra/p02.webp",
+    besoin:
+      "Aucune procédure écrite n'existait en cas de sinistre majeur : en l'absence du technicien, personne n'aurait su par où commencer.",
+    objectifs: [
+      "Inventorier les actifs critiques et mesurer leur impact",
+      "Écrire des procédures de reprise exploitables par un tiers",
+      "Planifier les tests de restauration",
+    ],
+    role:
+      "Rédaction du plan, en m'appuyant sur la cartographie et la stratégie de sauvegarde. Les valeurs de RTO et de RPO restent à arbitrer avec la direction et le prestataire.",
     titre: "Élaborer le plan de reprise d'activité",
     resume:
       "Inventaire des actifs critiques, analyse d'impact, procédures de reprise pour trois familles de sinistres et calendrier de tests.",
@@ -160,6 +205,16 @@ export const situations: Situation[] = [
   {
     slug: "plan-de-securisation-it",
     reference: "SP-04",
+    illustration: "/captures/plan-securite/p02.webp",
+    besoin:
+      "Comptes de session partagés, mots de passe notés sur papier, sauvegardes regroupées dans un meme local : les faiblesses tenaient à l'organisation plus qu'aux outils.",
+    objectifs: [
+      "Identifier les pratiques à risque",
+      "Proposer des mesures chiffrées et finançables",
+      "Hiérarchiser leur mise en œuvre",
+    ],
+    role:
+      "Analyse de l'existant et conception du plan en quatre parties. La mise en œuvre est échelonnée et décidée par la direction.",
     titre: "Construire le plan de sécurisation IT",
     resume:
       "Quatre axes chiffrés : séparation physique des sauvegardes, sécurité de la messagerie, gestion des mots de passe, comptes nominatifs.",
@@ -189,6 +244,16 @@ export const situations: Situation[] = [
   {
     slug: "formation-et-deploiement-outlook",
     reference: "SP-05",
+    illustration: "/captures/formation-outlook/p02.webp",
+    besoin:
+      "Des demandes d'assistance répétitives sur Outlook, et une messagerie restée le principal vecteur d'attaque pour des collaborateurs jamais formés à en repérer les pieges.",
+    objectifs: [
+      "Traiter dans un seul support l'usage quotidien et la sécurité",
+      "Réduire les sollicitations récurrentes du support",
+      "Donner une référence aux nouveaux arrivants",
+    ],
+    role:
+      "Conception et rédaction du support de formation, ensuite diffusé aux collaborateurs.",
     titre: "Former les collaborateurs à Outlook et à la sécurité de la messagerie",
     resume:
       "Conception d'un support de formation complet, de la configuration du client jusqu'aux réflexes face au phishing.",
@@ -216,6 +281,16 @@ export const situations: Situation[] = [
   {
     slug: "procedures-de-support-ebp",
     reference: "SP-06",
+    illustration: "/captures/ebp-deblocage/p01.webp",
+    besoin:
+      "Trois incidents récurrents sur le logiciel métier mobilisaient le service informatique pour des manipulations de deux à trois minutes.",
+    objectifs: [
+      "Documenter les trois cas les plus fréquents",
+      "Rendre les utilisateurs autonomes lorsque c'est sans risque",
+      "Conserver au service informatique ce qui touche aux paramétrages globaux",
+    ],
+    role:
+      "Analyse des incidents, rédaction et illustration des trois procédures.",
     titre: "Industrialiser les procédures de support sur le logiciel métier",
     resume:
       "Transformation des incidents EBP récurrents en procédures illustrées, utilisables en autonomie par les collaborateurs.",
@@ -237,6 +312,16 @@ export const situations: Situation[] = [
   {
     slug: "depannage-synchronisation-ebp-praxedo",
     reference: "SP-07",
+    illustration: "/captures/praxedo-synchro/p02.webp",
+    besoin:
+      "Les anomalies de synchronisation entre le logiciel de gestion et l'outil terrain remontaient au service informatique sans aucun élément de diagnostic.",
+    objectifs: [
+      "Identifier les causes réelles dans les deux sens de synchronisation",
+      "Donner aux équipes une checklist de vérification avant escalade",
+      "Formaliser la règle de back-office évitant un blocage irréversible",
+    ],
+    role:
+      "Diagnostic des causes et rédaction du guide de dépannage.",
     titre: "Diagnostiquer la synchronisation entre le logiciel métier et l'outil terrain",
     resume:
       "Analyse des causes de non-synchronisation dans les deux sens et rédaction d'un guide de dépannage avec checklist de pré-escalade.",
@@ -258,6 +343,16 @@ export const situations: Situation[] = [
   {
     slug: "automatisation-outlook-planner",
     reference: "SP-08",
+    illustration: "/captures/power-automate-1/p03.webp",
+    besoin:
+      "Le tri manuel des courriels répartissait le travail mais ne permettait aucun suivi : une demande oubliée restait invisible.",
+    objectifs: [
+      "Automatiser le suivi sans modifier les habitudes de tri",
+      "Relancer puis escalader automatiquement une tâche sans réponse",
+      "Produire un récapitulatif hebdomadaire",
+    ],
+    role:
+      "Conception, construction et test des cinq flux sur un périmètre pilote, puis rédaction de la procédure de duplication.",
     titre: "Automatiser l'affectation et le suivi des tâches",
     resume:
       "Cinq flux Power Automate : création de tâche depuis un e-mail, relance à 24 h, escalade manager à 48 h, récapitulatif hebdomadaire et repérage visuel.",
@@ -287,6 +382,16 @@ export const situations: Situation[] = [
   {
     slug: "mise-en-conformite-rgpd",
     reference: "SP-09",
+    illustration: "/captures/rgpd-reflexes/p01.webp",
+    besoin:
+      "Des données personnelles de clients, de salariés et de prospects étaient traitées sans registre ni documentation, alors qu'un projet de géolocalisation des véhicules se profilait.",
+    objectifs: [
+      "Constituer le registre des traitements",
+      "Produire les documents exigibles : politique, formulaire de droits, procédure de violation",
+      "Évaluer le projet de géolocalisation par une analyse d'impact",
+    ],
+    role:
+      "Volet technique et documentaire de la mise en conformité. La désignation du responsable RGPD et la publication relèvent de la direction.",
     titre: "Mettre l'entreprise en conformité RGPD",
     resume:
       "Registre des traitements, politique de confidentialité publiable, formulaire d'exercice des droits, procédure de violation et analyse d'impact.",
@@ -319,6 +424,16 @@ export const situations: Situation[] = [
   {
     slug: "etude-videosurveillance-parking",
     reference: "SP-10",
+    illustration: "/captures/video-ip/p02.webp",
+    besoin:
+      "Le parking, en accès libre, subissait des vols de carburant et d'outillage ainsi que des dégradations ; la direction souhaitait un dispositif de vidéosurveillance.",
+    objectifs: [
+      "Comparer deux architectures techniques et les chiffrer",
+      "Vérifier le cadre légal applicable à un espace ouvert au public",
+      "Identifier le chemin critique du projet",
+    ],
+    role:
+      "Étude complète : solutions, chiffrage et obligations légales. La décision d'investissement appartient a la direction.",
     titre: "Étudier la vidéosurveillance du parking",
     resume:
       "Dossier de choix opposant une solution cloud sans fil à une architecture IP segmentée sur VLAN, avec le cadre juridique comme préalable.",
@@ -354,6 +469,16 @@ export const situations: Situation[] = [
   {
     slug: "documentation-fonctionnelle-ebp",
     reference: "SP-11",
+    illustration: "/captures/ebp-module1/p03.webp",
+    besoin:
+      "Le logiciel central de l'entreprise n'avait aucun support de prise en main : la formation se faisait de poste à poste, avec des pratiques divergentes selon les services.",
+    objectifs: [
+      "Couvrir le socle commun à tous les utilisateurs",
+      "Harmoniser les pratiques entre services",
+      "Réduire la durée d'accompagnement d'un nouvel arrivant",
+    ],
+    role:
+      "Rédaction du module de formation et des procédures illustrées pas à pas.",
     titre: "Rédiger la documentation fonctionnelle du logiciel métier",
     resume:
       "Module de formation couvrant la prise en main du logiciel de gestion, de la connexion à la transformation d'une demande en intervention.",
@@ -369,11 +494,23 @@ export const situations: Situation[] = [
       "Module 1 — Fonctionnalités de base du logiciel de gestion",
       "Procédures illustrées pas à pas",
     ],
-    preuves: "completes",
+    preuves: "partielles",
+    notePreuves:
+      "Le module complet n'est pas publié : la quasi-totalité de ses captures montre la liste réelle des clients de l'entreprise. Les écrans reproduits ici sont ceux qui ne comportent aucune donnée client.",
   },
   {
     slug: "redondance-acces-internet",
     reference: "SP-12",
+    illustration: "/captures/firewall/p02.webp",
+    besoin:
+      "L'activité dépend de services hébergés à l'extérieur, qu'une coupure du lien fibre rendait totalement inaccessibles.",
+    objectifs: [
+      "Étudier une solution de continuité d'accès a Internet",
+      "Raccorder physiquement les liens de secours",
+      "Documenter la logique de bascule et sa procédure de test",
+    ],
+    role:
+      "Analyse d'impact, raccordement physique des liens de secours, rédaction de la documentation et de la procédure de test. La configuration du pare-feu a été assurée par le prestataire.",
     titre: "Contribuer à la mise en place de la redondance de l'accès Internet",
     resume:
       "Architecture multi-WAN à trois niveaux de bascule automatique : analyse d'impact, raccordement physique des liens de secours et documentation, la configuration du pare-feu restant au prestataire.",
