@@ -1,0 +1,353 @@
+Un cabinet de courtage travaille sur un poste unique. Devis, contrats, dossiers clients : tout y est, et tout n'y est qu'une fois. Pas de serveur, pas de NAS, pas de copie. Un vol, une panne de disque ou un rançongiciel et l'activité s'arrête, définitivement.
+
+La demande tenait en une phrase : **le client branche son disque, et tout se fait seul**. Pas de logiciel à ouvrir, pas de bouton à cliquer, pas de décision à prendre. C'est cette contrainte d'usage qui a dicté l'essentiel des choix techniques.
+
+## Le cahier des charges
+
+Cinq exigences ont été arrêtées avec le client avant toute installation. Chacune a été traduite en une décision technique vérifiable, puis en un test de recette.
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p04.webp"
+  alt="Les cinq exigences du cahier des charges et le périmètre exclu de cette version"
+  legende="Les cinq exigences retenues, et le périmètre volontairement écarté de cette première version."
+>
+
+1. Une **image système restaurable** sur un poste vierge, en deux générations.
+2. Une **copie lisible des fichiers**, consultable dans l'Explorateur sans aucun logiciel.
+3. Un **archivage des téléchargements** anciens vers le disque externe.
+4. Un **déclenchement au seul branchement**, sans action du client.
+5. Une **éjection automatique** en fin de traitement, jamais forcée.
+
+Le second disque en rotation hors site, la sauvegarde de la messagerie et les autres postes du cabinet ont été explicitement exclus de cette version.
+
+</CaptureCote>
+
+## 1 — L'audit du poste
+
+Rien n'a été installé avant d'avoir mesuré. J'ai relevé en PowerShell l'état réel du poste : système, partitions, volumétrie par dossier, chiffrement, messagerie.
+
+<Capture
+  src="/captures/sauvegarde-auto/p06.webp"
+  alt="Tableau de l'environnement relevé : système, disques, volumétrie, chiffrement et messagerie"
+  legende="Relevé d'audit — chacune de ces valeurs alimente ensuite directement le fichier de configuration de la solution."
+  large
+/>
+
+### Trois écarts entre l'annoncé et le réel
+
+L'audit n'a pas seulement décrit : il a corrigé trois hypothèses de départ, et modifié le dimensionnement comme l'ordre des travaux.
+
+<Captures>
+<CaptureItem
+  titre="Les écarts relevés"
+  src="/captures/sauvegarde-auto/p07.webp"
+  alt="Les trois écarts constatés entre le cahier des charges et l'état réel du poste"
+  legende="Volume surestimé, données régénérables, absence totale de sauvegarde : trois constats qui changent le projet."
+/>
+<CaptureItem
+  titre="Ce que cela change"
+  src="/captures/sauvegarde-auto/p11.webp"
+  alt="Rétention et occupation prévisionnelle du disque de sauvegarde"
+  legende="27,3 Go par jeu de données : l'occupation à un an tombe à 6 % du disque, ce qui laisse de la marge."
+/>
+</Captures>
+
+**Le volume était largement surestimé.** Le cahier des charges annonçait 100 à 250 Go de données ; le relevé en donne 27,3 Go. Conséquence directe : l'occupation prévisionnelle du disque de sauvegarde tombe à 6 %, ce qui autorisera plus tard à étendre la rétention sans acheter de matériel.
+
+**96 Go sont régénérables.** Sur les 181,6 Go occupés, 50,6 Go sont du cache de messagerie et 45,9 Go du cache d'un téléphone. Ces fichiers se reconstituent seuls, mais ils sont inclus dans chaque image système : leur nettoyage, à décider avec le client, allégerait chaque cycle d'un quart.
+
+<Note type="info" titre="Le risque numéro un a disparu pendant l'audit">
+Je m'attendais à devoir relever une clé de récupération BitLocker : sans elle, une image d'un volume chiffré est inexploitable. Le relevé a montré qu'aucun volume n'était chiffré. Le risque le plus sérieux du projet s'est donc éteint à la première commande — c'est exactement ce à quoi sert un audit préalable.
+</Note>
+
+## 2 — Le choix du logiciel
+
+Trois solutions d'image système ont été comparées sur huit critères : coût, droit d'usage commercial, restauration sur matériel différent, pilotage en ligne de commande, gestion des rétentions.
+
+<Capture
+  src="/captures/sauvegarde-auto/p09.webp"
+  alt="Comparatif de Veeam Agent Free, Macrium Reflect X Workstation et AOMEI Backupper Workstation"
+  legende="Comparatif des trois solutions — Veeam Agent Free est retenu, avec sa limite assumée : aucun support éditeur."
+  large
+/>
+
+**Veeam Agent for Microsoft Windows Free** a été retenu : l'édition gratuite offre les capacités de l'édition Workstation, autorise l'usage commercial sans licence, restaure sur un matériel différent et se pilote en ligne de commande. Sa limite est assumée et écrite dans le dossier : aucun support éditeur, à réévaluer si le parc s'étend.
+
+### Deux cycles avec un seul travail de sauvegarde
+
+L'édition gratuite n'autorise qu'un seul travail et ne gère pas de rétention mensuelle. Cette contrainte a été contournée par deux commandes distinctes plutôt que par deux travaux.
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p10.webp"
+  alt="Les deux cycles hebdomadaire et mensuel obtenus avec un seul travail Veeam"
+  legende="Hebdomadaire et mensuel obtenus avec un seul travail, et l'arborescence réellement créée sur le disque."
+  position="gauche"
+>
+
+Le cycle **hebdomadaire** écrit une complète active dans la chaîne du travail. La rétention des deux générations est alors gérée par Veeam lui-même.
+
+Le cycle **mensuel** écrit une complète autonome dans un dossier séparé. N'appartenant pas à la chaîne, elle échappe à la rétention hebdomadaire ; c'est le script qui la gère, et seulement après qu'une nouvelle sauvegarde mensuelle a réussi.
+
+</CaptureCote>
+
+<Note type="alerte" titre="Une règle que les scripts ne transgressent jamais">
+Aucun script ne supprime un fichier appartenant au travail Veeam. Effacer dans le dos du logiciel désynchroniserait son catalogue, et la chaîne de sauvegarde deviendrait inexploitable sans que rien ne le signale. La rétention hebdomadaire est donc laissée à Veeam ; seules les sauvegardes mensuelles, qui vivent hors de la chaîne, sont gérées par le code.
+</Note>
+
+## 3 — L'architecture logicielle
+
+Sept fichiers PowerShell, 1 847 lignes, installés dans un dossier accessible en écriture au seul compte système et aux administrateurs.
+
+<Capture
+  src="/captures/sauvegarde-auto/p12.webp"
+  alt="Les sept fichiers de la solution et le rôle de chacun"
+  legende="Les sept composants livrés — aucune valeur propre au poste n'est codée en dur ailleurs que dans le fichier de configuration."
+  large
+/>
+
+Le point d'architecture dont je suis le plus satisfait est la séparation stricte entre le code et les données : **toutes les valeurs propres au poste vivent dans un seul fichier de configuration**. Déployer la solution chez un autre client revient à dupliquer ce fichier et à changer six lignes — le disque, les dossiers sources, les exclusions, les seuils.
+
+### Trois mécanismes pour un déclenchement fiable
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p13.webp"
+  alt="Les trois mécanismes de déclenchement : événement WMI, vérification périodique et verrou global"
+  legende="Un écouteur d'événements, un filet de secours et un verrou : les trois répondent chacun à un mode de défaillance distinct."
+>
+
+Une tâche lancée au démarrage **écoute les arrivées de volume** et réagit en quelques secondes au branchement.
+
+Une seconde tâche **vérifie toutes les quinze minutes**, au cas où le processus de surveillance se serait arrêté sans bruit : sans ce filet, le client brancherait son disque dans le vide pendant des semaines.
+
+Un **verrou système global** garantit qu'une seule sauvegarde tourne à la fois, même si les deux mécanismes se déclenchent au même instant.
+
+</CaptureCote>
+
+<Note type="info" titre="Une technique volontairement écartée">
+Le consommateur d'événements WMI permanent aurait été plus élégant qu'une tâche planifiée au démarrage. Je ne l'ai pas retenu : c'est un marqueur classique de logiciel malveillant, régulièrement signalé par les antivirus. Sur le poste d'un client, un dispositif de sauvegarde qui déclenche une alerte de sécurité est un dispositif qui sera désinstallé.
+</Note>
+
+### La seule fonction qui supprime des fichiers
+
+L'archivage des téléchargements est la seule partie du dispositif qui efface quelque chose sur le poste du client. Elle est donc construite pour échouer du bon côté.
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p14.webp"
+  alt="Les quatre étapes de l'archivage et les deux garde-fous qui l'encadrent"
+  legende="Copier, restituer les dates, vérifier l'empreinte, et seulement alors supprimer — un échec à n'importe quelle étape laisse l'original en place."
+  position="gauche"
+>
+
+<Etapes>
+<Etape numero={1} titre="Copier">
+Le fichier part vers l'archive, classée par année et par mois de réception.
+</Etape>
+<Etape numero={2} titre="Restituer">
+Dates et attributs d'origine sont replacés : sans cela, tout porterait la date d'archivage.
+</Etape>
+<Etape numero={3} titre="Vérifier">
+Présence, taille identique, puis **empreinte SHA-256 identique** à l'original.
+</Etape>
+<Etape numero={4} titre="Supprimer">
+Seulement ici. Un échec à n'importe quelle étape précédente laisse l'original sur le poste.
+</Etape>
+</Etapes>
+
+</CaptureCote>
+
+<Note type="alerte" titre="Cette fonction n'est pas en service aujourd'hui">
+L'archivage est **désactivé dans la configuration**, et même activé, il démarrerait en mode simulation : il listerait ce qu'il ferait sans rien déplacer. Il faut donc deux modifications délibérées pour qu'un seul fichier bouge. Décision prise avec le client : l'archivage ne sera activé qu'une fois les sauvegardes éprouvées en production.
+</Note>
+
+## 4 — La mise en œuvre
+
+Installation réalisée sur le poste du client le 4 novembre 2026, de 16 h 30 à 18 h 30.
+
+<Captures>
+<CaptureItem
+  titre="Veeam et le support de récupération"
+  src="/captures/sauvegarde-auto/p16.webp"
+  alt="Installation de Veeam Agent et création du support de récupération"
+  legende="Support de récupération créé avec les pilotes matériel et Wi-Fi du poste, gravé en ISO sur le disque externe."
+/>
+<CaptureItem
+  titre="Les trois réglages du travail"
+  src="/captures/sauvegarde-auto/p17.webp"
+  alt="Paramétrage du travail Veeam : rétention, planification décochée, contrôle d'intégrité"
+  legende="Rétention sur deux points, planification entièrement décochée, et contrôle d'intégrité mensuel activé."
+/>
+</Captures>
+
+La planification du travail Veeam est **volontairement décochée**, y compris le déclenchement au branchement que le logiciel propose lui-même. C'est l'orchestrateur qui le lance : sans cela, les deux mécanismes se marcheraient dessus.
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p18.webp"
+  alt="Sortie de l'installateur : copie des fichiers, restriction des permissions et création des deux tâches"
+  legende="L'installateur copie les fichiers, restreint les permissions et crée les deux tâches planifiées."
+>
+
+L'installateur verrouille le dossier des scripts : héritage retiré, contrôle total accordé au seul compte système et aux administrateurs.
+
+La raison est simple. Les scripts s'exécutent avec les droits du système ; si n'importe qui pouvait en modifier le contenu, le dispositif offrirait une élévation de privilèges sur le poste.
+
+Le service de sauvegarde est par ailleurs vérifié — et démarré s'il est à l'arrêt — avant chaque image : un service arrêté est la cause la plus silencieuse d'arrêt des sauvegardes.
+
+</CaptureCote>
+
+## 5 — La recette
+
+Douze tests ont été exécutés sur le poste du client, en conditions réelles.
+
+<Capture
+  src="/captures/sauvegarde-auto/p20.webp"
+  alt="Plan de tests : douze tests, leur résultat attendu et le résultat obtenu"
+  legende="Plan de tests et résultats — deux tests ne sont conformes qu'après correction, et deux vérifications restent à mener."
+  large
+/>
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p21.webp"
+  alt="Deux points de restauration de 84 Go dans Veeam et le dossier créé sur le disque externe"
+  legende="Preuve 1 — deux points de restauration conservés, et le dossier réellement écrit sur le disque externe."
+>
+
+La rétention sur deux générations est vérifiable directement dans l'interface du logiciel : deux points de restauration de 84 Go, pas un de plus.
+
+L'image a été écrite en **9 minutes**, là où l'estimation initiale annonçait 2 à 3 heures.
+
+</CaptureCote>
+
+<Chiffres>
+<Chiffre valeur="24 min" libelle="Séquence complète, du branchement à l'éjection, sans aucune intervention" />
+<Chiffre valeur="84 Go" libelle="Taille d'une image système compressée, écrite en 9 minutes" />
+<Chiffre valeur="27,3 Go" libelle="Copie native des documents, écrite en 5,2 minutes" />
+</Chiffres>
+
+### Le résultat le plus parlant
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p22.webp"
+  alt="Journal d'exécution de la séquence complète, message de fin et fichier d'état horodaté"
+  legende="Journal d'exécution — détection par numéro de série, copie en 5,2 minutes, récupération des signatures et modèles, puis lancement de l'image."
+  position="gauche"
+>
+
+Une séquence complète s'est déroulée seule, déclenchée par le seul branchement du disque : copie des documents, image système, archive mensuelle, puis éjection — **en 24 minutes**.
+
+L'estimation initiale annonçait 2 à 3 heures et 90 à 110 Go. Le matériel du client s'est révélé nettement plus rapide que prévu, ce qui change le confort d'usage annoncé.
+
+Chaque étape réussie est horodatée dans un fichier d'état : après une interruption, rien n'est refait inutilement.
+
+</CaptureCote>
+
+### Le disque reste accessible quand rien n'est dû
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p23.webp"
+  alt="Message affiché au rebranchement le jour même, et volumes réellement écrits sur le disque"
+  legende="Au rebranchement le jour même, le dispositif se tait et laisse le disque accessible — le client consulte ses dossiers."
+>
+
+C'est le scénario quotidien : le client rebranche son disque pour consulter un dossier, pas pour sauvegarder.
+
+Sans cette règle, le disque aurait été éjecté sous ses doigts dès qu'il le branchait. Le délai configuré est de six jours ; au-delà, la sauvegarde repart.
+
+</CaptureCote>
+
+### Le filet de sécurité a servi dès le premier jour
+
+<Capture
+  src="/captures/sauvegarde-auto/p24.webp"
+  alt="Journal montrant la vérification périodique prenant le relais puis le redémarrage de la surveillance"
+  legende="Panne authentique, non simulée — à 19 h 00, la vérification périodique prend le relais seule ; à 19 h 05, la surveillance redémarre."
+  large
+/>
+
+Le processus de surveillance s'était arrêté, et plus personne n'écoutait les branchements. La vérification périodique a pris le relais seule. C'est précisément le scénario qui, sans ce filet, aurait laissé le client brancher son disque dans le vide pendant des semaines.
+
+<Note type="info" titre="Ce que ce test a aussi révélé">
+Un branchement qui n'est pas reconnu ne laisse **aucune trace** dans le journal. Si le client branche un jour un autre disque, ou si le sien n'est pas identifié, le diagnostic sera impossible faute d'enregistrement. C'est la correction que j'ai portée en tête des évolutions à prévoir.
+</Note>
+
+## 6 — Les incidents rencontrés
+
+Six problèmes sont survenus pendant la mise en œuvre. Tous ont été corrigés et retestés le jour même. Cette partie est celle qui décrit le mieux le travail réel.
+
+<Capture
+  src="/captures/sauvegarde-auto/p26.webp"
+  alt="Tableau des six problèmes rencontrés, de leur cause et de la correction apportée"
+  legende="Les six incidents, leur cause identifiée et la correction retenue pour chacun."
+  large
+/>
+
+<Difficulte probleme="Les scripts étaient refusés au lancement">
+
+La stratégie d'exécution de Windows bloque les scripts PowerShell non signés. Le réflexe serait de modifier la stratégie du poste — c'est-à-dire d'abaisser durablement son niveau de sécurité pour installer un outil.
+
+**Solution retenue** — un contournement limité au seul processus concerné. La stratégie du poste reste intacte, et chaque tâche planifiée porte son propre contournement.
+
+</Difficulte>
+
+<Difficulte probleme="Le Planificateur refusait la tâche de vérification périodique">
+
+Une durée de répétition infinie produit un descriptif que le Planificateur de tâches rejette, sans message exploitable.
+
+**Solution retenue** — un déclencheur quotidien répété toutes les quinze minutes pendant vingt-quatre heures. Le comportement est identique, et le descriptif est valide.
+
+</Difficulte>
+
+<Difficulte probleme="Un avertissement s'affichait toutes les quinze minutes">
+
+Le verrou anti-double-exécution était pris au démarrage du script. Le processus de surveillance, qui tourne en permanence, le détenait donc en permanence — et bloquait la vérification périodique, qui signalait l'anomalie tous les quarts d'heure.
+
+**Solution retenue** — le verrou est désormais pris autour du seul traitement. Un journal qui alerte quatre fois par heure finit par masquer les vraies alertes : c'est l'incident qui m'a le plus appris.
+
+</Difficulte>
+
+<Capture
+  src="/captures/sauvegarde-auto/p27.webp"
+  alt="Captures des incidents : scripts refusés, descriptif de tâche rejeté, et message corrigé"
+  legende="Trois incidents en images, et le journal du plus instructif : toute la logique avait fonctionné, seul l'appel final a échoué."
+  large
+/>
+
+<Note type="info" titre="L'erreur la plus instructive">
+Sur l'incident du message au rebranchement, le journal montre que toute la logique métier avait fonctionné : le disque reconnu, le délai respecté, le bon message préparé. Seul l'appel final a échoué, sur un paramètre obligatoire recevant une chaîne vide. Le filet de sécurité a converti l'erreur en message au client plutôt qu'en arrêt silencieux — c'est le comportement voulu.
+</Note>
+
+## 7 — Bilan
+
+### Ce qui fonctionne et a été éprouvé
+
+L'identification du disque par son numéro de série, l'image système et sa rétention, la copie lisible des fichiers, le cycle mensuel indépendant, le déclenchement au branchement, les notifications, l'éjection automatique et le filet de vérification périodique : tous ces mécanismes ont été testés sur le poste, en conditions réelles.
+
+<CaptureCote
+  src="/captures/sauvegarde-auto/p29.webp"
+  alt="Points ouverts : tests à mener, décisions à prendre avec le client et améliorations prévues"
+  legende="Points ouverts — ce qui reste à éprouver, ce qui se décide avec le client et ce qui est à corriger."
+  position="gauche"
+>
+
+**Ce qui reste à valider** tient en deux tests : la restauration complète d'un poste depuis le support de récupération, sur une machine d'essai, et la récupération d'un fichier isolé depuis une image.
+
+Tant qu'ils n'ont pas été menés, la capacité de restauration n'est pas démontrée.
+
+**Ce qui se décide avec le client** : l'activation de l'archivage, le nettoyage des 45,9 Go de cache, l'extension de la rétention à un an d'historique.
+
+**Ce qui reste hors périmètre** : le second disque en rotation hors site, sans lequel un incendie emporte le poste et sa sauvegarde, et la sauvegarde de la messagerie.
+
+</CaptureCote>
+
+<Note type="alerte" titre="Points restant à valider">
+**Une sauvegarde n'est validée que le jour où l'on a restauré avec.** Les deux tests de restauration n'ont pas encore été menés : la solution est déployée et fonctionnelle pour les opérations éprouvées, mais sa capacité de restauration reste à démontrer. L'archivage des téléchargements, lui, est désactivé et en mode simulation — il n'est pas en service aujourd'hui.
+</Note>
+
+### Ce que j'en retiens
+
+L'audit préalable a changé le projet : volumétrie divisée par cinq, risque principal écarté dès la première commande, ordre des travaux revu. Je n'aurais rien dimensionné correctement en partant du cahier des charges seul.
+
+Le reste du temps est allé dans les six incidents — c'est-à-dire dans la différence entre un script qui marche sur ma machine et un dispositif qui tourne sans surveillance chez quelqu'un d'autre.
+
+<Note type="caviardage">
+Le nom du cabinet, celui du client, le nom du poste, le compte utilisateur Windows, le numéro de série du disque externe et l'identifiant du travail Veeam ont été remplacés par des équivalents génériques — dans les captures comme dans le document téléchargeable, calque texte compris. La substance technique et le déroulé sont conservés intégralement.
+</Note>

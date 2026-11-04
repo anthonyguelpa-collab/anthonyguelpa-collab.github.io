@@ -536,6 +536,52 @@ export const situations: Situation[] = [
     ],
     preuves: "completes",
   },
+  {
+    slug: "solution-de-sauvegarde-automatisee",
+    reference: "SP-13",
+    illustration: "/captures/sauvegarde-auto/p22.webp",
+    besoin:
+      "Un poste de travail portant l'ensemble des dossiers clients d'un cabinet, sur un seul disque interne, sans aucune copie. Un vol, une panne ou un chiffrement malveillant et tout disparaissait.",
+    objectifs: [
+      "Produire une image système restaurable et une copie des fichiers lisible sans logiciel",
+      "Tout déclencher au seul branchement d'un disque externe",
+      "N'exiger de l'utilisateur aucune manipulation ni aucune décision",
+    ],
+    role:
+      "Mission conduite seul, de l'audit à la recette : cahier des charges, comparatif logiciel, développement des scripts, installation sur le poste et tests en conditions réelles. La restauration n'est pas encore éprouvée.",
+    titre:
+      "Concevoir et déployer une solution de sauvegarde automatisée sur un poste Windows 11",
+    resume:
+      "Audit du poste, choix logiciel argumenté, sept scripts PowerShell et deux tâches planifiées : une séquence complète déclenchée par le seul branchement du disque.",
+    contexte:
+      "Un cabinet de courtage m'a confié la sauvegarde du poste de travail sur lequel repose son activité. L'audit a confirmé le risque : les dossiers clients n'existaient qu'à un seul endroit, sur le disque interne, sans aucune copie. La contrainte posée était l'absence totale de manipulation : le client branche son disque, et tout doit se faire seul.",
+    conclusion:
+      "Objectif atteint sur le périmètre déployé : l'image système, la copie lisible des fichiers, le déclenchement au branchement, la rétention et l'éjection fonctionnent et ont été éprouvés sur le poste. Deux vérifications restent à mener — la restauration complète depuis le support de récupération et la récupération d'un fichier isolé — sans lesquelles la capacité de restauration ne peut pas être déclarée validée.",
+    periode: { debut: "2026-11-04", source: "document" },
+    blocPrincipal: "e5",
+    competences: ["e5-deployer", "e5-concevoir", "e4-patrimoine", "e4-mode-projet", "e4-service-utilisateurs"],
+    technologies: [
+      "Windows 11",
+      "PowerShell",
+      "Veeam Agent Free",
+      "Robocopy",
+      "Planificateur de tâches",
+      "WMI",
+      "SHA-256",
+      "Disque externe USB",
+    ],
+    livrables: [
+      "Cahier des charges et relevé d'audit du poste",
+      "Comparatif de trois solutions d'image système",
+      "Sept fichiers PowerShell — 1 847 lignes, un seul fichier de configuration",
+      "Deux tâches planifiées : surveillance du branchement et vérification périodique",
+      "Compte rendu de conception, de mise en œuvre et de recette",
+      "Annexe technique commentée des sept scripts",
+    ],
+    preuves: "completes",
+    notePreuves:
+      "Le nom du cabinet, celui du client, le nom du poste, le compte utilisateur, le numéro de série du disque et l'identifiant du travail Veeam ont été remplacés par des équivalents génériques, dans les captures comme dans le document téléchargeable.",
+  },
 ];
 
 export function getSituation(slug: string): Situation | undefined {
