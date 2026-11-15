@@ -28,9 +28,9 @@ import {
 
 /** Situations mises en avant — diversité des blocs et des sujets. */
 const EN_VEDETTE = [
+  "solution-de-sauvegarde-automatisee",
   "plan-de-reprise-dactivite",
   "formation-et-deploiement-outlook",
-  "automatisation-outlook-planner",
   "etude-videosurveillance-parking",
 ] as const;
 
@@ -103,10 +103,11 @@ export default function Accueil() {
         />
 
         <p className="mt-5 max-w-3xl text-pretty leading-relaxed text-ink-400">
-          Quatre missions choisies pour leur diversité : une étude
-          d&apos;infrastructure, un support de formation, une automatisation et
-          un dossier de choix technique. Chacune est documentée de bout en
-          bout, avec sa documentation complète en téléchargement.
+          Quatre missions choisies pour leur diversité : le déploiement
+          d&apos;une solution de sauvegarde, une étude d&apos;infrastructure,
+          un support de formation et un dossier de choix technique. Chacune est
+          documentée de bout en bout, avec sa documentation complète en
+          téléchargement.
         </p>
 
         <ul className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

@@ -539,7 +539,7 @@ export const situations: Situation[] = [
   {
     slug: "solution-de-sauvegarde-automatisee",
     reference: "SP-13",
-    illustration: "/captures/sauvegarde-auto/p22.webp",
+    illustration: "/captures/sauvegarde-auto/p04.webp",
     besoin:
       "Un poste de travail portant l'ensemble des dossiers clients d'un cabinet, sur un seul disque interne, sans aucune copie. Un vol, une panne ou un chiffrement malveillant et tout disparaissait.",
     objectifs: [
