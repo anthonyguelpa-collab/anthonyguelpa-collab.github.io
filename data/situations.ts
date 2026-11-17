@@ -440,7 +440,7 @@ export const situations: Situation[] = [
     contexte:
       "Le parking, exposé et accessible librement, subissait des vols et des dégradations. La direction souhaitait un dispositif de vidéosurveillance. J'ai été chargé de l'étude complète : solutions techniques, chiffrage, et surtout cadre réglementaire, le parking étant ouvert au public.",
     conclusion:
-      "Objectif atteint sur l'étude : deux architectures sont décrites, chiffrées et confrontées aux obligations légales, et le chemin critique du projet est identifié — l'autorisation préfectorale, jusqu'à quatre mois d'instruction. La décision d'investissement appartient à la direction.",
+      "Objectif atteint sur l'étude : deux architectures sont décrites, chiffrées et confrontées aux obligations légales, et le chemin critique du projet est identifié — l'autorisation préfectorale, jusqu'à quatre mois d'instruction. La direction a retenu la solution sans fil ; les travaux restent à engager.",
     periode: { debut: "2026-07", source: "document" },
     blocPrincipal: "e5",
     competences: ["e5-concevoir", "e4-mode-projet", "e4-presence-en-ligne"],
