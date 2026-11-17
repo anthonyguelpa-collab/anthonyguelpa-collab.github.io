@@ -88,11 +88,14 @@ export default function DocumentationPage() {
                 quelques personnes, et disparaît avec elles.
               </p>
               <p className="mt-3">
-                Ce travail s&apos;est construit mission après mission. J&apos;ai
-                recensé des fonctionnements que personne n&apos;avait écrits,
-                repris des façons de faire pour les corriger, et créé les
-                documents qui manquaient — jusqu&apos;à obtenir une base
-                cohérente plutôt qu&apos;une collection de procédures isolées.
+                Ce travail s&apos;est construit mission après mission, et il a
+                surtout consisté à créer. La documentation n&apos;existait pas :
+                je suis allé chercher les données là où elles se trouvaient —
+                dans les machines, les journaux, la mémoire de l&apos;équipe et
+                du prestataire —, je les ai analysées, puis j&apos;ai écrit. À
+                quoi s&apos;ajoute ce que chaque mission a produit de neuf. Là
+                où une façon de faire existait déjà, je l&apos;ai reprise pour
+                la corriger.
               </p>
             </>
           }

@@ -26,7 +26,7 @@ export interface ExempleVeille {
   conclusion: string;
   date: string;
   /** Statut de la solution vis-à-vis de l'entreprise. */
-  statut: "retenue" | "ecartee" | "en-evaluation" | "veille-passive";
+  statut: "retenue" | "ecartee" | "en-evaluation" | "veille-passive" | "etude";
   /**
    * Compétences validées par cet exemple de veille.
    * La règle de cohérence UFIP admet un exemple de veille au même titre
@@ -131,7 +131,7 @@ export const exemples: ExempleVeille[] = [
     conclusion:
       "Aucune solution adoptée à ce stade : le panorama a servi à définir la grille de critères — ergonomie, gestion centralisée, conformité RGPD, coût par utilisateur — appliquée ensuite aux bancs d'essai.",
     date: "Novembre 2025",
-    statut: "en-evaluation",
+    statut: "etude",
     competences: ["e4-developpement-pro"],
     preuves: "absentes",
     sources: [
@@ -166,9 +166,9 @@ export const exemples: ExempleVeille[] = [
     contexte:
       "Thème de veille : gestionnaires de mots de passe. Après le panorama, Bitwarden a été retenu pour un banc d'essai grandeur nature, repéré via les comparatifs de sites spécialisés et son positionnement open source.",
     conclusion:
-      "Solution en évaluation avancée : l'auto-remplissage web et les permissions granulaires sont convaincants, la conformité RGPD est solide avec un hébergement européen. Point de vigilance retenu : aucun auto-remplissage natif sur les logiciels installés.",
+      "Solution non retenue au moment du choix : l'auto-remplissage web et les permissions granulaires sont convaincants, la conformité RGPD est solide avec un hébergement européen, mais aucun auto-remplissage natif n'est proposé sur les logiciels installés. C'est LockSelf qui a été déployé.",
     date: "Août 2026",
-    statut: "en-evaluation",
+    statut: "ecartee",
     competences: ["e4-developpement-pro", "e5-concevoir"],
     preuves: "completes",
     sources: [{ libelle: "Documentation officielle Bitwarden", url: "https://bitwarden.com/help/" }],
@@ -182,9 +182,9 @@ export const exemples: ExempleVeille[] = [
     contexte:
       "Thème de veille : gestionnaires de mots de passe. Solution identifiée dans le panorama au titre de la souveraineté numérique, testée une semaine après Bitwarden sur la même grille de critères pour permettre une comparaison directe.",
     conclusion:
-      "Solution en évaluation avancée : le cloisonnement de l'espace personnel vis-à-vis de l'administrateur et la gestion par catégories — qui permet de révoquer tous les accès d'un partant en une action — constituent un avantage net sur le concurrent testé.",
+      "Solution retenue, puis déployée dans l'entreprise. Le cloisonnement de l'espace personnel vis-à-vis de l'administrateur et la gestion par catégories — qui permet de révoquer tous les accès d'un partant en une action — ont emporté la décision face au concurrent testé.",
     date: "Août 2026",
-    statut: "en-evaluation",
+    statut: "retenue",
     competences: ["e4-developpement-pro", "e5-concevoir"],
     preuves: "completes",
     sources: [{ libelle: "Documentation officielle LockSelf", url: "https://www.lockself.com" }],
@@ -228,6 +228,7 @@ export const STATUTS: Record<
   { libelle: string; ton: "positif" | "neutre" | "negatif" }
 > = {
   retenue: { libelle: "Solution retenue", ton: "positif" },
+  etude: { libelle: "Étude comparative", ton: "neutre" },
   "en-evaluation": { libelle: "En évaluation", ton: "neutre" },
   "veille-passive": { libelle: "Veille passive", ton: "neutre" },
   ecartee: { libelle: "Solution écartée", ton: "negatif" },

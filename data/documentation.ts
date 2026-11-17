@@ -28,7 +28,8 @@ export type Geste = "recense" | "faitEvoluer" | "cree";
 export const GESTES: Record<Geste, { libelle: string; court: string }> = {
   recense: {
     libelle: "Existant recensé",
-    court: "Décrire un fonctionnement réel que personne n'avait écrit.",
+    court:
+      "Relever et analyser ce qui existait déjà — dans les machines, les journaux, la mémoire des gens — pour le mettre noir sur blanc.",
   },
   faitEvoluer: {
     libelle: "Repris et fait évoluer",
@@ -36,7 +37,8 @@ export const GESTES: Record<Geste, { libelle: string; court: string }> = {
   },
   cree: {
     libelle: "Créé",
-    court: "Écrire ce qui n'avait aucun équivalent dans l'entreprise.",
+    court:
+      "Écrire ce qui n'avait aucun équivalent, à partir des données récupérées et analysées, et de ce que la mission a apporté en plus.",
   },
 };
 
