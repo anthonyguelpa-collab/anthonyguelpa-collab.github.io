@@ -59,7 +59,7 @@ export const planningVeille = [
   },
   {
     jour: "Vendredi",
-    horaire: "16 h 00",
+    horaire: "17 h 00",
     duree: "30 min",
     activite: "Synthèse hebdomadaire, mise à jour du tableau de suivi, archivage",
   },

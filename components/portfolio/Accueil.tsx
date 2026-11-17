@@ -12,7 +12,7 @@ import {
 import { site } from "@/data/site";
 import type { Situation } from "@/data/situations";
 import { domainesDeSituation, domainesSynthese } from "@/data/synthese";
-import { themes, dureeHebdomadaire } from "@/data/veille";
+import { planningVeille, themes, dureeHebdomadaire } from "@/data/veille";
 import { ressource } from "@/lib/chemin";
 import { formaterPeriode, isoPeriode } from "@/lib/dates";
 import { TechBadges } from "@/components/ui";
@@ -361,21 +361,51 @@ export function ApercuVeille() {
       />
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-10">
-        <div className="space-y-4 text-pretty leading-relaxed text-ink-300">
-          <p>
-            Je consacre <strong className="font-semibold text-ink-200">
-              {dureeHebdomadaire}
-            </strong>{" "}
-            à ma veille, répartie sur trois séances : alertes par courriel,
-            flux RSS d&apos;éditeurs et de sites spécialisés, puis une synthèse
-            de fin de semaine. L&apos;automatisation de la collecte est ce qui
-            distingue la veille d&apos;une recherche ponctuelle.
-          </p>
-          <p>
-            Chaque thème suivi répond à une question posée par
-            l&apos;entreprise, et plusieurs ont déjà débouché sur des bancs
-            d&apos;essai menés en conditions réelles.
-          </p>
+        <div className="space-y-5">
+          <div className="space-y-4 text-pretty leading-relaxed text-ink-300">
+            <p>
+              Je consacre <strong className="font-semibold text-ink-200">
+                {dureeHebdomadaire}
+              </strong>{" "}
+              à ma veille, sur trois créneaux réservés dans l&apos;agenda.
+              C&apos;est la régularité, et l&apos;automatisation de la
+              collecte, qui distinguent la veille d&apos;une recherche
+              ponctuelle.
+            </p>
+            <p>
+              Chaque thème suivi répond à une question posée par
+              l&apos;entreprise, et plusieurs ont déjà débouché sur des bancs
+              d&apos;essai menés en conditions réelles.
+            </p>
+          </div>
+
+          {/* Le planning, visible dès l'accueil : c'est lui qui prouve la
+              régularité, plus sûrement qu'une liste de sources. */}
+          <div className="surface overflow-hidden">
+            <p className="border-b border-night-700/60 px-4 py-2.5 font-mono text-[0.66rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
+              Planning hebdomadaire
+            </p>
+            <ul className="divide-y divide-night-700/50">
+              {planningVeille.map((c) => (
+                <li key={c.jour} className="px-4 py-3">
+                  <p className="flex flex-wrap items-baseline gap-x-2.5">
+                    <span className="text-sm font-semibold text-ink-100">
+                      {c.jour}
+                    </span>
+                    <span className="font-mono text-[0.72rem] font-medium text-cyan-bright">
+                      {c.horaire}
+                    </span>
+                    <span className="font-mono text-[0.68rem] text-ink-400">
+                      {c.duree}
+                    </span>
+                  </p>
+                  <p className="mt-0.5 text-[0.82rem] leading-relaxed text-ink-400">
+                    {c.activite}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         <ul className="space-y-3">
