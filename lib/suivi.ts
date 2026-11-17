@@ -95,7 +95,7 @@ export function ligneSuivi(competence: Competence): LigneSuivi {
     veille: veilles.length,
     preuves,
     preuvesCompletes: completes,
-    href: `/competences/${competence.bloc}/${competence.slug}`,
+    href: `/competences/${competence.slug}`,
   };
 }
 
