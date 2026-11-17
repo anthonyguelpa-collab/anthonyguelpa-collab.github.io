@@ -30,6 +30,11 @@ export interface Competence {
    * non une réalisation.
    */
   realise: string[];
+  /**
+   * Renvoi vers une page transversale, lorsqu'un travail dépasse le cadre
+   * d'une seule situation professionnelle.
+   */
+  transversal?: { href: string; titre: string; texte: string };
   /** Les critères listés sous la compétence dans la grille. */
   criteres: string[];
   /** Indicateurs de performance retenus comme les plus parlants. */
@@ -60,6 +65,12 @@ export const competences: Competence[] = [
   /* ------------------------------------------------------------------ E4 */
   {
     id: "e4-patrimoine",
+    transversal: {
+      href: "/documentation",
+      titre: "La documentation du fonctionnement de l'entreprise",
+      texte:
+        "Gérer un patrimoine informatique ne se limite pas au matériel et aux équipements. Ces quatre lignes sont la partie visible d'un travail documentaire mené mission après mission : fonctionnements recensés, procédures reprises et corrigées, documents créés là où rien n'existait.",
+    },
     realise: [
       "Recensé l'hôte de virtualisation, les machines virtuelles, les partages réseau et les flux de données, jusque-là décrits nulle part",
       "Décrit les flux de sauvegarde existants, puis mis en place une rotation hebdomadaire garantissant une copie hors site",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Check, FolderOpen } from "lucide-react";
+import { ArrowRight, Check, FolderOpen, FolderTree } from "lucide-react";
 
 import type { Competence } from "@/data/competences";
 import type { Situation } from "@/data/situations";
@@ -76,6 +76,35 @@ export function DomaineCompetence({
               </li>
             ))}
           </ul>
+
+          {competence.transversal && (
+            <Link
+              href={competence.transversal.href}
+              className="group mt-6 block rounded-lg border border-[color-mix(in_oklab,var(--bloc-accent)_35%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_7%,transparent)] px-4 py-3.5 transition-colors hover:border-[var(--bloc-accent)]"
+            >
+              <span className="flex items-start gap-2.5">
+                <FolderTree
+                  className="mt-0.5 size-4 shrink-0 text-[var(--bloc-accent)]"
+                  aria-hidden
+                />
+                <span className="flex-1">
+                  <span className="block text-sm font-semibold text-ink-100">
+                    {competence.transversal.titre}
+                  </span>
+                  <span className="mt-1 block text-[0.84rem] leading-relaxed text-ink-300">
+                    {competence.transversal.texte}
+                  </span>
+                  <span className="mt-2 inline-flex items-center gap-1.5 font-mono text-[0.7rem] font-semibold text-[var(--bloc-accent)]">
+                    Voir la base documentaire
+                    <ArrowRight
+                      className="size-3 transition-transform duration-200 group-hover:translate-x-0.5"
+                      aria-hidden
+                    />
+                  </span>
+                </span>
+              </span>
+            </Link>
+          )}
 
           {technologies.length > 0 && (
             <>

@@ -68,5 +68,6 @@ export const navigation = [
   { label: "Compétences", href: "/competences" },
   { label: "Réalisations", href: "/realisations" },
   { label: "Situations", href: "/situations" },
+  { label: "Documentation", href: "/documentation" },
   { label: "Veille", href: "/veille" },
 ] as const;
