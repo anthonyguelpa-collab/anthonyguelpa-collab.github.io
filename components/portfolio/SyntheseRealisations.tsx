@@ -247,6 +247,10 @@ export function SyntheseRealisations() {
           </p>
         </div>
 
+        <p className="border-b border-night-700/60 px-5 py-2.5 text-[0.82rem] text-ink-300">
+          {enTeteSynthese.epreuve}
+        </p>
+
         <dl className="grid gap-x-6 gap-y-3 px-5 py-4 sm:grid-cols-2 lg:grid-cols-4">
           {enTeteSynthese.champs.map((c) => (
             <div key={c.libelle}>

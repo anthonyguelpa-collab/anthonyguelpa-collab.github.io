@@ -30,6 +30,7 @@ export const enTeteSynthese = {
   session: "Session 2025",
   intitule: "Tableau de synthèse des réalisations professionnelles",
   reference: "Annexe 8-1",
+  epreuve: "Épreuve E5 — Support et mise à disposition de services informatiques",
   champs: [
     { libelle: "Nom et prénom", valeur: "Anthony Guelpa" },
     { libelle: "N° candidat", valeur: "" },
@@ -122,6 +123,11 @@ export const domainesSynthese: DomaineSynthese[] = [
  * « Développer la présence en ligne » ne reçoit volontairement aucune
  * réalisation : ni le dossier RGPD ni l'étude de vidéosurveillance ne
  * couvrent suffisamment les activités du domaine pour y figurer.
+ *
+ * SP-12 est rattachée au patrimoine au titre d'une seule activité du
+ * domaine : « vérifier les conditions de la continuité d'un service
+ * informatique ». Le raccordement et la procédure de test en relèvent ;
+ * la configuration du pare-feu, faite par le prestataire, non.
  */
 const RATTACHEMENTS: Record<string, string[]> = {
   "cartographie-architecture-it": ["patrimoine"],
@@ -135,7 +141,8 @@ const RATTACHEMENTS: Record<string, string[]> = {
   "mise-en-conformite-rgpd": ["mode-projet"],
   "etude-videosurveillance-parking": ["mode-projet"],
   "documentation-fonctionnelle-ebp": ["incidents", "service"],
-  "redondance-acces-internet": [],
+  "redondance-acces-internet": ["patrimoine"],
+  "solution-de-sauvegarde-automatisee": ["patrimoine", "mode-projet", "service"],
 };
 
 export function domainesDeSituation(slug: string): string[] {

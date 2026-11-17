@@ -11,6 +11,7 @@ import {
 
 import { site } from "@/data/site";
 import type { Situation } from "@/data/situations";
+import { domainesDeSituation, domainesSynthese } from "@/data/synthese";
 import { themes, dureeHebdomadaire } from "@/data/veille";
 import { ressource } from "@/lib/chemin";
 import { formaterPeriode, isoPeriode } from "@/lib/dates";
@@ -172,6 +173,41 @@ export function Environnement() {
   );
 }
 
+/* ------------------------------------------- Domaines de compétences */
+
+/**
+ * Domaines de l'annexe 8-1 mis en œuvre par une situation.
+ *
+ * Les rattachements viennent de `data/synthese.ts`, c'est-à-dire du même
+ * endroit que le tableau de synthèse : une carte et le tableau ne peuvent
+ * donc pas se contredire.
+ */
+function DomainesBadges({ slug }: { slug: string }) {
+  const ids = domainesDeSituation(slug);
+  if (ids.length === 0) return null;
+
+  const libelle = (id: string) =>
+    domainesSynthese.find((d) => d.id === id)?.court ?? id;
+
+  return (
+    <div>
+      <p className="font-mono text-[0.62rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
+        Compétences mises en œuvre
+      </p>
+      <ul className="mt-1.5 flex flex-wrap gap-1.5">
+        {ids.map((id) => (
+          <li
+            key={id}
+            className="rounded-md border border-[color-mix(in_oklab,var(--bloc-accent)_40%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_10%,transparent)] px-2 py-0.5 font-mono text-[0.66rem] font-medium text-[var(--bloc-accent)]"
+          >
+            {libelle(id)}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /* --------------------------------------------- Situations en vedette */
 
 /**
@@ -225,7 +261,8 @@ export function SituationVedetteCard({ situation }: { situation: Situation }) {
         </p>
 
         <div className="mt-auto space-y-3 pt-1">
-          <TechBadges items={situation.technologies.slice(0, 4)} />
+          <DomainesBadges slug={situation.slug} />
+          <TechBadges items={situation.technologies.slice(0, 3)} />
           <span className="inline-flex items-center gap-1.5 font-mono text-[0.72rem] font-medium text-[var(--bloc-accent)]">
             Lire la situation
             <ArrowRight

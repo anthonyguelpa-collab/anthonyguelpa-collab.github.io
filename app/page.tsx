@@ -13,6 +13,7 @@ import {
   SituationVedetteCard,
   TitreSection,
 } from "@/components/portfolio/Accueil";
+import { SyntheseRealisations } from "@/components/portfolio/SyntheseRealisations";
 
 /**
  * Page d'accueil.
@@ -117,6 +118,25 @@ export default function Accueil() {
             </li>
           ))}
         </ul>
+      </Section>
+
+      {/* --------------------------------- Tableau de synthèse (annexe 8-1) */}
+      <Section className="mt-24">
+        <TitreSection
+          surtitre="Document officiel · Annexe 8-1"
+          titre="Tableau de synthèse des réalisations"
+        />
+
+        <p className="mt-5 max-w-3xl text-pretty leading-relaxed text-ink-400">
+          La synthèse attendue à l&apos;examen, reprise ici dans la mise en page
+          du site : chaque réalisation documentée, sa période, et les domaines
+          de compétences qu&apos;elle met en œuvre. Les intitulés mènent à la
+          situation correspondante.
+        </p>
+
+        <div className="mt-8">
+          <SyntheseRealisations />
+        </div>
       </Section>
 
       {/* --------------------------------------------------- Compétences */}
