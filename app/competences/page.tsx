@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Quote } from "lucide-react";
 
 import {
-  BLOCS,
   CRITERE_TRANSVERSE_E4,
   competencesByBloc,
 } from "@/data/competences";
@@ -12,14 +11,14 @@ import {
   verifierCoherence,
 } from "@/lib/relations";
 import { tableauSuivi } from "@/lib/suivi";
-import { Breadcrumb, PageHeader, Section, BlocTag } from "@/components/ui";
+import { Breadcrumb, PageHeader, Section } from "@/components/ui";
 import { DomaineCompetence } from "@/components/portfolio/DomaineCompetence";
 import { TableauCompetences } from "@/components/portfolio/TableauCompetences";
 
 export const metadata: Metadata = {
   title: "Compétences",
   description:
-    "Les 9 domaines de compétences des blocs E4 et E5 du référentiel BTS SIO option SISR, reliés aux missions réalisées pendant mon alternance.",
+    "Les six domaines de compétences de l'épreuve E5 — support et mise à disposition de services informatiques — reliés aux missions réalisées pendant mon alternance.",
 };
 
 /**
@@ -42,69 +41,77 @@ export default function CompetencesPage() {
       />
 
       <PageHeader
-        surtitre="Référentiel BTS SIO · SISR"
+        surtitre="Épreuve E5 · Support et mise à disposition de services informatiques"
         titre="Compétences"
         intro={
           <>
-            Les libellés sont repris mot pour mot des grilles officielles des
-            épreuves E4 et E5. Pour chaque domaine, j&apos;indique ce que la
-            compétence recouvre dans mon cas, ce que j&apos;ai réalisé pendant
-            mon alternance, et les situations professionnelles où ce travail
-            est documenté.
+            Les six domaines ci-dessous, et leurs libellés, sont repris mot
+            pour mot du tableau de synthèse officiel. Pour chacun,
+            j&apos;indique ce que la compétence recouvre dans mon cas, ce que
+            j&apos;ai réalisé pendant mon alternance, et les situations
+            professionnelles où ce travail est documenté.
           </>
         }
       />
 
-      {(["e4", "e5"] as const).map((bloc) => (
-        <section
-          key={bloc}
-          id={bloc}
-          data-bloc={bloc}
-          className="mt-14 scroll-mt-24"
-        >
-          <div className="flex flex-wrap items-center gap-3">
-            <BlocTag bloc={bloc} />
-            <h2 className="text-2xl font-semibold tracking-tight text-ink-100">
-              {BLOCS[bloc].titre}
-            </h2>
-          </div>
-          <p className="mt-2 font-mono text-xs text-ink-400">
-            {BLOCS[bloc].epreuve}
-          </p>
-          <p className="mt-3 max-w-3xl leading-relaxed text-ink-400">
-            {BLOCS[bloc].sousTitre}
-          </p>
+      {/* ---------------------------- Les six domaines de l'épreuve */}
+      <section id="domaines" data-bloc="e4" className="mt-14 scroll-mt-24">
+        <h2 className="text-2xl font-semibold tracking-tight text-ink-100">
+          Les six domaines de l&apos;épreuve
+        </h2>
+        <p className="mt-3 max-w-3xl leading-relaxed text-ink-400">
+          Numérotés comme dans le tableau de synthèse, pour qu&apos;on passe
+          sans effort de la grille à la preuve.
+        </p>
 
-          <div className="mt-8 space-y-5">
-            {competencesByBloc(bloc).map((c) => (
-              <DomaineCompetence
-                key={c.id}
-                competence={c}
-                situations={situationsDeCompetence(c.id)}
-                veille={veilleDeCompetence(c.id)}
-              />
-            ))}
-          </div>
+        <div className="mt-8 space-y-5">
+          {competencesByBloc("e4").map((c) => (
+            <DomaineCompetence
+              key={c.id}
+              competence={c}
+              situations={situationsDeCompetence(c.id)}
+              veille={veilleDeCompetence(c.id)}
+            />
+          ))}
+        </div>
 
-          {/* Critère transverse — rappelé en fin de bloc E4, sans dominer. */}
-          {bloc === "e4" && (
-            <aside className="surface mt-6 flex gap-4 border-l-[3px] border-l-cyan-bright px-6 py-5">
-              <Quote
-                className="mt-0.5 size-4 shrink-0 text-cyan-bright"
-                aria-hidden
-              />
-              <div>
-                <p className="mb-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-ink-200">
-                  Critère transverse de la grille E4
-                </p>
-                <p className="text-pretty leading-relaxed text-ink-300">
-                  {CRITERE_TRANSVERSE_E4}
-                </p>
-              </div>
-            </aside>
-          )}
-        </section>
-      ))}
+        <aside className="surface mt-6 flex gap-4 border-l-[3px] border-l-cyan-bright px-6 py-5">
+          <Quote className="mt-0.5 size-4 shrink-0 text-cyan-bright" aria-hidden />
+          <div>
+            <p className="mb-1.5 font-mono text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-ink-200">
+              Critère transverse de la grille
+            </p>
+            <p className="text-pretty leading-relaxed text-ink-300">
+              {CRITERE_TRANSVERSE_E4}
+            </p>
+          </div>
+        </aside>
+      </section>
+
+      {/* ------------------- Compétences techniques, hors grille d'épreuve */}
+      <section id="technique" data-bloc="e5" className="mt-16 scroll-mt-24">
+        <h2 className="text-2xl font-semibold tracking-tight text-ink-100">
+          Compétences techniques d&apos;administration
+        </h2>
+        <p className="mt-3 max-w-3xl leading-relaxed text-ink-400">
+          Ces trois domaines ne figurent pas dans le tableau de synthèse de
+          l&apos;épreuve : ils ne sont donc pas numérotés. Je les conserve
+          parce qu&apos;ils documentent la spécialité SISR — concevoir,
+          déployer, puis exploiter une solution d&apos;infrastructure — et que
+          plusieurs de mes situations relèvent d&apos;abord de là.
+        </p>
+
+        <div className="mt-8 space-y-5">
+          {competencesByBloc("e5").map((c) => (
+            <DomaineCompetence
+              key={c.id}
+              competence={c}
+              situations={situationsDeCompetence(c.id)}
+              veille={veilleDeCompetence(c.id)}
+            />
+          ))}
+        </div>
+      </section>
 
       {/* ------------------------------------------- Suivi documentaire */}
       <section aria-labelledby="suivi" className="mt-16">

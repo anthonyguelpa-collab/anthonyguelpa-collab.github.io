@@ -2,27 +2,22 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { CheckSquare, Gauge } from "lucide-react";
 
-import {
-  BLOCS,
-  competences,
-  getCompetenceBySlug,
-  type Bloc,
-} from "@/data/competences";
+import { CADRES, NUMERO_DOMAINE, competences, getCompetence, getParSlug } from "@/data/competences";
 import { situationsDeCompetence, veilleDeCompetence } from "@/lib/relations";
-import { Breadcrumb, Section, BlocTag } from "@/components/ui";
+import { Breadcrumb, Section, NumeroDomaine } from "@/components/ui";
 import { LinkedSituations, LinkedVeille } from "@/components/portfolio/Cards";
 
 export function generateStaticParams() {
-  return competences.map((c) => ({ bloc: c.bloc, slug: c.slug }));
+  return competences.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ bloc: string; slug: string }>;
+  params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
-  const { bloc, slug } = await params;
-  const competence = getCompetenceBySlug(bloc as Bloc, slug);
+  const { slug } = await params;
+  const competence = getParSlug(slug);
   if (!competence) return {};
   return {
     title: competence.titre,
@@ -33,12 +28,10 @@ export async function generateMetadata({
 export default async function CompetencePage({
   params,
 }: {
-  params: Promise<{ bloc: string; slug: string }>;
+  params: Promise<{ slug: string }>;
 }) {
-  const { bloc, slug } = await params;
-  if (bloc !== "e4" && bloc !== "e5") notFound();
-
-  const competence = getCompetenceBySlug(bloc, slug);
+  const { slug } = await params;
+  const competence = getParSlug(slug);
   if (!competence) notFound();
 
   const situations = situationsDeCompetence(competence.id);
@@ -52,8 +45,8 @@ export default async function CompetencePage({
             { label: "Accueil", href: "/" },
             { label: "Compétences", href: "/competences" },
             {
-              label: BLOCS[competence.bloc].code,
-              href: `/competences#${competence.bloc}`,
+              label: CADRES[competence.bloc].fil,
+              href: `/competences#${competence.bloc === "e4" ? "domaines" : "technique"}`,
             },
             { label: competence.titreCourt },
           ]}
@@ -61,9 +54,9 @@ export default async function CompetencePage({
 
         <header className="border-b border-night-700/60 pb-8 pt-8">
           <div className="flex flex-wrap items-center gap-3">
-            <BlocTag bloc={competence.bloc} />
+            <NumeroDomaine numero={NUMERO_DOMAINE[competence.id]} />
             <span className="font-mono text-xs text-ink-400">
-              {BLOCS[competence.bloc].epreuve}
+              {CADRES[competence.bloc].cadre}
             </span>
           </div>
           <h1 className="mt-3 text-balance text-3xl font-semibold leading-tight tracking-tight text-ink-100 sm:text-4xl">

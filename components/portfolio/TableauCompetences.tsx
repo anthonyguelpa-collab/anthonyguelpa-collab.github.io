@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { ArrowRight } from "lucide-react";
 
-import { BLOCS, type Bloc } from "@/data/competences";
+import { NUMERO_DOMAINE, type Bloc } from "@/data/competences";
 import { STATUTS, type LigneSuivi, type Statut } from "@/lib/suivi";
 
 /* ------------------------------------------------------------ Statuts */
@@ -79,11 +79,11 @@ export function TableauCompetences({ lignes }: { lignes: LigneSuivi[] }) {
     { cle: "tous", label: `Tous (${lignes.length})` },
     {
       cle: "e4",
-      label: `E4 (${lignes.filter((l) => l.bloc === "e4").length})`,
+      label: `Épreuve (${lignes.filter((l) => l.bloc === "e4").length})`,
     },
     {
       cle: "e5",
-      label: `E5 (${lignes.filter((l) => l.bloc === "e5").length})`,
+      label: `Technique (${lignes.filter((l) => l.bloc === "e5").length})`,
     },
   ];
 
@@ -149,7 +149,7 @@ export function TableauCompetences({ lignes }: { lignes: LigneSuivi[] }) {
               >
                 <td className="px-5 py-4 align-top">
                   <span className="inline-flex items-center gap-1.5 rounded-md border border-[color-mix(in_oklab,var(--bloc-accent)_45%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_10%,transparent)] px-2 py-0.5 font-mono text-[0.68rem] font-semibold text-[var(--bloc-accent)]">
-                    {BLOCS[l.bloc].code}
+                    {NUMERO_DOMAINE[l.competence.id] ?? "—"}
                   </span>
                 </td>
                 <td className="px-5 py-4 align-top">
@@ -199,7 +199,7 @@ export function TableauCompetences({ lignes }: { lignes: LigneSuivi[] }) {
             >
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <span className="inline-flex items-center rounded-md border border-[color-mix(in_oklab,var(--bloc-accent)_45%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_10%,transparent)] px-2 py-0.5 font-mono text-[0.68rem] font-semibold text-[var(--bloc-accent)]">
-                  {BLOCS[l.bloc].code}
+                  {NUMERO_DOMAINE[l.competence.id] ?? "—"}
                 </span>
                 <Pastille statut={l.statut} />
               </div>

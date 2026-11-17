@@ -1,3 +1,4 @@
+import { NUMERO_DOMAINE } from "@/data/competences";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -9,7 +10,7 @@ import {
 } from "lucide-react";
 import type { Competence } from "@/data/competences";
 import type { Situation } from "@/data/situations";
-import { Badge, BlocTag, TechBadges } from "@/components/ui";
+import { Badge, NumeroDomaine, TechBadges } from "@/components/ui";
 import { formaterPeriode, isoPeriode } from "@/lib/dates";
 
 /* ------------------------------------------------------- CompetenceCard */
@@ -23,12 +24,12 @@ export function CompetenceCard({
 }) {
   return (
     <Link
-      href={`/competences/${competence.bloc}/${competence.slug}`}
+      href={`/competences/${competence.slug}`}
       data-bloc={competence.bloc}
       className="surface rule-top group flex flex-col gap-3 p-5 transition-all duration-200 hover:-translate-y-0.5 hover:border-[color-mix(in_oklab,var(--bloc-accent)_50%,transparent)]"
     >
       <div className="flex items-start justify-between gap-3">
-        <BlocTag bloc={competence.bloc} />
+        <NumeroDomaine numero={NUMERO_DOMAINE[competence.id]} />
         <Badge variante={nbSituations > 0 ? "accent" : "alerte"}>
           {nbSituations} situation{nbSituations > 1 ? "s" : ""}
         </Badge>
@@ -132,10 +133,10 @@ export function LinkedCompetences({
         {competences.map((c) => (
           <li key={c.id} data-bloc={c.bloc}>
             <Link
-              href={`/competences/${c.bloc}/${c.slug}`}
+              href={`/competences/${c.slug}`}
               className="group flex items-center gap-3 px-5 py-3.5 transition-colors hover:bg-night-800/50"
             >
-              <BlocTag bloc={c.bloc} />
+              <NumeroDomaine numero={NUMERO_DOMAINE[c.id]} />
               <span className="flex-1 text-sm text-ink-200 group-hover:text-ink-100">
                 {c.titre}
               </span>

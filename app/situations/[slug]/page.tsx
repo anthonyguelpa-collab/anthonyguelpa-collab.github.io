@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 
 import { situations, getSituation } from "@/data/situations";
-import { BLOCS } from "@/data/competences";
+import { domainesDeSituation, domainesSynthese } from "@/data/synthese";
 import { competencesDeSituation } from "@/lib/relations";
 import { lireContenu } from "@/lib/mdx";
 import {
@@ -102,11 +102,20 @@ export default async function SituationPage({
             </div>
             <div>
               <dt className="font-mono text-[0.64rem] font-semibold uppercase tracking-[0.14em] text-ink-400">
-                Épreuve
+                Domaines mis en œuvre
               </dt>
-              <dd className="mt-0.5 font-mono text-sm font-medium text-ink-100">
-                {BLOCS[situation.blocPrincipal].code} —{" "}
-                {BLOCS[situation.blocPrincipal].titre}
+              <dd className="mt-1 flex flex-wrap gap-1.5">
+                {domainesDeSituation(situation.slug).map((id) => {
+                  const d = domainesSynthese.find((x) => x.id === id);
+                  return d ? (
+                    <span
+                      key={id}
+                      className="rounded-md border border-[color-mix(in_oklab,var(--bloc-accent)_40%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_10%,transparent)] px-2 py-0.5 font-mono text-[0.68rem] font-medium text-[var(--bloc-accent)]"
+                    >
+                      {d.court}
+                    </span>
+                  ) : null;
+                })}
               </dd>
             </div>
           </dl>

@@ -127,24 +127,27 @@ export function TechBadges({ items }: { items: readonly string[] }) {
   );
 }
 
-/* ----------------------------------------------------------------- BlocTag */
+/* ---------------------------------------------------------- NumeroDomaine */
 
-export function BlocTag({ bloc }: { bloc: "e4" | "e5" }) {
+/**
+ * Numéro d'un domaine dans l'annexe 8-1.
+ *
+ * Les anciens repères de bloc E4 et E5 ont disparu : seule la grille de
+ * l'épreuve E5 — support et mise à disposition de services informatiques —
+ * fait foi, et elle numérote ses six domaines. Rien n'est affiché pour une
+ * compétence qui n'en fait pas partie.
+ */
+export function NumeroDomaine({ numero }: { numero?: number }) {
+  if (!numero) return null;
   return (
     <span
-      data-bloc={bloc}
-      className="inline-flex items-center gap-1.5 rounded-md border border-[color-mix(in_oklab,var(--bloc-accent)_45%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_10%,transparent)] px-2 py-0.5 font-mono text-[0.68rem] font-semibold uppercase tracking-wider text-[var(--bloc-accent)]"
+      aria-hidden
+      className="inline-flex size-6 shrink-0 items-center justify-center rounded-md border border-[color-mix(in_oklab,var(--bloc-accent)_45%,transparent)] bg-[color-mix(in_oklab,var(--bloc-accent)_12%,transparent)] font-mono text-[0.72rem] font-bold text-[var(--bloc-accent)]"
     >
-      <span
-        aria-hidden
-        className="size-1.5 rotate-45 rounded-[1px] bg-[var(--bloc-accent)]"
-      />
-      {bloc.toUpperCase()}
+      {numero}
     </span>
   );
 }
-
-/* ------------------------------------------------------------------- Button */
 
 export function LinkButton({
   href,

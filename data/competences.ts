@@ -328,11 +328,47 @@ export const competences: Competence[] = [
 ];
 
 /** Critère transverse rappelé en tête de la grille E4. */
+/**
+ * Numéro du domaine dans l'annexe 8-1.
+ *
+ * Seuls les six domaines de l'épreuve y figurent. Les trois domaines
+ * d'administration des systèmes et des réseaux n'ont pas de numéro : ils ne
+ * relèvent pas de cette grille.
+ */
+export const NUMERO_DOMAINE: Record<string, number> = {
+  "e4-patrimoine": 1,
+  "e4-incidents": 2,
+  "e4-presence-en-ligne": 3,
+  "e4-mode-projet": 4,
+  "e4-service-utilisateurs": 5,
+  "e4-developpement-pro": 6,
+};
+
+/**
+ * Cadre de rattachement d'un domaine, affiché à la place des anciens
+ * repères E4 et E5. Seule la grille de l'épreuve fait foi ; les trois
+ * domaines techniques sont présentés pour ce qu'ils sont.
+ */
+export const CADRES: Record<Bloc, { fil: string; cadre: string }> = {
+  e4: {
+    fil: "Domaines de l'épreuve",
+    cadre: "Épreuve E5 — Support et mise à disposition de services informatiques",
+  },
+  e5: {
+    fil: "Compétences techniques",
+    cadre: "Administration des systèmes et des réseaux — hors grille d'épreuve",
+  },
+};
+
 export const CRITERE_TRANSVERSE_E4 =
   "Capacité à rendre compte d'un travail réalisé au sein d'une équipe projet en mettant clairement en évidence sa contribution personnelle.";
 
 export function getCompetence(id: string): Competence | undefined {
   return competences.find((c) => c.id === id);
+}
+
+export function getParSlug(slug: string): Competence | undefined {
+  return competences.find((c) => c.slug === slug);
 }
 
 export function getCompetenceBySlug(

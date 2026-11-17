@@ -1,10 +1,11 @@
+import { NUMERO_DOMAINE } from "@/data/competences";
 import Link from "next/link";
 import { ArrowRight, Check, FolderOpen, FolderTree } from "lucide-react";
 
 import type { Competence } from "@/data/competences";
 import type { Situation } from "@/data/situations";
 import type { ExempleVeille } from "@/data/veille";
-import { Badge, BlocTag } from "@/components/ui";
+import { Badge, NumeroDomaine } from "@/components/ui";
 
 /**
  * Présentation développée d'un domaine de compétences.
@@ -29,7 +30,7 @@ export function DomaineCompetence({
     new Set(situations.flatMap((s) => s.technologies)),
   ).slice(0, 10);
 
-  const href = `/competences/${competence.bloc}/${competence.slug}`;
+  const href = `/competences/${competence.slug}`;
 
   return (
     <article
@@ -39,7 +40,7 @@ export function DomaineCompetence({
     >
       <header>
         <div className="flex flex-wrap items-center gap-3">
-          <BlocTag bloc={competence.bloc} />
+          <NumeroDomaine numero={NUMERO_DOMAINE[competence.id]} />
           {veille.length > 0 && (
             <Badge>
               {veille.length} exemple{veille.length > 1 ? "s" : ""} de veille

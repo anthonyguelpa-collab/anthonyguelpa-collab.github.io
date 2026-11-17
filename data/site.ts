@@ -13,7 +13,7 @@ export const site = {
   accroche:
     "Solutions d'Infrastructure, Systèmes et Réseaux — alternance en entreprise de BTP",
   description:
-    "Portfolio professionnel d'Anthony Guelpa, étudiant en BTS SIO option SISR en alternance. Compétences E4 et E5, situations professionnelles documentées et veille technologique.",
+    "Portfolio professionnel d'Anthony Guelpa, étudiant en BTS SIO option SISR en alternance. Compétences de l'épreuve E5, situations professionnelles documentées et veille technologique.",
 
   email: "anthonyguelpa@gmail.com",
   ville: "Levens (06)",

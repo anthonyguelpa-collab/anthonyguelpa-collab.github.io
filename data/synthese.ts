@@ -142,7 +142,7 @@ const RATTACHEMENTS: Record<string, string[]> = {
   "etude-videosurveillance-parking": ["mode-projet"],
   "documentation-fonctionnelle-ebp": ["incidents", "service"],
   "redondance-acces-internet": ["patrimoine"],
-  "solution-de-sauvegarde-automatisee": ["patrimoine", "mode-projet", "service"],
+  "solution-de-sauvegarde-automatisee": ["patrimoine", "service"],
 };
 
 export function domainesDeSituation(slug: string): string[] {

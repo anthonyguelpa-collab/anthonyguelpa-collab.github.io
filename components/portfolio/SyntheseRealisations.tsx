@@ -236,53 +236,12 @@ export function SyntheseRealisations() {
 
   return (
     <div>
-      {/* --------------------------------------------- En-tête administratif */}
-      <div className="surface overflow-hidden">
-        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-night-700/60 px-5 py-3.5">
-          <p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-ink-300">
-            {enTeteSynthese.examen}
-          </p>
-          <p className="font-mono text-[0.68rem] text-ink-400">
-            {enTeteSynthese.session} · {enTeteSynthese.reference}
-          </p>
-        </div>
-
-        <p className="border-b border-night-700/60 px-5 py-2.5 text-[0.82rem] text-ink-300">
-          {enTeteSynthese.epreuve}
-        </p>
-
-        <dl className="grid gap-x-6 gap-y-3 px-5 py-4 sm:grid-cols-2 lg:grid-cols-4">
-          {enTeteSynthese.champs.map((c) => (
-            <div key={c.libelle}>
-              <dt className="font-mono text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-ink-400">
-                {c.libelle}
-              </dt>
-              <dd className="mt-0.5 text-sm text-ink-200">
-                {c.valeur || (
-                  <span className="font-mono text-ink-400">— à compléter</span>
-                )}
-              </dd>
-            </div>
-          ))}
-        </dl>
-
-        <div className="border-t border-night-700/60 px-5 py-3">
-          <p className="font-mono text-[0.64rem] font-semibold uppercase tracking-[0.12em] text-ink-400">
-            Adresse du portfolio
-          </p>
-          <a
-            href={enTeteSynthese.portfolio}
-            className="mt-0.5 inline-flex items-center gap-1.5 break-all text-sm text-cyan-bright transition-colors hover:text-cyan-soft"
-          >
-            {enTeteSynthese.portfolio}
-            <ExternalLink className="size-3 shrink-0" aria-hidden />
-          </a>
-        </div>
-      </div>
-
       {/* ------------------------------------------------ Les trois périodes */}
-      <div className="mt-8">
-        {PERIODES.map((p) => (
+      <div>
+        {/* Une période sans réalisation n'est pas affichée : une bande vide
+            attire l'œil sur ce qui manque plutôt que sur ce qui est fait.
+            Elle réapparaîtra d'elle-même dès qu'une réalisation s'y rattache. */}
+        {PERIODES.filter((p) => groupes[p.cle].length > 0).map((p) => (
           <BlocPeriode
             key={p.cle}
             titre={p.titre}
