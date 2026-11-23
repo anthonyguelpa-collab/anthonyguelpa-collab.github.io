@@ -122,7 +122,9 @@ export default function Accueil() {
       </Section>
 
       {/* --------------------------------- Tableau de synthèse (annexe 8-1) */}
-      <Section className="mt-24">
+      {/* L'ancre rend la section citable : le document officiel s'atteint
+          par un lien direct, sans faire défiler la page d'accueil. */}
+      <Section id="tableau-de-synthese" className="mt-24 scroll-mt-24">
         <TitreSection
           surtitre="Document officiel · Annexe 8-1"
           titre="Tableau de synthèse des réalisations"
