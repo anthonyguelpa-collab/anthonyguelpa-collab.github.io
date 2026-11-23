@@ -1,4 +1,4 @@
-import { ArrowRight, Download, FileUser } from "lucide-react";
+import { ArrowRight, Download, FileSpreadsheet, FileUser } from "lucide-react";
 
 import { ressource } from "@/lib/chemin";
 import { site } from "@/data/site";
@@ -70,6 +70,12 @@ export default function Accueil() {
                 <FileUser className="size-4" aria-hidden />
                 Voir le CV
               </LinkButton>
+              {/* Le tableau de synthèse est la pièce attendue à l'examen :
+                  on y accède sans avoir à faire défiler la page. */}
+              <LinkButton href="#document-officiel" variante="secondaire">
+                <FileSpreadsheet className="size-4" aria-hidden />
+                Tableau de synthèse
+              </LinkButton>
             </div>
           </div>
 
@@ -80,6 +86,61 @@ export default function Accueil() {
 
         <div className="mt-12">
           <Logos />
+        </div>
+      </Section>
+
+      {/* ------------------------------------ Le document officiel, en évidence */}
+      {/* Placé haut, avec son aperçu : c'est la pièce que le jury vient
+          chercher, et elle doit se reconnaître sans avoir à la lire. */}
+      <Section id="document-officiel" className="mt-20 scroll-mt-24">
+        <div className="surface flex flex-col gap-7 border-l-[3px] border-l-cyan-bright px-6 py-7 sm:flex-row sm:items-center sm:gap-9 sm:px-8">
+          <a
+            href={ressource("/documents/Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.pdf")}
+            className="group shrink-0 self-start overflow-hidden rounded-md border border-night-600 transition-colors hover:border-cyan-bright"
+            aria-label="Ouvrir le tableau de synthèse officiel"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={ressource("/documents/annexe-8-1-apercu.webp")}
+              alt="Première page de l'annexe 8-1 remplie : en-tête du candidat, six domaines de compétences en colonnes et huit réalisations en lignes"
+              width={760}
+              height={1075}
+              loading="lazy"
+              className="h-auto w-[9.5rem] transition-transform duration-200 group-hover:scale-[1.02] sm:w-[11rem]"
+            />
+          </a>
+
+          <div className="min-w-0 flex-1">
+            <p className="font-mono text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-cyan-bright">
+              Document officiel · Annexe 8-1
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink-100">
+              Mon tableau de synthèse, rempli
+            </h2>
+            <p className="mt-2.5 max-w-2xl text-pretty leading-relaxed text-ink-300">
+              Le formulaire de l&apos;épreuve E5 dans sa mise en page
+              d&apos;origine : huit réalisations, leurs documents associés, et
+              les domaines de compétences que chacune met en œuvre.
+            </p>
+
+            <div className="mt-5 flex flex-wrap items-center gap-3">
+              <a
+                href={ressource("/documents/Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.pdf")}
+                download="Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.pdf"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-cyan-bright px-4 py-2.5 text-sm font-semibold text-night-950 transition-all duration-150 hover:brightness-110"
+              >
+                <Download className="size-4" aria-hidden />
+                Télécharger le document officiel
+              </a>
+              <LinkButton href="#tableau-de-synthese" variante="secondaire">
+                Le lire sur la page
+                <ArrowRight className="size-4" aria-hidden />
+              </LinkButton>
+              <span className="font-mono text-[0.7rem] text-ink-400">
+                PDF · 1 page · 77 Ko
+              </span>
+            </div>
+          </div>
         </div>
       </Section>
 
@@ -137,33 +198,17 @@ export default function Accueil() {
           situation correspondante.
         </p>
 
-        {/* Le document officiel lui-même, rempli, tel qu'il doit être rendu —
-            la version ci-dessous n'en est que la mise en page du site. */}
-        <div className="surface mt-8 flex flex-wrap items-center justify-between gap-5 px-6 py-5">
-          <div>
-            <p className="font-semibold text-ink-100">
-              L&apos;annexe 8-1 officielle, remplie
-            </p>
-            <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-ink-400">
-              Le formulaire de la session 2025, dans sa mise en page
-              d&apos;origine, avec mes réalisations et les domaines qu&apos;elles
-              mettent en œuvre. Le tableau ci-dessous en est la transposition
-              pour l&apos;écran.
-            </p>
-            <p className="mt-2 font-mono text-[0.7rem] text-ink-400">
-              PDF · 1 page · 77 Ko
-            </p>
-          </div>
-
+        <p className="mt-5 text-sm leading-relaxed text-ink-400">
+          Le document officiel lui-même est{" "}
           <a
             href={ressource("/documents/Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.pdf")}
             download="Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.pdf"
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-cyan-bright px-4 py-2.5 text-sm font-semibold text-night-950 transition-all duration-150 hover:brightness-110"
+            className="font-medium text-cyan-bright underline underline-offset-2 transition-colors hover:text-cyan-soft"
           >
-            <Download className="size-4" aria-hidden />
-            Télécharger le document officiel
-          </a>
-        </div>
+            téléchargeable en PDF
+          </a>{" "}
+          en haut de cette page.
+        </p>
 
         <div className="mt-6">
           <SyntheseRealisations />
