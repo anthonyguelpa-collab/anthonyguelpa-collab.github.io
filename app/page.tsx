@@ -149,13 +149,13 @@ export default function Accueil() {
               pour l&apos;écran.
             </p>
             <p className="mt-2 font-mono text-[0.7rem] text-ink-400">
-              Classeur Excel · 10 Ko
+              PDF · 1 page · 77 Ko
             </p>
           </div>
 
           <a
-            href={ressource("/documents/Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.xlsx")}
-            download="Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.xlsx"
+            href={ressource("/documents/Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.pdf")}
+            download="Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.pdf"
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-cyan-bright px-4 py-2.5 text-sm font-semibold text-night-950 transition-all duration-150 hover:brightness-110"
           >
             <Download className="size-4" aria-hidden />
