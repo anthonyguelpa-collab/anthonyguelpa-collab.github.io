@@ -1,5 +1,6 @@
-import { ArrowRight, FileUser } from "lucide-react";
+import { ArrowRight, Download, FileUser } from "lucide-react";
 
+import { ressource } from "@/lib/chemin";
 import { site } from "@/data/site";
 import { situations } from "@/data/situations";
 import { Section, LinkButton } from "@/components/ui";
@@ -134,7 +135,35 @@ export default function Accueil() {
           situation correspondante.
         </p>
 
-        <div className="mt-8">
+        {/* Le document officiel lui-même, rempli, tel qu'il doit être rendu —
+            la version ci-dessous n'en est que la mise en page du site. */}
+        <div className="surface mt-8 flex flex-wrap items-center justify-between gap-5 px-6 py-5">
+          <div>
+            <p className="font-semibold text-ink-100">
+              L&apos;annexe 8-1 officielle, remplie
+            </p>
+            <p className="mt-1.5 max-w-xl text-sm leading-relaxed text-ink-400">
+              Le formulaire de la session 2025, dans sa mise en page
+              d&apos;origine, avec mes réalisations et les domaines qu&apos;elles
+              mettent en œuvre. Le tableau ci-dessous en est la transposition
+              pour l&apos;écran.
+            </p>
+            <p className="mt-2 font-mono text-[0.7rem] text-ink-400">
+              Classeur Excel · 10 Ko
+            </p>
+          </div>
+
+          <a
+            href={ressource("/documents/Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.xlsx")}
+            download="Annexe-8-1-Tableau-de-synthese-GUELPA-Anthony.xlsx"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-cyan-bright px-4 py-2.5 text-sm font-semibold text-night-950 transition-all duration-150 hover:brightness-110"
+          >
+            <Download className="size-4" aria-hidden />
+            Télécharger le document officiel
+          </a>
+        </div>
+
+        <div className="mt-6">
           <SyntheseRealisations />
         </div>
       </Section>
